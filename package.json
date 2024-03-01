@@ -1,0 +1,8 @@
+{
+  "devDependencies": {
+    "source-map-loader": "^5.0.0"
+  },
+  "dependencies": {
+    "react-schedule-meeting": "^4.2.3"
+  }
+}

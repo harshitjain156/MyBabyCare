@@ -1,0 +1,115 @@
+const express = require("express");
+const app = express();
+const mongoose = require("mongoose");
+const socket = require("socket.io");
+const http = require("http");
+
+const connectDB = require("./db/connect");
+const authRoutes = require("../server/routes/authRouter");
+const { API_ENDPOINT_NOT_FOUND_ERR, SERVER_ERR } = require("./error")
+
+const cors = require("cors");
+const corsOptions = {
+  origin: "*",
+  credentials: true, //access-control-allow-credentials:true
+};
+
+app.use(cors(corsOptions));
+require("dotenv").config();
+
+const server = http.createServer(app); // Removed the second argument for options
+const io = socket(server, {
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST"]
+  }
+});
+let users = {};
+
+io.on("connect", (socket) => {
+  console.log('a user connected', socket.id);
+
+  socket.on("init", () => {
+    // Store the user's ID in the users object
+    users[socket.id] = {
+      id: socket.id,
+    
+    };
+    console.log(socket.id)
+    // Emit the user's ID back to the client
+    socket.emit("initResponse", socket.id);
+  });
+
+  socket.on("message", (message) => {
+    console.log(message);
+    // Broadcast the message to all users in the same room
+    io.to("abcd").emit("message", { sender: socket.id, message });
+  });
+
+  socket.on("joinRoom", () => {
+    // Join the specified room
+    socket.join("abcd");
+    // Store the room ID with the user
+    // users[socket.id].room = roomId;
+  });
+
+  socket.on("disconnect", () => {
+    // Remove the user from all rooms upon disconnection
+    // for (const userId in users) {
+    //   if (users[userId].room === users[socket.id].room) {
+    //     delete users[userId].room;
+    //   }
+    // }
+  });
+});
+
+
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+app.get("/", (req, res) => {
+  res.status(200).json({
+    type: "success",
+    message: "server is up and running",
+    data: null,
+  });
+});
+
+app.use("/api/v1", authRoutes);
+
+app.use("*", (req, res, next) => {
+  const error = {
+    status: 404,
+    message: API_ENDPOINT_NOT_FOUND_ERR,
+  };
+  next(error);
+});
+
+// global error handling middleware
+app.use((err, req, res, next) => {
+  console.log(err);
+  const status = err.status || 500;
+  const message = err.message || SERVER_ERR;
+  const data = err.data || null;
+  res.status(status).json({
+    type: "error",
+    message,
+    data,
+  });
+});
+
+const port = process.env.PORT || 5000;
+
+const start = async () => {
+  try {
+    await connectDB(process.env.MONGO_URI);
+    server.listen(port, () =>
+      console.log(`Server is listening on port ${port}...`)
+    );
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+start();
