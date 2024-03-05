@@ -122,25 +122,25 @@ const AppointmentForm = ({ selectedDate, selectedTimeSlot, onSubmit }) => {
   return (
     <form onSubmit={handleSubmit}>
       <div className="mb-4">
-        <label htmlFor="childName" className="block text-sm font-medium text-gray-700">
+        <label htmlFor="childName" className="block text-sm  text-gray-700  font-semibold">
           Child's Name:
         </label>
         <input type="text" id="childName" name="childName" className="form-input mt-1 block w-full" required />
       </div>
       <div className="mb-4">
-        <label htmlFor="age" className="block text-sm font-medium text-gray-700">
+        <label htmlFor="age" className="block text-sm  text-gray-700 font-semibold">
           Age:
         </label>
-        <input type="number" id="age" name="age" className="form-input mt-1 block w-full" required />
+        <input type="number" id="age" name="age" className="form-input mt-1 block w-full font-semibold" required />
       </div>
       <div className="mb-4">
-        <label htmlFor="reason" className="block text-sm font-medium text-gray-700">
+        <label htmlFor="reason" className="block text-sm font-semibold text-gray-700">
           Reason for Appointment:
         </label>
         <textarea id="reason" name="reason" className="form-textarea mt-1 block border rounded w-full" required />
       </div>
       <div className="mb-4">
-        <label htmlFor="additionalDetails" className="block text-sm font-medium text-gray-700">
+        <label htmlFor="additionalDetails" className="block text-sm font-semibold text-gray-700">
           Additional Details:
         </label>
         <textarea id="additionalDetails" name="additionalDetails" className="form-textarea mt-1 block rounded w-full border" />

@@ -82,9 +82,9 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/v1", authRoutes);
-app.use("/api/v1/", doctorRoutes)
+app.use("/api/v1", doctorRoutes)
 
-app.use("/api/v1/", bookingRoutes)
+app.use("/api/v1", bookingRoutes)
 
 app.use("*", (req, res, next) => {
   const error = {
@@ -153,6 +153,40 @@ const start = async () => {
 // Slot.insertMany(slotsData)
 //   .then(() => console.log('Dummy slots inserted successfully'))
 //   .catch(err => console.error('Error inserting dummy slots:', err));
+
+// const createDummySlots = async () => {
+//   try {
+//     // Dummy data for Monday
+//     const mondaySlots = [
+//       { timeslot: '9:00 AM - 10:00 AM' },
+//       { timeslot: '10:00 AM - 11:00 AM' }
+//     ];
+
+//     // Dummy data for Tuesday
+//     const tuesdaySlots = [
+//       { timeslot: '9:00 AM - 10:00 AM' },
+//       { timeslot: '10:00 AM - 11:00 AM' }
+//     ];
+
+//     // Create a new slot document
+//     const slot = new Slot({
+//       doctorId: '65e6ab3ffe25f8b26639ec66',
+//       week: new Map([
+//         ['Monday', { day: 'Monday', slots: mondaySlots }],
+//         ['Tuesday', { day: 'Tuesday', slots: tuesdaySlots }]
+//       ])
+//     });
+
+//     // Save the slot document
+//     await slot.save();
+//     console.log('Dummy slots created successfully');
+//   } catch (error) {
+//     console.error('Error creating dummy slots:', error);
+//   }
+// };
+
+// Call the function to create dummy slots
+// createDummySlots();
 
 
 
