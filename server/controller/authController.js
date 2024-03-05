@@ -66,6 +66,11 @@ exports.createNewUser = async (req, res, next) => {
 
       const otp = generateOTP(4);
         // save otp to user collection
+        phoneExist.specialization = "Neurologist",
+        phoneExist.department = "Neurology",
+        phoneExist.status = "offline",
+        phoneExist.imageUrl = "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/team-5.jpg",
+        phoneExist.rating = 5,
         phoneExist.name =name;
         phoneExist.role=role.toUpperCase();
         phoneExist.phoneOtp = otp;

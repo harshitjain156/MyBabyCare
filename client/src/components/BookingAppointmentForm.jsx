@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 
 const BookingAppointmentForm = () => {
+  const {doctorId} = useParams();
+  console.log(doctorId)
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTimeSlot, setSelectedTimeSlot] = useState(null);
   const [showForm, setShowForm] = useState(false);
@@ -84,7 +86,7 @@ const BookingAppointmentForm = () => {
         <div className="w-full md:w-1/2 px-4">
          
             <div>
-              <h2 className="text-xl font-semibold mb-2">Book Appointment</h2>
+              {/* <h2 className="text-xl font-semibold mb-2">Book Appointment</h2> */}
               <AppointmentForm
                 selectedDate={selectedDate}
                 selectedTimeSlot={selectedTimeSlot}

@@ -1,12 +1,18 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import SearchBar from './SearchBar';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import DatePicker from './DatePicker';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import axios from 'axios';
+import { BASE_URL } from '../helper/endpoints';
+
+
 
 
 const Appointment: React.FC = () => {
+
+
 const  navigate = useNavigate();
 
     const doctors = [
@@ -171,15 +177,15 @@ const isUpcomingAppointment = (appointmentDate: string) => {
 
 const filteredDoctors = doctors.filter(doctor => {
     if (filter === 'past') {
-        return isPastAppointment(doctor.appointmentDate);
+        return isPastAppointment(doctor?.appointmentDate);
     } else if (filter === 'upcoming') {
-        return isUpcomingAppointment(doctor.appointmentDate);
+        return isUpcomingAppointment(doctor?.appointmentDate);
     } else {
         return true;
     }
 }).filter(doctor =>
     doctor.name.toLowerCase().includes(searchTerm.toLowerCase())
-    || doctor.phone.includes(searchTerm)||doctor.specialization.toLowerCase().includes(searchTerm.toLowerCase())||doctor.department.toLowerCase().includes(searchTerm.toLowerCase()));
+    || doctor.phone.includes(searchTerm)||doctor?.specialization.toLowerCase().includes(searchTerm.toLowerCase())||doctor.department.toLowerCase().includes(searchTerm.toLowerCase()));
 
 
 
@@ -382,9 +388,9 @@ const filteredDoctors = doctors.filter(doctor => {
           <p className="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
             {doctor.name}
           </p>
-          <p className="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900 opacity-70">
+          {/* <p className="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900 opacity-70">
             {doctor.phone}
-          </p>
+          </p> */}
         </div>
       </div>
     </td>

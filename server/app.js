@@ -4,8 +4,13 @@ const mongoose = require("mongoose");
 const socket = require("socket.io");
 const http = require("http");
 
+const Appointment  = require("../server/model/appointmentSchema");
+const Slot = require("../server/model/slotModel")
+
 const connectDB = require("./db/connect");
 const authRoutes = require("../server/routes/authRouter");
+const doctorRoutes = require("../server/routes/doctorRouter");
+const bookingRoutes = require("../server/routes/bookingRouter");
 const { API_ENDPOINT_NOT_FOUND_ERR, SERVER_ERR } = require("./error")
 
 const cors = require("cors");
@@ -77,6 +82,9 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/v1", authRoutes);
+app.use("/api/v1/", doctorRoutes)
+
+app.use("/api/v1/", bookingRoutes)
 
 app.use("*", (req, res, next) => {
   const error = {
@@ -104,6 +112,54 @@ const port = process.env.PORT || 5000;
 const start = async () => {
   try {
     await connectDB(process.env.MONGO_URI);
+
+
+//////////////////////////////
+
+// const appointmentsData = [
+// //   {
+// //     doctorId: '610ab69b4a8763f106d58997', // Replace with actual doctor ID
+// //     userId: '610ab69b4a8763f106d58998', // Replace with actual patient ID
+// //     date: new Date('2024-09-19'),
+// //     timeslot: '9:00 AM - 10:00 AM',
+// //     childName: 'John Doe',
+// //     age: 5,
+// //     reason: 'Regular checkup',
+// //     additionalDetails: 'No special instructions'
+// //   },
+// //   // Add more appointments as needed
+// // ];
+
+// // Create dummy data for slots
+// const slotsData = [
+//   {
+//     doctorId: '65e6ab3ffe25f8b26639ec66', // Replace with actual doctor ID
+//     week: {
+//       Monday: [{ timeslot: '9:00 AM - 10:00 AM' }, { timeslot: '10:00 AM - 11:00 AM' }, /* Add more slots for Monday */],
+//       Tuesday: [{ timeslot: '9:00 AM - 10:00 AM' }, { timeslot: '10:00 AM - 11:00 AM' }, /* Add more slots for Tuesday */],
+//       // Add slots for other days of the week as needed
+//     }
+//   },
+//   // Add more slots as needed
+// ];
+
+
+// Insert dummy appointments into the database
+// Appointment.insertMany(appointmentsData)
+//   .then(() => console.log('Dummy appointments inserted successfully'))
+//   .catch(err => console.error('Error inserting dummy appointments:', err));
+
+// Insert dummy slots into the database
+// Slot.insertMany(slotsData)
+//   .then(() => console.log('Dummy slots inserted successfully'))
+//   .catch(err => console.error('Error inserting dummy slots:', err));
+
+
+
+////////////////////////////////
+
+
+
     server.listen(port, () =>
       console.log(`Server is listening on port ${port}...`)
     );

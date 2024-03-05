@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import SearchBar from './SearchBar';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
@@ -6,6 +6,25 @@ import DatePicker from './DatePicker';
 import { StarIcon } from '@heroicons/react/solid';
 import { Link, useNavigate } from 'react-router-dom';
 import ProfilePicture from './ProfilePicture';
+import axios from 'axios';
+import { BASE_URL } from '../helper/endpoints';
+
+interface Doctor {
+  _id: string;
+  name: string;
+  phone: string;
+  specialization: string;
+  department: string;
+  status: 'online' | 'offline';
+  appointmentDate?: string;
+  timeslot?: string;
+  imageUrl: string;
+  rating: number;
+  isVerified: boolean;
+  role?: 'DOCTOR' | 'ADMIN' | 'USER';
+
+  // Add other properties here as needed
+}
 
 
 const Booking: React.FC = () => {
@@ -21,153 +40,173 @@ const Booking: React.FC = () => {
         return stars;
       };
 
-    const doctors = [
-        {
-          name: "Dr. John Michael",
-          phone: "+1234567890",
-          specialization: "Eye Specialist",
-          department: "Ophthalmology",
-          status: "online",
-          appointmentDate: "2022-04-23",
-          timeslot: "10:00 AM - 12:00 PM",
-          imageUrl: "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/team-3.jpg",
-          rating: 4
-        },
-        {
-          name: "Dr. Alexa Liras",
-          phone: "+1987654321",
-          specialization: "Cardiologist",
-          department: "Cardiology",
-          status: "offline",
-          appointmentDate: "2024-04-23",
-          timeslot: "1:00 PM - 3:00 PM",
-          imageUrl: "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/team-2.jpg",
-          rating: 3
-        },
-        {
-          name: "Dr. Laurent Perrier",
-          phone: "+1122334455",
-          specialization: "Orthopedic Surgeon",
-          department: "Orthopedics",
-          status: "offline",
-          appointmentDate: "2024-09-19",
-          timeslot: "9:00 AM - 11:00 AM",
-          imageUrl: "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/team-1.jpg",
-          rating: 5
-        },
-        {
-          name: "Dr. Michael Levi",
-          phone: "+9876543210",
-          specialization: "Dermatologist",
-          department: "Dermatology",
-          status: "online",
-          appointmentDate: "2024-12-24",
-          timeslot: "3:00 PM - 5:00 PM",
-          imageUrl: "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/team-4.jpg",
-          rating: 4
-        },
-        {
-          name: "Dr. Richard Gran",
-          phone: "+4433221100",
-          specialization: "Neurologist",
-          department: "Neurology",
-          status: "offline",
-          appointmentDate: "2024-10-04",
-          timeslot: "11:00 AM - 1:00 PM",
-          imageUrl: "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/team-5.jpg",
-          rating: 5
-        },
+      const [doctors, setDoctors] = useState<Doctor[]>([]);
 
-        {
-            name: "Dr. Laurent Perrier",
-            phone: "+1122334455",
-            specialization: "Orthopedic Surgeon",
-            department: "Orthopedics",
-            status: "offline",
-            appointmentDate: "2023-09-19",
-            timeslot: "9:00 AM - 11:00 AM",
-            imageUrl: "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/team-1.jpg",
-            rating: 2
-          },
-          {
-            name: "Dr. Michael Levi",
-            phone: "+9876543210",
-            specialization: "Dermatologist",
-            department: "Dermatology",
-            status: "online",
-            appointmentDate: "2023-12-24",
-            timeslot: "3:00 PM - 5:00 PM",
-            imageUrl: "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/team-4.jpg",
-            rating: 3
-          },
-          {
-            name: "Dr. Richard Gran",
-            phone: "+4433221100",
-            specialization: "Neurologist",
-            department: "Neurology",
-            status: "offline",
-            appointmentDate: "2024-10-04",
-            timeslot: "11:00 AM - 1:00 PM",
-            imageUrl: "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/team-5.jpg",
-            rating: 4
-          },
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(`${BASE_URL}api/v1/doctors`);
+        const data = response.data;
+        // 'data' is the array of doctors received from the server
+        const doctorsArray = Array.isArray(data) ? data : []; // Ensure data is an array
+        setDoctors(doctorsArray);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
 
-        {
-            name: "Dr. John Michael",
-            phone: "+1234567890",
-            specialization: "Eye Specialist",
-            department: "Ophthalmology",
-            status: "online",
-            appointmentDate: "2023-04-23",
-            timeslot: "10:00 AM - 12:00 PM",
-            imageUrl: "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/team-3.jpg",
-            rating: 1
-          },
-          {
-            name: "Dr. Alexa Liras",
-            phone: "+1987654321",
-            specialization: "Cardiologist",
-            department: "Cardiology",
-            status: "offline",
-            appointmentDate: "2023-04-23",
-            timeslot: "1:00 PM - 3:00 PM",
-            imageUrl: "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/team-2.jpg",
-            rating: 4
-          },
-          {
-            name: "Dr. Laurent Perrier",
-            phone: "+1122334455",
-            specialization: "Orthopedic Surgeon",
-            department: "Orthopedics",
-            status: "offline",
-            appointmentDate: "2024-09-19",
-            timeslot: "9:00 AM - 11:00 AM",
-            imageUrl: "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/team-1.jpg",
-            rating: 5
-          },
-          {
-            name: "Dr. Michael Levi",
-            phone: "+9876543210",
-            specialization: "Dermatologist",
-            department: "Dermatology",
-            status: "online",
-            appointmentDate: "2024-12-24",
-            timeslot: "3:00 PM - 5:00 PM",
-            imageUrl: "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/team-4.jpg",
-            rating: 5
-          },
-          {
-            name: "Dr. Richard Gran",
-            phone: "+4433221100",
-            specialization: "Neurologist",
-            department: "Neurology",
-            status: "offline",
-            appointmentDate: "2024-10-04",
-            timeslot: "11:00 AM - 1:00 PM",
-            imageUrl: "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/team-5.jpg",
-            rating: 3
-          }
-      ];
+    fetchData();
+  }, []);
+
+  console.log(doctors);
+
+    // const doctors = [
+    //     {
+    //       name: "Dr. John Michael",
+    //       phone: "+1234567890",
+    //       specialization: "Eye Specialist",
+    //       department: "Ophthalmology",
+    //       status: "online",
+    //       appointmentDate: "2022-04-23",
+    //       timeslot: "10:00 AM - 12:00 PM",
+    //       imageUrl: "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/team-3.jpg",
+    //       rating: 4
+    //     },
+    //     {
+    //       name: "Dr. Alexa Liras",
+    //       phone: "+1987654321",
+    //       specialization: "Cardiologist",
+    //       department: "Cardiology",
+    //       status: "offline",
+    //       appointmentDate: "2024-04-23",
+    //       timeslot: "1:00 PM - 3:00 PM",
+    //       imageUrl: "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/team-2.jpg",
+    //       rating: 3
+    //     },
+    //     {
+    //       name: "Dr. Laurent Perrier",
+    //       phone: "+1122334455",
+    //       specialization: "Orthopedic Surgeon",
+    //       department: "Orthopedics",
+    //       status: "offline",
+    //       appointmentDate: "2024-09-19",
+    //       timeslot: "9:00 AM - 11:00 AM",
+    //       imageUrl: "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/team-1.jpg",
+    //       rating: 5
+    //     },
+    //     {
+    //       name: "Dr. Michael Levi",
+    //       phone: "+9876543210",
+    //       specialization: "Dermatologist",
+    //       department: "Dermatology",
+    //       status: "online",
+    //       appointmentDate: "2024-12-24",
+    //       timeslot: "3:00 PM - 5:00 PM",
+    //       imageUrl: "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/team-4.jpg",
+    //       rating: 4
+    //     },
+    //     {
+    //       name: "Dr. Richard Gran",
+    //       phone: "+4433221100",
+    //       specialization: "Neurologist",
+    //       department: "Neurology",
+    //       status: "offline",
+    //       appointmentDate: "2024-10-04",
+    //       timeslot: "11:00 AM - 1:00 PM",
+    //       imageUrl: "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/team-5.jpg",
+    //       rating: 5
+    //     },
+
+    //     {
+    //         name: "Dr. Laurent Perrier",
+    //         phone: "+1122334455",
+    //         specialization: "Orthopedic Surgeon",
+    //         department: "Orthopedics",
+    //         status: "offline",
+    //         appointmentDate: "2023-09-19",
+    //         timeslot: "9:00 AM - 11:00 AM",
+    //         imageUrl: "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/team-1.jpg",
+    //         rating: 2
+    //       },
+    //       {
+    //         name: "Dr. Michael Levi",
+    //         phone: "+9876543210",
+    //         specialization: "Dermatologist",
+    //         department: "Dermatology",
+    //         status: "online",
+    //         appointmentDate: "2023-12-24",
+    //         timeslot: "3:00 PM - 5:00 PM",
+    //         imageUrl: "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/team-4.jpg",
+    //         rating: 3
+    //       },
+    //       {
+    //         name: "Dr. Richard Gran",
+    //         phone: "+4433221100",
+    //         specialization: "Neurologist",
+    //         department: "Neurology",
+    //         status: "offline",
+    //         appointmentDate: "2024-10-04",
+    //         timeslot: "11:00 AM - 1:00 PM",
+    //         imageUrl: "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/team-5.jpg",
+    //         rating: 4
+    //       },
+
+    //     {
+    //         name: "Dr. John Michael",
+    //         phone: "+1234567890",
+    //         specialization: "Eye Specialist",
+    //         department: "Ophthalmology",
+    //         status: "online",
+    //         appointmentDate: "2023-04-23",
+    //         timeslot: "10:00 AM - 12:00 PM",
+    //         imageUrl: "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/team-3.jpg",
+    //         rating: 1
+    //       },
+    //       {
+    //         name: "Dr. Alexa Liras",
+    //         phone: "+1987654321",
+    //         specialization: "Cardiologist",
+    //         department: "Cardiology",
+    //         status: "offline",
+    //         appointmentDate: "2023-04-23",
+    //         timeslot: "1:00 PM - 3:00 PM",
+    //         imageUrl: "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/team-2.jpg",
+    //         rating: 4
+    //       },
+    //       {
+    //         name: "Dr. Laurent Perrier",
+    //         phone: "+1122334455",
+    //         specialization: "Orthopedic Surgeon",
+    //         department: "Orthopedics",
+    //         status: "offline",
+    //         appointmentDate: "2024-09-19",
+    //         timeslot: "9:00 AM - 11:00 AM",
+    //         imageUrl: "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/team-1.jpg",
+    //         rating: 5
+    //       },
+    //       {
+    //         name: "Dr. Michael Levi",
+    //         phone: "+9876543210",
+    //         specialization: "Dermatologist",
+    //         department: "Dermatology",
+    //         status: "online",
+    //         appointmentDate: "2024-12-24",
+    //         timeslot: "3:00 PM - 5:00 PM",
+    //         imageUrl: "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/team-4.jpg",
+    //         rating: 5
+    //       },
+    //       {
+    //         name: "Dr. Richard Gran",
+    //         phone: "+4433221100",
+    //         specialization: "Neurologist",
+    //         department: "Neurology",
+    //         status: "offline",
+    //         appointmentDate: "2024-10-04",
+    //         timeslot: "11:00 AM - 1:00 PM",
+    //         imageUrl: "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/team-5.jpg",
+    //         rating: 3
+    //       }
+    //   ];
 
       const [isCalendarVisible, setCalendarVisibility] = useState(false);
 
@@ -194,7 +233,7 @@ const isUpcomingAppointment = (appointmentDate: string) => {
     return appointmentDateObj > today;
 };
 
-const filteredDoctors = doctors.filter(doctor => {
+const filteredDoctors = doctors.filter((doctor : any) => {
     if (filter === 'past') {
         return isPastAppointment(doctor.appointmentDate);
     } else if (filter === 'upcoming') {
@@ -453,9 +492,9 @@ const filteredDoctors = doctors.filter(doctor => {
           <p className="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
             {doctor.name}
           </p>
-          <p className="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900 opacity-70">
+          {/* <p className="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900 opacity-70">
             {doctor.phone}
-          </p>
+          </p> */}
         </div>
       </div>
     </td>
@@ -486,7 +525,7 @@ const filteredDoctors = doctors.filter(doctor => {
     </td>
     <td className="p-4 border-b border-blue-gray-50">
       <p className="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
-      <Link to={`${index}`}>
+      <Link to={`${doctor._id}`}>
       <button
           className="flex select-none items-center gap-3 rounded-lg bg-secondary py-2 px-4 text-center align-middle font-sans text-xs font-bold uppercase text-white shadow-md shadow-gray-900/10 transition-all hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
           type="button">

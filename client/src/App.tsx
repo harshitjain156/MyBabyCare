@@ -158,7 +158,7 @@ function App() {
         <Route path="doctor/signup" element={<DoctorSignUpPage />} />
         <Route path="meeting" element={<VideoConferencing meetingId={meetingId} iscreateMeetingClicked={iscreateMeetingClicked} token={token} eraseTokenHandler={eraseTokenHandler} setMeetingIdHandler={setMeetingIdHandler} handleTokenAndId={handleTokenAndId}/>} />
         <Route path="admin" element={<AdminPage />} />
-        <Route path={`/${type}/appointment/doctor/:id`} element={<Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}><BookingAppointmentForm/></Layout> } />
+        <Route path={`/${type}/appointment/doctor/:doctorId`} element={<Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}><BookingAppointmentForm/></Layout> } />
         <Route path={`/${type}/appointment`} element={<Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}><Appointment/></Layout> } />
         <Route path={`/${type}/appointment/doctor`} element={<Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}><Booking/></Layout> } />
         <Route path={`/${type}/dashboard`} element={<Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}><Dashboard sidebarOpen={sidebarOpen} type={type}/></Layout> } />

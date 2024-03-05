@@ -16,6 +16,31 @@ const userSchema = new Schema(
       unique: true,
     },
 
+    specialization: {
+      type: String,
+      default: "Neurologist"
+    },
+    department: {
+      type: String,
+      default: "Neurolgy"
+
+    },
+    status: {
+      type: String,
+      enum: ['online', 'offline'],
+      default: 'offline'
+    },
+    imageUrl: {
+      type: String,
+      default: "https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/team-5.jpg"
+
+    },
+    rating: {
+      type: Number,
+      min: 1,
+      max: 5,
+      default: 4
+    },
     role :{
      type : String,
      enum:["USER", "DOCTOR"],
