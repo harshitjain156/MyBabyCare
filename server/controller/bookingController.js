@@ -37,7 +37,7 @@ exports.availableSlots = async (req, res) => {
       const { doctorId, date } = req.body;
     console.log(doctorId, date);
     const d = new Date(date);
-    console.log(d.getDay());
+  
       // Query the slots table to find available slots for the given date and doctor
       const slots = await Slot.findOne({ doctorId }).exec();
       const appointments = await Appointment.find({ doctorId, date }).exec();
