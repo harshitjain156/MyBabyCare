@@ -157,14 +157,22 @@
 // export default BookingAppointmentForm;
 
 import React, { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useFormik } from 'formik';
 import axios from 'axios';
 import { BASE_URL } from 'helper/endpoints';
+import { toast } from 'react-toastify';
+import { useAuth } from "../AuthContext/AuthContext";
 
 const BookingAppointmentForm = () => {
+
+  const { userData, updateUser } = useAuth();
+  // console.log(userData)
+
+ const navigate =  useNavigate();
+
   const { doctorId } = useParams();
-  console.log(doctorId)
+  // console.log(doctorId)
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTimeSlot, setSelectedTimeSlot] = useState(null);
   const [showForm, setShowForm] = useState(false);
@@ -203,26 +211,67 @@ const BookingAppointmentForm = () => {
       fetchAvailableSlots();
     }, [doctorId, selectedDate]);
 
-    console.log(availableSlot)
+    // console.log(selectedDate, selectedTimeSlot)
+
+    const [loading, setLoading] = useState(false);
 
   const handleFormClose = () => {
     setShowForm(false);
   };
 
   const handleSubmit = async (values) => {
+    setLoading(true);
+
     try {
-      const response = await axios.post('/your/api/endpoint', {
+     const errors = {};
+       toast.info("Your appointment is being booked...");
+      // Validate childName
+    if (!values.childName.trim()) {
+      errors.childName = toast.error('Child\'s name is required');
+      return ;
+    } else if (!/^[a-zA-Z ]{1,20}$/.test(values.childName)) {
+      errors.childName = toast.error('Child\'s name must be alphabets and spaces only, up to 20 characters');
+      return ;
+    }
+  
+    // Validate age
+    if (!values.age) {
+      errors.age = toast.error('Age is required');
+      return ;
+    } else if (isNaN(values.age) || parseInt(values.age) < 0) {
+      errors.age = toast.error('Invalid age');
+      return ;
+    }
+  
+    // Validate reason
+    if (!values.reason) {
+      errors.reason = toast.error('Reason for appointment is required');
+      return ;
+    }
+
+  
+    
+      const response = await axios.post(`${BASE_URL}api/v1/book-slot`, {
         ...values,
+        doctorId,
+        userId: userData.userId,
         date: selectedDate,
-        timeSlot: selectedTimeSlot
+        timeslot: selectedTimeSlot.timeslot
       });
+      toast.success('Appointment submitted successfully')
       console.log('Appointment submitted successfully:', response.data);
+      navigate("/user/appointment");
+
+    setLoading(false)
       // Handle success, e.g., show a success message
     } catch (error) {
       console.error('Error submitting appointment:', error);
+      toast.error("An unexpected error occurred while processing your request");
+      setLoading(false)
       // Handle error, e.g., show an error message
     }
   };
+
 
   const formik = useFormik({
     initialValues: {
@@ -231,6 +280,7 @@ const BookingAppointmentForm = () => {
       reason: '',
       additionalDetails: ''
     },
+  
     onSubmit: handleSubmit
   });
 
@@ -268,7 +318,7 @@ const BookingAppointmentForm = () => {
                     key={index}
                     onClick={() => handleTimeSlotSelect(slot)}
                     className={`block w-full border rounded px-4 py-2 ${
-                      selectedTimeSlot && selectedTimeSlot.startTime === slot.startTime && selectedTimeSlot.endTime === slot.endTime
+                      selectedTimeSlot && selectedTimeSlot.timeslot === slot.timeslot
                         ? 'bg-primary text-white'
                         : 'hover:bg-gray-200'
                       }`}
@@ -289,13 +339,13 @@ const BookingAppointmentForm = () => {
                   Child's Name:
                 </label>
                 <input
+
+               {...formik.getFieldProps("childName")}
                   type="text"
                   id="childName"
                   name="childName"
                   className="form-input mt-1 block w-full"
-                  onChange={formik.handleChange}
-                  value={formik.values.childName}
-                  required
+               
                 />
               </div>
               <div className="mb-4">
@@ -303,13 +353,15 @@ const BookingAppointmentForm = () => {
                   Age:
                 </label>
                 <input
+
+          {...formik.getFieldProps("age")}
                   type="number"
                   id="age"
                   name="age"
-                  className="form-input mt-1 block w-full font-semibold"
-                  onChange={formik.handleChange}
-                  value={formik.values.age}
-                  required
+                  min="0"
+                  className="form-input mt-1 block w-full font-medium"
+                 
+                 
                 />
               </div>
               <div className="mb-4">
@@ -317,12 +369,13 @@ const BookingAppointmentForm = () => {
                   Reason for Appointment:
                 </label>
                 <textarea
+
+          {...formik.getFieldProps("reason")}
                   id="reason"
                   name="reason"
                   className="form-textarea mt-1 block border rounded w-full"
-                  onChange={formik.handleChange}
-                  value={formik.values.reason}
-                  required
+                  
+                
                 />
               </div>
               <div className="mb-4">
@@ -330,11 +383,12 @@ const BookingAppointmentForm = () => {
                   Additional Details:
                 </label>
                 <textarea
+
+              {...formik.getFieldProps("additionalDetails")}
                   id="additionalDetails"
                   name="additionalDetails"
                   className="form-textarea mt-1 block rounded w-full border"
-                  onChange={formik.handleChange}
-                  value={formik.values.additionalDetails}
+                
                 />
               </div>
               <div className='flex justify-center items-center'>

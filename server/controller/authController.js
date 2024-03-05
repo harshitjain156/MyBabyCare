@@ -13,6 +13,8 @@ const { AUTH_TOKEN_MISSING_ERR, AUTH_HEADER_MISSING_ERR, JWT_DECODE_ERR,INCORREC
 //   return OTP;
 // };
 
+
+
 // exports.sendOtp = async (req, res, next) => {
 //   const phoneNumber = req.query?.phoneNumber || null;
 //   const otp = generateOTP(4); // Generate a 4-digit OTP

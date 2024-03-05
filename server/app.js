@@ -130,7 +130,7 @@ const start = async () => {
 // //   // Add more appointments as needed
 // // ];
 
-// // Create dummy data for slots
+// Create dummy data for slots
 // const slotsData = [
 //   {
 //     doctorId: '65e6ab3ffe25f8b26639ec66', // Replace with actual doctor ID
@@ -144,38 +144,72 @@ const start = async () => {
 // ];
 
 
-// Insert dummy appointments into the database
-// Appointment.insertMany(appointmentsData)
-//   .then(() => console.log('Dummy appointments inserted successfully'))
-//   .catch(err => console.error('Error inserting dummy appointments:', err));
+// // Insert dummy appointments into the database
+// // Appointment.insertMany(appointmentsData)
+// //   .then(() => console.log('Dummy appointments inserted successfully'))
+// //   .catch(err => console.error('Error inserting dummy appointments:', err));
 
-// Insert dummy slots into the database
-// Slot.insertMany(slotsData)
-//   .then(() => console.log('Dummy slots inserted successfully'))
-//   .catch(err => console.error('Error inserting dummy slots:', err));
+// // Insert dummy slots into the database
+// // Slot.insertMany(slotsData)
+// //   .then(() => console.log('Dummy slots inserted successfully'))
+// //   .catch(err => console.error('Error inserting dummy slots:', err));
 
 // const createDummySlots = async () => {
 //   try {
 //     // Dummy data for Monday
 //     const mondaySlots = [
 //       { timeslot: '9:00 AM - 10:00 AM' },
-//       { timeslot: '10:00 AM - 11:00 AM' }
+//       { timeslot: '10:00 AM - 11:00 AM' },
+//       { timeslot: '11:00 AM - 12:00 AM' },
+//       { timeslot: '01:00 AM - 02:00 AM' }
 //     ];
-
-//     // Dummy data for Tuesday
+    
 //     const tuesdaySlots = [
 //       { timeslot: '9:00 AM - 10:00 AM' },
 //       { timeslot: '10:00 AM - 11:00 AM' }
 //     ];
+    
+//     const wednesdaySlots = [
+//       { timeslot: '9:00 AM - 10:00 AM' },
+//       { timeslot: '10:00 AM - 11:00 AM' },
+//       { timeslot: '11:00 AM - 12:00 PM' },
+//       { timeslot: '01:00 PM - 02:00 PM' }
+//     ];
+    
+//     const thursdaySlots = [
+//       { timeslot: '9:00 AM - 10:00 AM' },
+//       { timeslot: '10:00 AM - 11:00 AM' }
+//     ];
+    
+//     const fridaySlots = [
+//       { timeslot: '9:00 AM - 10:00 AM' },
+//       { timeslot: '10:00 AM - 11:00 AM' },
+//       { timeslot: '11:00 AM - 12:00 PM' },
+//       { timeslot: '01:00 PM - 02:00 PM' }
+//     ];
+    
+//     const saturdaySlots = [
+//       { timeslot: '9:00 AM - 10:00 AM' },
+//       { timeslot: '10:00 AM - 11:00 AM' }
+//     ];
 
+//     const sundaySlots = [
+      
+//     ];
+    
 //     // Create a new slot document
 //     const slot = new Slot({
 //       doctorId: '65e6ab3ffe25f8b26639ec66',
 //       week: new Map([
 //         ['Monday', { day: 'Monday', slots: mondaySlots }],
-//         ['Tuesday', { day: 'Tuesday', slots: tuesdaySlots }]
+//         ['Tuesday', { day: 'Tuesday', slots: tuesdaySlots }],
+//         ['Wednesday', { day: 'Wednesday', slots: wednesdaySlots }],
+//         ['Thursday', { day: 'Thursday', slots: thursdaySlots }],
+//         ['Friday', { day: 'Friday', slots: fridaySlots }],
+//         ['Saturday', { day: 'Saturday', slots: saturdaySlots }],
+//         ['Sunday', { day: 'Sunday', slots: sundaySlots }]
 //       ])
-//     });
+//     });    
 
 //     // Save the slot document
 //     await slot.save();
@@ -185,7 +219,6 @@ const start = async () => {
 //   }
 // };
 
-// Call the function to create dummy slots
 // createDummySlots();
 
 

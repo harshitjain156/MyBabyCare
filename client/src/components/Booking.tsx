@@ -8,6 +8,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import ProfilePicture from './ProfilePicture';
 import axios from 'axios';
 import { BASE_URL } from '../helper/endpoints';
+import { useAuth } from "../AuthContext/AuthContext";
 
 interface Doctor {
   _id: string;
@@ -28,6 +29,8 @@ interface Doctor {
 
 
 const Booking: React.FC = () => {
+  const { userData, updateUser } = useAuth();
+  // console.log(userData)
    const navigate =  useNavigate();
 
     const renderStars = (rating: any) => {

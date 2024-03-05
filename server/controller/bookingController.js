@@ -45,9 +45,10 @@ const dayFullName = dayNames[d.getDay()];
       // Query the slots table to find available slots for the given date and doctor
       const slots = await Slot.findOne({ doctorId }).exec();
       const appointments = await Appointment.find({ doctorId, date }).exec();
+     
       const availableSlots = slots? slots.week.get(dayFullName)[0].slots.filter(slot => {
         // Check if the slot is not booked (i.e., not present in appointments)
-        console.log(slot)
+       
         return !appointments.some(appointment => appointment.timeslot === slot.timeslot);
       }): [];
   

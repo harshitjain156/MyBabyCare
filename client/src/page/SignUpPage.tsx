@@ -10,6 +10,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { otpValidation, signUpValidation } from "../helper/validate";
 import axios from "axios";
 import { BASE_URL } from "../helper/endpoints";
+import { useAuth } from "../AuthContext/AuthContext";
 
 // import { Link } from 'react-router-dom';
 
@@ -26,6 +27,7 @@ interface FormValuesVerifyOtp {
 }
 
 export default function SignUpPage() {
+  const { userData, updateUser } = useAuth();
   const [userId, setUserId] = useState(null);
   const [phone, setPhone] = useState<string | null>(null);
   const [name, setName] = useState<string | null>(null);
@@ -105,7 +107,7 @@ export default function SignUpPage() {
           otp: `${values.otp0}${values.otp1}${values.otp2}${values.otp3}`,
           userId,
         });
-
+        updateUser(response.data.data);
         toast.success("OTP verified");
         navigate("/user/dashboard");
       } catch (error: any) {

@@ -1,15 +1,23 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
+import { NavLink, useLocation, useParams } from 'react-router-dom';
+import { useAuth } from "../AuthContext/AuthContext";
 
 interface SideDrawerProps {
   sidebarOpen: boolean;
   setSidebarOpen: React.Dispatch<React.SetStateAction<boolean>>;
   type: string;
 }
+type DashboardType = 'admin' | 'user'| 'doctor';
 
-const SideDrawer: React.FC<SideDrawerProps> = ({ sidebarOpen, setSidebarOpen, type }) => {
-  const location = useLocation();
-  const { pathname } = location;
+const SideDrawer: React.FC<SideDrawerProps> = ({ sidebarOpen, setSidebarOpen }) => {
+
+  const { userData, updateUser } = useAuth();
+  // console.log(userData)
+  const { type } = useParams<{ type: DashboardType }>();
+ const  location = useLocation();
+ const {pathname } = location;
+
+  console.log(type)
 
   const trigger = useRef<HTMLDivElement>(null);
   const sidebar = useRef<HTMLElement>(null);
@@ -68,7 +76,7 @@ const SideDrawer: React.FC<SideDrawerProps> = ({ sidebarOpen, setSidebarOpen, ty
               {/* <!-- Menu Item Dashboard --> */}
               <li>
                 <NavLink
-                  to="/user/dashboard"
+                  to={`/${type}/dashboard`}
                   className={`group relative flex items-center gap-2.5 rounded-sm px-6 py-4 font-semibold text-bodydark1 duration-300 ease-in-out hover:bg-secondary-dark dark:hover:bg-meta-4 ${
                     (pathname === '#' || pathname.includes('dashboard')) && 'bg-secondary'
                   }`}
@@ -83,7 +91,7 @@ const SideDrawer: React.FC<SideDrawerProps> = ({ sidebarOpen, setSidebarOpen, ty
               {/* <!-- Menu Item Dashboard --> */}
 
               {/* <!-- Menu Item Calendar --> */}
-              {type === "admin" && (
+              {type?.toLocaleLowerCase() === "admin" && (
                 <li>
                   <NavLink
                     to="#"
@@ -99,7 +107,7 @@ const SideDrawer: React.FC<SideDrawerProps> = ({ sidebarOpen, setSidebarOpen, ty
                   </NavLink>
                 </li>
               )}
-              {type !== "doctor" && (
+              {type?.toLocaleLowerCase() !== "doctor" && (
                 <li>
                   <NavLink
                     to="#"
@@ -115,9 +123,9 @@ const SideDrawer: React.FC<SideDrawerProps> = ({ sidebarOpen, setSidebarOpen, ty
                   </NavLink>
                 </li>
               )}
-              <li>
+               <li>
                 <NavLink
-                  to="/user/appointment"
+                  to={`/${type}/appointment`}
                   className={`group relative flex items-center gap-2.5 rounded-sm py-4 px-6 font-semibold text-bodydark1 duration-300 ease-in-out hover:bg-secondary dark:hover:bg-meta-4 ${
                     pathname.includes('appointment') && 'bg-secondary'
                   }`}

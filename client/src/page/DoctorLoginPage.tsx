@@ -207,6 +207,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { loginValidation, otpValidation } from "../helper/validate";
 import axios from "axios";
 import { BASE_URL } from "../helper/endpoints";
+import { useAuth } from "../AuthContext/AuthContext";
 
 interface LoginPageProps {}
 
@@ -222,6 +223,7 @@ interface FormValuesVerifyOtp {
 }
 
 export default function LoginPage() {
+  const { userData, updateUser } = useAuth();
   const [showOtpBox, setShowOtpBox] = useState(false);
   const [userId, setUserId] = useState(null);
   const [seconds, setSeconds] = useState(60);
@@ -299,7 +301,7 @@ export default function LoginPage() {
           otp: `${values.otp0}${values.otp1}${values.otp2}${values.otp3}`,
           userId,
         });
-
+        updateUser(response.data.data);
         toast.success("OTP verified");
         navigate("/doctor/dashboard");
       } catch (error: any) {
