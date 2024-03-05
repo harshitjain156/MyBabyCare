@@ -57,4 +57,54 @@ const dayFullName = dayNames[d.getDay()];
       res.status(500).json({ success: false, message: 'Failed to fetch available slots' });
     }
   };
+
+  // Assuming you have already set up your Express app and imported necessary modules
+
+ // Import the Appointment model
+
+// Define a route to handle GET request for fetching appointments of a selected user
+exports.userAppointments = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    // Fetch appointments associated with the selected user from the database
+    const appointments = await Appointment.find({ userId }).populate('doctorId');
+
+    // Send the fetched appointments as a response
+    res.status(200).json({
+      success: true,
+      data: appointments
+    });
+  } catch (error) {
+    // Handle any errors that occur during the process
+    console.error('Error fetching appointments:', error);
+    res.status(500).json({
+      success: false,
+      message: 'An error occurred while fetching appointments'
+    });
+  }
+};
+
+exports.doctorAppointments = async (req, res) => {
+    try {
+      const { doctorId } = req.params;
+  
+      // Fetch appointments associated with the selected user from the database
+      const appointments = await Appointment.find({ doctorId }).populate('userId');
+  
+      // Send the fetched appointments as a response
+      res.status(200).json({
+        success: true,
+        data: appointments
+      });
+    } catch (error) {
+      // Handle any errors that occur during the process
+      console.error('Error fetching appointments:', error);
+      res.status(500).json({
+        success: false,
+        message: 'An error occurred while fetching appointments'
+      });
+    }
+  };
+
   
