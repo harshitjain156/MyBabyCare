@@ -263,8 +263,9 @@ export default function LoginPage() {
           { phone: values.phoneNumber }
         );
         // console.log(response);
-        console.log(`Your otp is ${response.data.data.OTP}`);
+      
         if(response.data.data.role==="DOCTOR"){
+          console.log(`Your otp is ${response.data.data.OTP}`);
         setUserId(response.data.data.userId);
         toast.success("OTP sent to your phone!");
         setShowOtpBox(true);

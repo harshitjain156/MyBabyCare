@@ -264,9 +264,10 @@ export default function LoginPage() {
           { phone: values.phoneNumber }
         );
         // console.log(response);
-        console.log(`Your otp is ${response.data.data.OTP}`);
-        console.log(response.data.data.role==="USER", response.data.data.role)
+        
+        // console.log(response.data.data.role==="USER", response.data.data.role)
         if(response.data.data.role==="USER"){
+          console.log(`Your otp is ${response.data.data.OTP}`);
         setUserId(response.data.data.userId);
         toast.success("OTP sent to your phone!");
         setShowOtpBox(true);
@@ -469,7 +470,8 @@ export default function LoginPage() {
                   />
                   <button type="submit" className="hover:bg-secondary-dark">
                     {/* Generate OTP */}
-                    {formikSendOtp.isSubmitting ? "Loading..." : "Generate OTP"}
+                    {/* {formikSendOtp.isSubmitting ? "Loading..." : "Generate OTP"} */}
+                    Generate OTP
                   </button>
                 </div>
 
