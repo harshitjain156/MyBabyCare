@@ -157,6 +157,7 @@ exports.createNewUser = async (req, res, next) => {
 };
 
       if(role.toUpperCase()==='DOCTOR'){
+        console.log("doctor")
       createDummySlots();
 
       }
@@ -270,7 +271,7 @@ exports.createNewUser = async (req, res, next) => {
         };
         
               if(role.toUpperCase()==='DOCTOR'){
-                console.log
+                console.log("doctor")
               createDummySlots();
               }
     res.status(200).json({

@@ -276,8 +276,9 @@ export default function SignUpPage() {
                         : "border-gray-200"
                     } rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white`}
                   />
-                  <button type="submit" className="hover:bg-secondary-dark">
-                    Generate OTP
+                  <button disabled={formikSendOtp.isSubmitting} type="submit" className="hover:bg-secondary-dark">
+                    
+                    {formikSendOtp.isSubmitting? "Sending OTP...": "Generate OTP"}
                   </button>
                 </div>
 
@@ -320,8 +321,9 @@ export default function SignUpPage() {
                     ))}
                   </div>
 
-                  <button type="submit" className="hover:bg-secondary-dark">
-                    Submit
+                  <button disabled={formikVerifyOtp.isSubmitting} type="submit" className="hover:bg-secondary-dark">
+                    {/* Submit */}
+                    {formikVerifyOtp.isSubmitting ? "Verifying.....": "Submit"}
                   </button>
                 </div>
 
