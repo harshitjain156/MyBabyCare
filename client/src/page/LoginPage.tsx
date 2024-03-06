@@ -224,6 +224,7 @@ interface FormValuesVerifyOtp {
 
 export default function LoginPage() {
   const { userData, updateUser } = useAuth();
+
   const [showOtpBox, setShowOtpBox] = useState(false);
   const [userId, setUserId] = useState(null);
   const [seconds, setSeconds] = useState(60);
@@ -255,7 +256,7 @@ export default function LoginPage() {
     onSubmit: async (values) => {
       try {
         setPhone(values.phoneNumber);
-
+          
         toast.info("Pending...");
         // Simulate sending OTP (replace with actual logic)
         const response = await axios.post(
@@ -264,10 +265,17 @@ export default function LoginPage() {
         );
         // console.log(response);
         console.log(`Your otp is ${response.data.data.OTP}`);
+        console.log(response.data.data.role==="USER", response.data.data.role)
+        if(response.data.data.role==="USER"){
         setUserId(response.data.data.userId);
         toast.success("OTP sent to your phone!");
         setShowOtpBox(true);
         setSeconds(60);
+        }
+      else{
+        toast.error("You are not a user!");
+      }
+        
       } catch (error: any) {
         // console.error('Error occurred:', error);
         if (
@@ -460,7 +468,8 @@ export default function LoginPage() {
                     } rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white`}
                   />
                   <button type="submit" className="hover:bg-secondary-dark">
-                    Generate OTP
+                    {/* Generate OTP */}
+                    {formikSendOtp.isSubmitting ? "Loading..." : "Generate OTP"}
                   </button>
                 </div>
 

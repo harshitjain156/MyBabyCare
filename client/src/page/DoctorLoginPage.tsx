@@ -264,10 +264,16 @@ export default function LoginPage() {
         );
         // console.log(response);
         console.log(`Your otp is ${response.data.data.OTP}`);
+        if(response.data.data.role==="DOCTOR"){
         setUserId(response.data.data.userId);
         toast.success("OTP sent to your phone!");
         setShowOtpBox(true);
         setSeconds(60);
+        }
+        else{
+        toast.error("You are not a doctor!");
+        }
+       
       } catch (error: any) {
         // console.error('Error occurred:', error);
         if (
@@ -301,6 +307,7 @@ export default function LoginPage() {
           otp: `${values.otp0}${values.otp1}${values.otp2}${values.otp3}`,
           userId,
         });
+
         updateUser(response.data.data);
         toast.success("OTP verified");
         navigate("/doctor/dashboard");

@@ -2,6 +2,7 @@ const User = require("../model/userModel");
 const {fast2sms, generateOTP} = require("../utils/otp");
 const {createJwtToken} = require("../utils/jwtToken");
 // const { generateOTP, fast2sms } = require("../utils/otp.util");
+const Slot = require("../model/slotModel");
 const { AUTH_TOKEN_MISSING_ERR, AUTH_HEADER_MISSING_ERR, JWT_DECODE_ERR,INCORRECT_OTP_ERR, USER_NOT_FOUND_ERR, PHONE_ALREADY_EXISTS_ERR } = require("../error")
 
 // const generateOTP = (otp_length) => {
@@ -90,6 +91,76 @@ exports.createNewUser = async (req, res, next) => {
     
         console.log(`Your OTP is ${otp}`);
 
+        const createDummySlots = async () => {
+  try {
+    // Dummy data for Monday
+    const mondaySlots = [
+      { timeslot: '9:00 AM - 10:00 AM' },
+      { timeslot: '10:00 AM - 11:00 AM' },
+      { timeslot: '11:00 AM - 12:00 AM' },
+      { timeslot: '01:00 AM - 02:00 AM' }
+    ];
+    
+    const tuesdaySlots = [
+      { timeslot: '9:00 AM - 10:00 AM' },
+      { timeslot: '10:00 AM - 11:00 AM' }
+    ];
+    
+    const wednesdaySlots = [
+      { timeslot: '9:00 AM - 10:00 AM' },
+      { timeslot: '10:00 AM - 11:00 AM' },
+      { timeslot: '11:00 AM - 12:00 PM' },
+      { timeslot: '01:00 PM - 02:00 PM' }
+    ];
+    
+    const thursdaySlots = [
+      { timeslot: '9:00 AM - 10:00 AM' },
+      { timeslot: '10:00 AM - 11:00 AM' }
+    ];
+    
+    const fridaySlots = [
+      { timeslot: '9:00 AM - 10:00 AM' },
+      { timeslot: '10:00 AM - 11:00 AM' },
+      { timeslot: '11:00 AM - 12:00 PM' },
+      { timeslot: '01:00 PM - 02:00 PM' }
+    ];
+    
+    const saturdaySlots = [
+      { timeslot: '9:00 AM - 10:00 AM' },
+      { timeslot: '10:00 AM - 11:00 AM' }
+    ];
+
+    const sundaySlots = [
+      
+    ];
+    
+    // Create a new slot document
+    const slot = new Slot({
+      doctorId: phoneExist._id,
+      week: new Map([
+        ['Monday', { day: 'Monday', slots: mondaySlots }],
+        ['Tuesday', { day: 'Tuesday', slots: tuesdaySlots }],
+        ['Wednesday', { day: 'Wednesday', slots: wednesdaySlots }],
+        ['Thursday', { day: 'Thursday', slots: thursdaySlots }],
+        ['Friday', { day: 'Friday', slots: fridaySlots }],
+        ['Saturday', { day: 'Saturday', slots: saturdaySlots }],
+        ['Sunday', { day: 'Sunday', slots: sundaySlots }]
+      ])
+    });    
+
+    // Save the slot document
+    await slot.save();
+    console.log('Dummy slots created successfully');
+  } catch (error) {
+    console.error('Error creating dummy slots:', error);
+  }
+};
+
+      if(role.toUpperCase()==='DOCTOR'){
+      createDummySlots();
+
+      }
+
       res.status(200).json({
         type: "success",
         message: "For Account creation process OTP sended to mobile number",
@@ -133,13 +204,82 @@ exports.createNewUser = async (req, res, next) => {
         );
     
         console.log(`Your OTP is ${otp}`);
-
+        const createDummySlots = async () => {
+          try {
+            // Dummy data for Monday
+            const mondaySlots = [
+              { timeslot: '9:00 AM - 10:00 AM' },
+              { timeslot: '10:00 AM - 11:00 AM' },
+              { timeslot: '11:00 AM - 12:00 AM' },
+              { timeslot: '01:00 AM - 02:00 AM' }
+            ];
+            
+            const tuesdaySlots = [
+              { timeslot: '9:00 AM - 10:00 AM' },
+              { timeslot: '10:00 AM - 11:00 AM' }
+            ];
+            
+            const wednesdaySlots = [
+              { timeslot: '9:00 AM - 10:00 AM' },
+              { timeslot: '10:00 AM - 11:00 AM' },
+              { timeslot: '11:00 AM - 12:00 PM' },
+              { timeslot: '01:00 PM - 02:00 PM' }
+            ];
+            
+            const thursdaySlots = [
+              { timeslot: '9:00 AM - 10:00 AM' },
+              { timeslot: '10:00 AM - 11:00 AM' }
+            ];
+            
+            const fridaySlots = [
+              { timeslot: '9:00 AM - 10:00 AM' },
+              { timeslot: '10:00 AM - 11:00 AM' },
+              { timeslot: '11:00 AM - 12:00 PM' },
+              { timeslot: '01:00 PM - 02:00 PM' }
+            ];
+            
+            const saturdaySlots = [
+              { timeslot: '9:00 AM - 10:00 AM' },
+              { timeslot: '10:00 AM - 11:00 AM' }
+            ];
+        
+            const sundaySlots = [
+              
+            ];
+            
+            // Create a new slot document
+            const slot = new Slot({
+              doctorId: user._id,
+              week: new Map([
+                ['Monday', { day: 'Monday', slots: mondaySlots }],
+                ['Tuesday', { day: 'Tuesday', slots: tuesdaySlots }],
+                ['Wednesday', { day: 'Wednesday', slots: wednesdaySlots }],
+                ['Thursday', { day: 'Thursday', slots: thursdaySlots }],
+                ['Friday', { day: 'Friday', slots: fridaySlots }],
+                ['Saturday', { day: 'Saturday', slots: saturdaySlots }],
+                ['Sunday', { day: 'Sunday', slots: sundaySlots }]
+              ])
+            });    
+        
+            // Save the slot document
+            await slot.save();
+            console.log('Dummy slots created successfully');
+          } catch (error) {
+            console.error('Error creating dummy slots:', error);
+          }
+        };
+        
+              if(role.toUpperCase()==='DOCTOR'){
+                console.log
+              createDummySlots();
+              }
     res.status(200).json({
       type: "success",
       message: "For Account creation process OTP sended to mobile number",
       data: {
         userId: user._id,
-        OTP: `${otp}: Valid for 1 minute`
+        OTP: `${otp}: Valid for 1 minute`,
+        
       },
     });
   }
@@ -190,7 +330,9 @@ exports.loginWithPhoneOtp = async (req, res, next) => {
       message: "OTP sended to your registered phone number",
       data: {
         userId: user._id,
-        OTP: `${otp}: Valid for 1 minute`
+        OTP: `${otp}: Valid for 1 minute`,
+        role:  user.role,
+        username: user.name
       },
     });
 
@@ -234,6 +376,8 @@ exports.verifyPhoneOtp = async (req, res, next) => {
       data: {
         token,
         userId: user._id,
+        role:  user.role,
+        username: user.name
       },
     });
   } catch (error) {

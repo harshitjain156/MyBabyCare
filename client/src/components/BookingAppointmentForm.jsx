@@ -301,7 +301,7 @@ const BookingAppointmentForm = () => {
       </div>
       <div className="flex flex-wrap -mx-4">
         <div className="w-full md:w-1/2 px-4">
-          <h2 className="text-sm font-semibold mb-2">Select Date</h2>
+          <h2 className="text-sm font-semibold mb-2">Select Date to book time slot</h2>
           <div className="mb-4">
             <input
               type="date"
@@ -309,7 +309,7 @@ const BookingAppointmentForm = () => {
               onChange={(e) => handleDateSelect(e.target.value)}
             />
           </div>
-          <h2 className="text-sm font-semibold mb-2">Select Time Slot</h2>
+          {/* <h2 className="text-sm font-semibold mb-2">Select Time Slot</h2> */}
           <div className="space-y-2">
             {selectedDate &&
               (availableSlot.length!==0 ? (
