@@ -178,6 +178,20 @@ const BookingAppointmentForm = () => {
   const [showForm, setShowForm] = useState(false);
   const [ availableSlot, setAvailableSlots] = useState([]);
 
+  const [minDate, setMinDate] = useState(null);
+
+  // Function to set the minimum date to today
+  const setMinDateToToday = () => {
+    const today = new Date();
+    const minDateString = today.toISOString().split('T')[0];
+    setMinDate(minDateString);
+  };
+
+  // Call the function when the component mounts
+  useEffect(() => {
+    setMinDateToToday();
+  }, []);
+
   const handleDateSelect = (date) => {
     setSelectedDate(date);
     setSelectedTimeSlot(null);
@@ -301,10 +315,11 @@ const BookingAppointmentForm = () => {
       </div>
       <div className="flex flex-wrap -mx-4">
         <div className="w-full md:w-1/2 px-4">
-          <h2 className="text-sm font-semibold mb-2">Select Date to book time slot</h2>
+          <h2 className="text-sm font-semibold mb-2">Select Date to book time slot<span className="text-red-500">*</span></h2>
           <div className="mb-4">
             <input
               type="date"
+              min={minDate}
               className="border rounded px-4 py-2 w-full"
               onChange={(e) => handleDateSelect(e.target.value)}
             />
@@ -336,7 +351,7 @@ const BookingAppointmentForm = () => {
             <form onSubmit={formik.handleSubmit}>
               <div className="mb-4">
                 <label htmlFor="childName" className="block text-sm  text-gray-700  font-semibold">
-                  Child's Name:
+                  Child's Name:<span className="text-red-500">*</span>
                 </label>
                 <input
 
@@ -350,7 +365,7 @@ const BookingAppointmentForm = () => {
               </div>
               <div className="mb-4">
                 <label htmlFor="age" className="block text-sm  text-gray-700 font-semibold">
-                  Age:
+                  Age:<span className="text-red-500">*</span>
                 </label>
                 <input
 
@@ -359,6 +374,7 @@ const BookingAppointmentForm = () => {
                   id="age"
                   name="age"
                   min="0"
+                  max="20"
                   className="form-input mt-1 block w-full font-medium"
                  
                  
@@ -366,7 +382,7 @@ const BookingAppointmentForm = () => {
               </div>
               <div className="mb-4">
                 <label htmlFor="reason" className="block text-sm font-semibold text-gray-700">
-                  Reason for Appointment:
+                  Reason for Appointment:<span className="text-red-500">*</span>
                 </label>
                 <textarea
 
@@ -394,7 +410,7 @@ const BookingAppointmentForm = () => {
               <div className='flex justify-center items-center'>
                 <button
                   type="submit"
-                  className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-secondary-dark"
+                  className=" text-white px-4 py-2 rounded hover:bg-secondary-dark"
                   disabled={formik.isSubmitting}
                 >
                   {formik.isSubmitting ? 'Booking...' : 'Book Appointment'}

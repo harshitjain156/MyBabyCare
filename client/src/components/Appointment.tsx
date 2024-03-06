@@ -219,7 +219,7 @@ const  navigate = useNavigate();
       }, []);
 
       
-      console.log(appointment)
+      // console.log(appointment)
       const [isCalendarVisible, setCalendarVisibility] = useState(false);
 
   const toggleCalendarVisibility = () => {
@@ -230,7 +230,8 @@ const  navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const filterAppointments = (filter: string) => {
     setFilter(filter);
-    setCurrentPage(1); // Reset current page when changing filters
+    setCurrentPage(1);
+    setCurrentPage2(1) // Reset current page when changing filters
 };
 
 
@@ -273,6 +274,59 @@ const filteredDoctors = appointment.filter((doctor :any) => {
 
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
+
+
+  const [searchTerm2, setSearchTerm2] = useState('');
+  const [currentPage2, setCurrentPage2] = useState(1);
+  const [doctorAppointments2, setDoctorAppointments2] = useState([]);
+
+  useEffect(() => {
+    // Fetch doctor appointments data from API
+    const fetchDoctorAppointments2 = async () => {
+      try {
+        const response = await axios.get(`${BASE_URL}api/v1/doctor-appointments/${userData.userId}`); // Replace with your API endpoint
+        
+        const doctorAppointments = response.data.data.map((appointment :any) => ({
+          childName: appointment.childName,
+          age: appointment.age,
+          appointmentDate: (appointment.date as string).split("T")[0],
+          timeslot: appointment.timeslot,
+          reason: appointment.reason,
+          additionalDetails: appointment.additionalDetails
+        }));
+
+        setDoctorAppointments2(doctorAppointments);
+      } catch (error) {
+        console.error('Error fetching doctor appointments:', error);
+      }
+    };
+
+    fetchDoctorAppointments2();
+  }, []);
+
+
+
+
+  const filteredDoctors2 = doctorAppointments2.filter((doctor :any) => {
+    if (filter === 'past') {
+      return isPastAppointment(doctor.appointmentDate);
+    } else if (filter === 'upcoming') {
+      return isUpcomingAppointment(doctor.appointmentDate);
+    } else {
+      return true;
+    }
+  }).filter((doctor: any) =>
+    doctor.childName.toLowerCase().includes(searchTerm.toLowerCase())
+    || doctor.age.toString().includes(searchTerm)
+    || doctor.reason.toLowerCase().includes(searchTerm.toLowerCase())
+    || doctor.additionalDetails.toLowerCase().includes(searchTerm.toLowerCase()));
+
+  const doctorsPerPage2 = 5;
+  const indexOfLastDoctor2 = currentPage2 * doctorsPerPage2;
+  const indexOfFirstDoctor2 = indexOfLastDoctor2 - doctorsPerPage2;
+  const currentDoctors2 = filteredDoctors2.slice(indexOfFirstDoctor2, indexOfLastDoctor2);
+
+  const paginate2 = (pageNumber: any) => setCurrentPage2(pageNumber);
   
 
 
@@ -519,7 +573,7 @@ const filteredDoctors = appointment.filter((doctor :any) => {
         </tr>
       </thead>
       <tbody>
-        {doctorAppointments.map((appointment, index) => (
+        {currentDoctors2.map((appointment : any, index) => (
           <tr key={index}>
             <td className="p-4 border-b border-blue-gray-50">
               <p className="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
@@ -558,19 +612,20 @@ const filteredDoctors = appointment.filter((doctor :any) => {
   </div>
   <div className="flex items-center justify-between p-4 border-t border-blue-gray-50">
     <p className="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
-    Page {currentPage} of {Math.ceil(filteredDoctors.length / doctorsPerPage)}
+    Page {type?.toLowerCase() ==='doctor'? currentPage2 :currentPage} of {type?.toLowerCase() ==='doctor'?  Math.ceil(filteredDoctors2.length / doctorsPerPage2) :  Math.ceil(filteredDoctors.length / doctorsPerPage)}
     </p>
     <div className="flex gap-2">
       <button
-      onClick={() => paginate(currentPage - 1)}
-      disabled={currentPage === 1}
+      onClick={type?.toLowerCase() ==='doctor'?() => paginate2(currentPage2 - 1) :() => paginate(currentPage - 1)}
+      disabled={type?.toLowerCase() ==='doctor'? currentPage2 === 1:currentPage === 1}
         className="select-none rounded-lg border border-gray-900 py-2 px-4 text-center align-middle font-sans text-xs font-bold uppercase text-gray-900 transition-all hover:opacity-75 focus:ring focus:ring-gray-300 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
         type="button">
         Previous
       </button>
       <button
-       onClick={() => paginate(currentPage + 1)}
-       disabled={indexOfLastDoctor >= filteredDoctors.length}
+       onClick={type?.toLowerCase() ==='doctor'? () => paginate2(currentPage2 + 1) : () => paginate(currentPage + 1)}
+         
+         disabled={type?.toLowerCase() ==='doctor'? indexOfLastDoctor2 >= filteredDoctors2.length : indexOfLastDoctor >= filteredDoctors.length}
         className="select-none rounded-lg border border-gray-900 py-2 px-4 text-center align-middle font-sans text-xs font-bold uppercase text-gray-900 transition-all hover:opacity-75 focus:ring focus:ring-gray-300 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
         type="button">
         Next

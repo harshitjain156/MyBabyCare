@@ -78,7 +78,7 @@
 
 
 import React, { useState } from 'react';
-import { Navigate, Route, BrowserRouter as Router, Routes, useNavigate } from 'react-router-dom';
+import { Navigate, Route, BrowserRouter as Router, Routes, useLocation, useNavigate } from 'react-router-dom';
 import './App.css';
 import LoginPage from './page/LoginPage';
 import NavBar from './components/NavBar';
@@ -98,8 +98,25 @@ import { createMeeting } from './videoConferencing/api';
 import Appointment from './components/Appointment';
 import Booking from './components/Booking';
 import BookingAppointmentForm from "./components/BookingAppointmentForm";
+import { useAuth } from '../src/AuthContext/AuthContext';
+
+
+const ProtectedRoute : React.FC<{ children: any }> = ({ children }) => {
+  const  location = useLocation();
+  const {pathname } = location;
+  const {userData} = useAuth();
+  return userData ? (
+    children
+  ) : (
+    <Navigate to={pathname.includes("doctor") ? "/doctor/login" : "/user/login"} replace />
+  );
+ 
+};
+
 
 function App() {
+ 
+
   const [type, setType] = useState<string>('user');
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
   const [hideChatContainer, setHideChatContainer] = useState<boolean>(true);
@@ -143,6 +160,9 @@ function App() {
     setMeetingId(e.target.value);
  }
 
+
+
+
   return (
 <>
 
@@ -158,10 +178,10 @@ function App() {
         <Route path="doctor/signup" element={<DoctorSignUpPage />} />
         <Route path="meeting" element={<VideoConferencing meetingId={meetingId} iscreateMeetingClicked={iscreateMeetingClicked} token={token} eraseTokenHandler={eraseTokenHandler} setMeetingIdHandler={setMeetingIdHandler} handleTokenAndId={handleTokenAndId}/>} />
         <Route path="admin" element={<AdminPage />} />
-        <Route path={`/:type/appointment/doctor/:doctorId`} element={<Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}><BookingAppointmentForm/></Layout> } />
-        <Route path={`/:type/appointment`} element={<Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}><Appointment/></Layout> } />
-        <Route path={`/:type/appointment/doctor`} element={<Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}><Booking/></Layout> } />
-        <Route path={`/:type/dashboard`} element={<Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}><Dashboard sidebarOpen={sidebarOpen} type={type}/></Layout> } />
+        <Route path={`/:type/appointment/doctor/:doctorId`} element={<ProtectedRoute><Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}><BookingAppointmentForm/> </Layout></ProtectedRoute>} />
+        <Route path={`/:type/appointment`} element={<ProtectedRoute><Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}><Appointment/></Layout></ProtectedRoute> } />
+        <Route path={`/:type/appointment/doctor`} element={<ProtectedRoute><Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}><Booking/></Layout> </ProtectedRoute>} />
+        <Route path={`/:type/dashboard`} element={<ProtectedRoute><Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}><Dashboard sidebarOpen={sidebarOpen} type={type}/></Layout></ProtectedRoute> } />
       </Routes>
       <ChatContainer hideChatContainer={hideChatContainer} setHideChatContainer={setHideChatContainer} createMeetingHandler={createMeetingHandler}/>
 </>

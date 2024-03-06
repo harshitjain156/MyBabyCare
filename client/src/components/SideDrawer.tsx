@@ -220,6 +220,26 @@ const SideDrawer: React.FC<SideDrawerProps> = ({ sidebarOpen, setSidebarOpen }) 
                   Settings
                 </NavLink>
               </li>
+              <li>
+                <NavLink
+                  to={`/${userData?.role.toLowerCase()}/login`}
+                  onClick={()=>{ updateUser(null)}}
+                  className={`group relative flex items-center gap-2.5 rounded-sm py-4 px-6 font-semibold text-bodydark1 duration-300 ease-in-out hover:bg-secondary dark:hover:bg-meta-4 ${
+                    pathname.includes('logout') && 'bg-graydark dark:bg-meta-4'
+                  }`}
+                >
+                  {/* <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M17.25 11.25h-.022a.75.75 0 0 1-.727-.783l.022-.094.885-5.31a1.5 1.5 0 0 0-1.33-1.737l-.134-.007a1.5 1.5 0 0 0-1.36 1.007l-1.045 3.143a.75.75 0 0 1-.718.513H8.43a.75.75 0 0 1-.717-.514l-1.054-3.155a1.5 1.5 0 0 0-1.36-1.006l-.133.006a1.5 1.5 0 0 0-1.33 1.737l.89 5.344a.75.75 0 0 1-.727.883H3.75a1.5 1.5 0 0 0 0 3h-.374a.75.75 0 0 1-.75-.75v-.5a.75.75 0 0 1 .75-.75H4.5v-.749a1.5 1.5 0 0 0-.206-.769l-.206-.309a1.5 1.5 0 0 0-.775-.508l-.184-.028a.75.75 0 0 1-.677-.747l.002-.098a.75.75 0 0 1 .746-.752l.185.002a.75.75 0 0 1 .673.535l.261.784a1.5 1.5 0 0 0 .69.767l.239.114v5.033a1.5 1.5 0 0 0 .436 1.059l.195.195a1.5 1.5 0 0 0 2.121 0l.195-.195a1.5 1.5 0 0 0 .436-1.059v-5.033l.239-.114a1.5 1.5 0 0 0 .69-.767l.26-.784a.75.75 0 0 1 1.31-.282l.262.393a1.5 1.5 0 0 0-.207.77v.748h.376a.75.75 0 0 1 .75.75v.5a.75.75 0 0 1-.75.75H15v.751h.008a1.5 1.5 0 0 0 .198.78l.207.309a1.5 1.5 0 0 0 .774.508l.185.028a.75.75 0 0 1 .675.748l-.001.099a.75.75 0 0 1-.728.752l-.183-.001a.75.75 0 0 1-.677-.535l-.262-.784a1.5 1.5 0 0 0-.69-.767l-.239-.114V11.25zM9 14.25a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
+                  </svg> */}
+
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-6 h-6">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3H15" />
+                </svg>
+
+
+                  Logout
+                </NavLink>
+              </li>
             </ul>
           </div>
         </nav>
