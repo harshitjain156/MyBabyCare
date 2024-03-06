@@ -99,13 +99,14 @@ import Appointment from './components/Appointment';
 import Booking from './components/Booking';
 import BookingAppointmentForm from "./components/BookingAppointmentForm";
 import { useAuth } from '../src/AuthContext/AuthContext';
+import NotFoundPage from "../src/page/NotFoundPage"
 
 
 const ProtectedRoute : React.FC<{ children: any }> = ({ children }) => {
   const  location = useLocation();
   const {pathname } = location;
   const {userData} = useAuth();
-  return userData ? (
+  return userData && pathname.includes(userData?.role.toLowerCase()) ? (
     children
   ) : (
     <Navigate to={pathname.includes("doctor") ? "/doctor/login" : "/user/login"} replace />
@@ -182,6 +183,7 @@ function App() {
         <Route path={`/:type/appointment`} element={<ProtectedRoute><Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}><Appointment/></Layout></ProtectedRoute> } />
         <Route path={`/:type/appointment/doctor`} element={<ProtectedRoute><Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}><Booking/></Layout> </ProtectedRoute>} />
         <Route path={`/:type/dashboard`} element={<ProtectedRoute><Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}><Dashboard sidebarOpen={sidebarOpen} type={type}/></Layout></ProtectedRoute> } />
+        <Route path="*" element={<NotFoundPage/>} />
       </Routes>
       <ChatContainer hideChatContainer={hideChatContainer} setHideChatContainer={setHideChatContainer} createMeetingHandler={createMeetingHandler}/>
 </>

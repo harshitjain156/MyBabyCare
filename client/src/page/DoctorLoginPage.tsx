@@ -256,7 +256,7 @@ export default function LoginPage() {
       try {
         setPhone(values.phoneNumber);
 
-        toast.info("Pending...");
+        // toast.info("Pending...");
         // Simulate sending OTP (replace with actual logic)
         const response = await axios.post(
           `${BASE_URL}api/v1/login_with_phone`,

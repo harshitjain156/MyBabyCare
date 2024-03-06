@@ -63,7 +63,7 @@ export default function SignUpPage() {
       try {
         setPhone(values.phoneNumber);
         setName(values.username);
-        toast.info("Pending...");
+        // toast.info("Pending...");
         // Simulate sending OTP (replace with actual logic)
         const response = await axios.post(
           `${BASE_URL}api/v1/register_with_phone`,

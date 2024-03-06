@@ -12,7 +12,7 @@ interface SearchBarProps {
   return (
     
 
-        <div className="relative w-full  mx-8">
+        <div className="relative w-full  mr-8">
 
             <input value={searchTerm} type="text" className="h-14 w-[100%] pr-8 pl-5 rounded z-0 focus:shadow focus:outline-none" 
             placeholder={userData?.role.toLowerCase() ==="user"? "Search By Name, Specialization and Department": "Search By Child Name, Age, Reason and Additional details."} 

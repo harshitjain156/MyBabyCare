@@ -400,8 +400,10 @@ const filteredDoctors = appointment.filter((doctor :any) => {
       
         <SearchBar searchTerm={searchTerm}
                     setSearchTerm={setSearchTerm}/>
+
+        <input type='date'/>
       
-        <span onClick={toggleCalendarVisibility} className="text-white py-2 px-4   rounded-md bg-secondary cursor-pointer flex gap-1 justify-center items-center  hover:bg-secondary-dark">
+        {/* <span onClick={toggleCalendarVisibility} className="text-white py-2 px-4   rounded-md bg-secondary cursor-pointer flex gap-1 justify-center items-center  hover:bg-secondary-dark">
         <svg
                     className="fill-current"
                     width="18"
@@ -420,7 +422,7 @@ const filteredDoctors = appointment.filter((doctor :any) => {
                {isCalendarVisible && <Calendar className="text-black fixed z-50 top-64 right-16 " />}
                   
            
-          </span>
+          </span> */}
           {/* <DatePicker /> */}
         {/* <div className="relative h-10 w-full min-w-[200px]">
           <div className="absolute grid w-5 h-5 top-2/4 right-3 -translate-y-2/4 place-items-center text-blue-gray-500">
