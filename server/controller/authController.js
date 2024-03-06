@@ -164,7 +164,7 @@ exports.createNewUser = async (req, res, next) => {
 
       res.status(200).json({
         type: "success",
-        message: "For Account creation process OTP sended to mobile number",
+        message: "For Account creation process OTP sent to mobile number",
         data: {
           userId: phoneExist._id,
           OTP: `${otp}: Valid for 1 minute`
@@ -276,7 +276,7 @@ exports.createNewUser = async (req, res, next) => {
               }
     res.status(200).json({
       type: "success",
-      message: "For Account creation process OTP sended to mobile number",
+      message: "For Account creation process OTP sent to mobile number",
       data: {
         userId: user._id,
         OTP: `${otp}: Valid for 1 minute`,
@@ -328,7 +328,7 @@ exports.loginWithPhoneOtp = async (req, res, next) => {
 
     res.status(201).json({
       type: "success",
-      message: "OTP sended to your registered phone number",
+      message: "OTP sent to your registered phone number",
       data: {
         userId: user._id,
         OTP: `${otp}: Valid for 1 minute`,

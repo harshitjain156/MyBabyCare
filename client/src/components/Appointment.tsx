@@ -155,6 +155,16 @@ const  navigate = useNavigate();
     //       }
     //   ];
 
+    const [selectedDate ,setSelectedDate] = useState('');
+
+    const handleDateSelect = (date:any) => {
+      setSelectedDate(date);
+    };
+
+
+    console.log(selectedDate);
+  
+
 
       const [appointment, setAppointments] = useState([]);
 
@@ -401,7 +411,7 @@ const filteredDoctors = appointment.filter((doctor :any) => {
         <SearchBar searchTerm={searchTerm}
                     setSearchTerm={setSearchTerm}/>
 
-        <input type='date'/>
+        <input type='date' value={selectedDate}  onChange={(e) => handleDateSelect(e.target.value)}/>
       
         {/* <span onClick={toggleCalendarVisibility} className="text-white py-2 px-4   rounded-md bg-secondary cursor-pointer flex gap-1 justify-center items-center  hover:bg-secondary-dark">
         <svg
