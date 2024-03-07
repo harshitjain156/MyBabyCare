@@ -117,7 +117,7 @@ const {userData} =  useAuth();
             </div>
           </li>}
           {/* <li className="bg-secondary text-white py-2 px-8 rounded-full cursor-pointer hover:bg-secondary-dark"><Link to="/login">Sign In</Link></li> */}
-          {!userData && pathname.includes('user') && pathname.includes('login')  && <li className="bg-white text-gray-500 py-2 px-8 rounded-full cursor-pointer hover:bg-gray-200"><Link to="/user/signup">New User?</Link></li>}
+          {pathname.includes('user') && pathname.includes('login')  && <li className="bg-white text-gray-500 py-2 px-8 rounded-full cursor-pointer hover:bg-gray-200"><Link to="/user/signup">New User?</Link></li>}
         </ul>
       </div>
     </nav>

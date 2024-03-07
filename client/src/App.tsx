@@ -100,6 +100,7 @@ import Booking from './components/Booking';
 import BookingAppointmentForm from "./components/BookingAppointmentForm";
 import { useAuth } from '../src/AuthContext/AuthContext';
 import NotFoundPage from "../src/page/NotFoundPage"
+import DoctorProfilePage from "../src/page/DoctorProfilePage"
 
 
 const ProtectedRouteUser : React.FC<{ children: any }> = ({ children }) => {
@@ -198,7 +199,7 @@ function App() {
         <Route path={`/doctor/appointment`} element={<ProtectedRouteDoctor><Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}><Appointment/></Layout></ProtectedRouteDoctor> } />
         {/* <Route path={`/doctor/appointment/doctor`} element={<ProtectedRoute><Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}><Booking/></Layout> </ProtectedRoute>} /> */}
         <Route path={`/doctor/dashboard`} element={<ProtectedRouteDoctor><Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}><Dashboard sidebarOpen={sidebarOpen} /></Layout></ProtectedRouteDoctor> } />
-        
+        <Route path={`/doctor/profile`} element={<DoctorProfilePage/>} />
         <Route path="*" element={<NotFoundPage/>} />
       </Routes>
       <ChatContainer hideChatContainer={hideChatContainer} setHideChatContainer={setHideChatContainer} createMeetingHandler={createMeetingHandler}/>
