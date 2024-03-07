@@ -228,6 +228,11 @@ export default function LoginPage() {
   const [userId, setUserId] = useState(null);
   const [seconds, setSeconds] = useState(60);
   const [phone, setPhone] = useState<string | null>(null);
+
+  
+  const [resendLoading, setResendLoading] = useState(false);
+  const [resendError, setResendError] = useState<string | null>(null);
+
   const navigate = useNavigate();
   const otpInputsRef = useRef<(HTMLInputElement | null)[]>([
     null,
@@ -250,7 +255,7 @@ export default function LoginPage() {
       phoneNumber: "",
     },
     validate: loginValidation,
-    validateOnBlur: false,
+    validateOnBlur: true,
     validateOnChange: false,
     onSubmit: async (values) => {
       try {
@@ -267,12 +272,13 @@ export default function LoginPage() {
         if(response.data.data.role==="DOCTOR"){
           console.log(`Your otp is ${response.data.data.OTP}`);
         setUserId(response.data.data.userId);
-        toast.success("OTP sent to your phone!");
+        // toast.success("OTP sent to your phone!");
         setShowOtpBox(true);
         setSeconds(60);
         }
         else{
-        toast.error("You are not a doctor!");
+        // toast.error("You are not a doctor!");
+        formikSendOtp.setErrors({phoneNumber : "Invalid  User"});
         }
        
       } catch (error: any) {
@@ -282,9 +288,11 @@ export default function LoginPage() {
           error.response.data &&
           error.response.data.message
         ) {
-          toast.error(error.response.data.message);
+          // toast.error(error.response.data.message);
+          formikSendOtp.setErrors({phoneNumber : error.response.data.message})
         } else {
-          toast.error("Failed to send OTP. Please try again.");
+          // toast.error("Failed to send OTP. Please try again.");
+          formikSendOtp.setErrors({phoneNumber : "Failed to send OTP. Please try again."})
         }
       }
     },
@@ -298,7 +306,7 @@ export default function LoginPage() {
       otp3: "",
     },
     validate: otpValidation,
-    validateOnBlur: false,
+    validateOnBlur: true,
     validateOnChange: false,
     onSubmit: async (values) => {
       try {
@@ -310,7 +318,7 @@ export default function LoginPage() {
         });
 
         updateUser(response.data.data);
-        toast.success("OTP verified");
+        // toast.success("OTP verified");
         navigate("/doctor/dashboard");
       } catch (error: any) {
         // console.error('Error occurred:', error);
@@ -319,9 +327,11 @@ export default function LoginPage() {
           error.response.data &&
           error.response.data.message
         ) {
-          toast.error(error.response.data.message);
+          // toast.error(error.response.data.message);
+          formikVerifyOtp.setErrors( {otp1 : error.response.data.message});
         } else {
-          toast.error("Failed to verify OTP. Please try again.");
+          // toast.error("Failed to verify OTP. Please try again.");
+          formikVerifyOtp.setErrors( {otp1 : "Failed to verify OTP. Please try again."});
         }
       }
     },
@@ -418,12 +428,17 @@ export default function LoginPage() {
 
   const handleResendOTP = async () => {
     try {
-      toast.info("Resending OTP...");
+      // toast.info("Resending OTP...");
+      // Set loading state to true
+      setResendLoading(true);
+      // Clear any previous error message
+      setResendError(null);
+
       const response = await axios.post(`${BASE_URL}api/v1/login_with_phone`, {
         phone,
       });
       console.log(`Your OTP is ${response.data.data.OTP}`); // Assuming you have an API endpoint to resend OTP
-      toast.success("OTP resent to your phone!");
+      // toast.success("OTP resent to your phone!");
       setSeconds(60);
     } catch (error: any) {
       // console.error('Error occurred while resending OTP:', error);
@@ -432,12 +447,20 @@ export default function LoginPage() {
         error.response.data &&
         error.response.data.message
       ) {
-        toast.error(error.response.data.message);
+        // toast.error(error.response.data.message);
+        setResendError(error.response.data.message);
+      
       } else {
-        toast.error("Failed to resend OTP. Please try again.");
+        setResendError("Failed to resend OTP. Please try again.");
+        // toast.error("Failed to resend OTP. Please try again.");
       }
     }
+    finally {
+      // Reset loading state regardless of success or failure
+      setResendLoading(false);
+    }
   };
+
 
   // Inside the JSX:
 
@@ -456,17 +479,32 @@ export default function LoginPage() {
             {!showOtpBox ? (
               <form className="py-1" onSubmit={formikSendOtp.handleSubmit}>
                 <div className="textbox flex flex-col items-center gap-8 w-full">
+                <span className="w-full flex-col justify-center">
                   <input
                     {...formikSendOtp.getFieldProps("phoneNumber")}
                     type="text"
                     placeholder="Phone no."
-                    className={`appearance-none block sm:w-2/4 bg-gray-200 text-gray-700 border ${
+                    className={`appearance-none block sm:w-2/4 mx-auto bg-gray-200 text-gray-700 border ${
                       formikSendOtp.errors.phoneNumber
                         ? "border-red-500"
                         : "border-gray-200"
                     } rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white`}
                   />
-                  <button disabled={formikSendOtp.isSubmitting} type="submit" className="hover:bg-secondary-dark">
+                   {formikSendOtp.errors.phoneNumber && (
+                  <span className="text-red-500 block text-center mt-1 mx-4 text-[10px]">
+                    {formikSendOtp.errors.phoneNumber}
+                  </span>
+                )}
+                </span>
+                  <button
+                  type="submit"
+                  className={`${
+                    formikSendOtp.isValidating || formikSendOtp.isSubmitting || !formikSendOtp.isValid
+                      ? "cursor-not-allowed opacity-50"
+                      : "hover:bg-secondary-dark"
+                  }`}
+                  disabled={formikSendOtp.isSubmitting || !formikSendOtp.isValid}
+                >
                     { formikSendOtp.isSubmitting ? "Sending OTP......": "Generate OTP"}   
                   </button>
                 </div>
@@ -492,7 +530,8 @@ export default function LoginPage() {
                 onSubmit={formikVerifyOtp.handleSubmit}
               >
                 <div className="textbox flex flex-col items-center gap-8 w-full">
-                  <div className="flex flex-row justify-center items-center gap-3 w-[50%]">
+                  <span className="w-full flex-col justify-center">
+                  <div className="flex flex-row justify-center items-center gap-3 w-[50%] mx-auto">
                     {[0, 1, 2, 3].map((index) => (
                       <input
                         key={index}
@@ -502,7 +541,7 @@ export default function LoginPage() {
                         placeholder="0"
                         className={`appearance-none block w-1/4 bg-gray-200 text-gray-700 border ${
                           formikVerifyOtp.errors[
-                            `otp${index}` as keyof typeof formikVerifyOtp.errors
+                            `otp${1}` as keyof typeof formikVerifyOtp.errors
                           ]
                             ? "border-red-500"
                             : "border-gray-200"
@@ -510,8 +549,26 @@ export default function LoginPage() {
                       />
                     ))}
                   </div>
+                  {formikVerifyOtp.errors[
+                            `otp${1}` as keyof typeof formikVerifyOtp.errors
+                          ] && (
+                  <span className="text-red-500 block text-center mt-1 mx-4 text-[10px]">
+                    {formikVerifyOtp.errors[
+                            `otp${1}` as keyof typeof formikVerifyOtp.errors
+                          ]}
+                  </span>
+                )}
+                 </span>
 
-                  <button disabled={formikVerifyOtp.isSubmitting} type="submit" className="hover:bg-secondary-dark">
+                  <button
+                  type="submit"
+                  className={`${
+                    formikVerifyOtp.isValidating || formikVerifyOtp.isSubmitting || !formikVerifyOtp.isValid
+                      ? "cursor-not-allowed opacity-50"
+                      : "hover:bg-secondary-dark"
+                  }`}
+                  disabled={formikVerifyOtp.isSubmitting || !formikVerifyOtp.isValid}
+                 >
                    {formikVerifyOtp.isSubmitting? "Verifying.....": "Submit"}
                   </button>
                 </div>
@@ -521,13 +578,19 @@ export default function LoginPage() {
                     <span className="text-blue-700 cursor-pointer mb-2">{`${seconds} seconds left`}</span>
                   )}
                   {seconds === 0 && (
-                    <span
-                      className="text-blue-700 hover:underline cursor-pointer mb-2"
-                      onClick={handleResendOTP}
+                    <button
+                    disabled={resendLoading}
+                      className={` ${resendLoading ? "cursor-not-allowed": "hover:underline cursor-pointer"} text-blue-700  mb-2`}
+                    onClick={handleResendOTP}
+                      
                     >
-                      Resend OTP
-                    </span>
+                       {/* Resend OTP */}
+                       {resendLoading ? "Resending OTP..." : "Resend OTP"}
+                    </button>
+                    
                   )}
+                  {/* Display error message if there's any */}
+                  {resendError && <span className="text-red-500">{resendError}</span>}
                   <span className="text-gray-500 block">
                     Not Registered?{" "}
                     <Link
