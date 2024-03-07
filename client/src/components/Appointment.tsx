@@ -14,7 +14,6 @@ type DashboardType = 'admin' | 'user'| 'doctor';
 const Appointment: React.FC = () => {
   const { userData, updateUser } = useAuth();
   // console.log(userData)
-  const { type } = useParams<{ type: DashboardType }>();
  
 
 
@@ -365,7 +364,7 @@ const filteredDoctors = appointment.filter((doctor :any) => {
           type="button">
           view all
         </button> */}
-        {type?.toLocaleLowerCase() ==="user" && <button
+        {userData?.role.toLocaleLowerCase() ==="user" && <button
           className="flex select-none items-center gap-3 rounded-lg bg-secondary py-2 px-4 text-center align-middle font-sans text-xs font-bold uppercase text-white shadow-md shadow-gray-900/10 transition-all hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
           type="button"  onClick={()=> navigate("doctor")}>
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
@@ -456,7 +455,7 @@ const filteredDoctors = appointment.filter((doctor :any) => {
    
   </div>
   <div className="p-6 px-0 overflow-scroll">
-    {type?.toLocaleLowerCase() ==="user" && <table className="w-full mt-4 text-left table-auto min-w-max">
+    {userData?.role.toLocaleLowerCase() ==="user" && <table className="w-full mt-4 text-left table-auto min-w-max">
       <thead>
         <tr>
           <th
@@ -561,7 +560,7 @@ const filteredDoctors = appointment.filter((doctor :any) => {
   </tr>
 )}
     </table>}
-    {type?.toLowerCase() ==='doctor' && <table className="w-full mt-4 text-left table-auto min-w-max">
+    {userData?.role.toLowerCase() ==='doctor' && <table className="w-full mt-4 text-left table-auto min-w-max">
       <thead>
         <tr>
           <th className="p-4 transition-colors cursor-pointer border-y border-blue-gray-100 bg-blue-gray-50/50 hover:bg-blue-gray-50">
@@ -624,20 +623,20 @@ const filteredDoctors = appointment.filter((doctor :any) => {
   </div>
   <div className="flex items-center justify-between p-4 border-t border-blue-gray-50">
     <p className="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
-    Page {type?.toLowerCase() ==='doctor'? currentPage2 :currentPage} of {type?.toLowerCase() ==='doctor'?  Math.ceil(filteredDoctors2.length / doctorsPerPage2) :  Math.ceil(filteredDoctors.length / doctorsPerPage)}
+    Page {userData?.role.toLowerCase() ==='doctor'? currentPage2 :currentPage} of {userData?.role.toLowerCase() ==='doctor'?  Math.ceil(filteredDoctors2.length / doctorsPerPage2) :  Math.ceil(filteredDoctors.length / doctorsPerPage)}
     </p>
     <div className="flex gap-2">
       <button
-      onClick={type?.toLowerCase() ==='doctor'?() => paginate2(currentPage2 - 1) :() => paginate(currentPage - 1)}
-      disabled={type?.toLowerCase() ==='doctor'? currentPage2 === 1:currentPage === 1}
+      onClick={userData?.role.toLowerCase() ==='doctor'?() => paginate2(currentPage2 - 1) :() => paginate(currentPage - 1)}
+      disabled={userData?.role.toLowerCase() ==='doctor'? currentPage2 === 1:currentPage === 1}
         className="select-none rounded-lg border border-gray-900 py-2 px-4 text-center align-middle font-sans text-xs font-bold uppercase text-gray-900 transition-all hover:opacity-75 focus:ring focus:ring-gray-300 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
         type="button">
         Previous
       </button>
       <button
-       onClick={type?.toLowerCase() ==='doctor'? () => paginate2(currentPage2 + 1) : () => paginate(currentPage + 1)}
+       onClick={userData?.role.toLowerCase() ==='doctor'? () => paginate2(currentPage2 + 1) : () => paginate(currentPage + 1)}
          
-         disabled={type?.toLowerCase() ==='doctor'? indexOfLastDoctor2 >= filteredDoctors2.length : indexOfLastDoctor >= filteredDoctors.length}
+         disabled={userData?.role.toLowerCase() ==='doctor'? indexOfLastDoctor2 >= filteredDoctors2.length : indexOfLastDoctor >= filteredDoctors.length}
         className="select-none rounded-lg border border-gray-900 py-2 px-4 text-center align-middle font-sans text-xs font-bold uppercase text-gray-900 transition-all hover:opacity-75 focus:ring focus:ring-gray-300 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
         type="button">
         Next

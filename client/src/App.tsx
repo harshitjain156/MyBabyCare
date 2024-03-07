@@ -102,14 +102,26 @@ import { useAuth } from '../src/AuthContext/AuthContext';
 import NotFoundPage from "../src/page/NotFoundPage"
 
 
-const ProtectedRoute : React.FC<{ children: any }> = ({ children }) => {
+const ProtectedRouteUser : React.FC<{ children: any }> = ({ children }) => {
   const  location = useLocation();
   const {pathname } = location;
   const {userData} = useAuth();
-  return userData && pathname.includes(userData?.role.toLowerCase()) ? (
+  return userData && userData?.role ==="USER" ? (
     children
   ) : (
-    <Navigate to={pathname.includes("doctor") ? "/doctor/login" : "/user/login"} replace />
+    <Navigate to="/user/login" replace />
+  );
+ 
+};
+
+const ProtectedRouteDoctor : React.FC<{ children: any }> = ({ children }) => {
+  const  location = useLocation();
+  const {pathname } = location;
+  const {userData} = useAuth();
+  return userData && userData?.role==="DOCTOR" ? (
+    children
+  ) : (
+    <Navigate to="/doctor/login" replace />
   );
  
 };
@@ -117,8 +129,6 @@ const ProtectedRoute : React.FC<{ children: any }> = ({ children }) => {
 
 function App() {
  
-
-  const [type, setType] = useState<string>('user');
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
   const [hideChatContainer, setHideChatContainer] = useState<boolean>(true);
   const [meetingId, setMeetingId] = useState<string>("");
@@ -179,10 +189,16 @@ function App() {
         <Route path="doctor/signup" element={<DoctorSignUpPage />} />
         <Route path="meeting" element={<VideoConferencing meetingId={meetingId} iscreateMeetingClicked={iscreateMeetingClicked} token={token} eraseTokenHandler={eraseTokenHandler} setMeetingIdHandler={setMeetingIdHandler} handleTokenAndId={handleTokenAndId}/>} />
         <Route path="admin" element={<AdminPage />} />
-        <Route path={`/:type/appointment/doctor/:doctorId`} element={<ProtectedRoute><Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}><BookingAppointmentForm/> </Layout></ProtectedRoute>} />
-        <Route path={`/:type/appointment`} element={<ProtectedRoute><Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}><Appointment/></Layout></ProtectedRoute> } />
-        <Route path={`/:type/appointment/doctor`} element={<ProtectedRoute><Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}><Booking/></Layout> </ProtectedRoute>} />
-        <Route path={`/:type/dashboard`} element={<ProtectedRoute><Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}><Dashboard sidebarOpen={sidebarOpen} type={type}/></Layout></ProtectedRoute> } />
+       
+        <Route path={`/user/appointment`} element={<ProtectedRouteUser><Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}><Appointment/></Layout></ProtectedRouteUser> } />
+        <Route path={`/user/appointment/doctor`} element={<ProtectedRouteUser><Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}><Booking/></Layout> </ProtectedRouteUser>} />
+        <Route path={`/user/appointment/doctor/:doctorId`} element={<ProtectedRouteUser><Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}><BookingAppointmentForm/> </Layout></ProtectedRouteUser>} />
+        <Route path={`/user/dashboard`} element={<ProtectedRouteUser><Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}><Dashboard sidebarOpen={sidebarOpen} /></Layout></ProtectedRouteUser> } />
+        {/* <Route path={`/doctor/appointment/doctor/:doctorId`} element={<ProtectedRoute><Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}><BookingAppointmentForm/> </Layout></ProtectedRoute>} /> */}
+        <Route path={`/doctor/appointment`} element={<ProtectedRouteDoctor><Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}><Appointment/></Layout></ProtectedRouteDoctor> } />
+        {/* <Route path={`/doctor/appointment/doctor`} element={<ProtectedRoute><Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}><Booking/></Layout> </ProtectedRoute>} /> */}
+        <Route path={`/doctor/dashboard`} element={<ProtectedRouteDoctor><Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}><Dashboard sidebarOpen={sidebarOpen} /></Layout></ProtectedRouteDoctor> } />
+        
         <Route path="*" element={<NotFoundPage/>} />
       </Routes>
       <ChatContainer hideChatContainer={hideChatContainer} setHideChatContainer={setHideChatContainer} createMeetingHandler={createMeetingHandler}/>

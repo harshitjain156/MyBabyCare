@@ -144,10 +144,9 @@ const SidebarLinkGroup: React.FC<SidebarLinkGroupProps> = ({
 interface DashboardProps {
   sidebarOpen: boolean;
 
-  type: string; // Change the type accordingly
 }
 
-const Dashboard: React.FC<DashboardProps> = ({ sidebarOpen, type }) => {
+const Dashboard: React.FC<DashboardProps> = ({ sidebarOpen }) => {
   const location = useLocation();
   const { pathname } = location;
 
