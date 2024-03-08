@@ -29,6 +29,43 @@ export async function signUpValidation(values: any): Promise<Errors> {
   return errors;
 }
 
+export async function appointmentBookingValidation(values: any): Promise<Errors> {
+  const errors: Errors = {};
+ // Validate childName
+if (!values.childName.trim()) {
+  errors.childName = 'Child\'s name is required';
+
+} else if (!/^[a-zA-Z ]{1,20}$/.test(values.childName)) {
+  errors.childName = 'Child\'s name must be alphabets and spaces only, up to 20 characters';
+
+}
+// Validate age
+if (!values.age) {
+  errors.age = 'Age is required';
+  
+} else if (isNaN(values.age) || parseInt(values.age) < 0) {
+  errors.age ='Invalid age';
+  
+}
+else if(parseInt(values.age)>20){
+  errors.age = 'Age should not exceed 20 years old';
+}
+// Validate reason
+if (!values.reason) {
+  errors.reason = 'Reason for appointment is required';
+
+}
+else if(values.reason.length > 50){
+  errors.reason= "The length of the reason should not exceed 50 characters";
+}
+
+
+if(values.additionalDetails.length > 50){
+  errors.additionalDetails = "The length of the additional Details should not exceed 50 characters";
+}
+  return errors;
+}
+
 export async function otpValidation(values: any): Promise<Errors> {
   const errors: Errors = {};
   otpVerify(errors, values);
