@@ -531,7 +531,7 @@ export default function LoginPage() {
               >
                 <div className="textbox flex flex-col items-center gap-8 w-full">
                   <span className="w-full flex-col justify-center">
-                  <div className="flex flex-row justify-center items-center gap-3 w-[50%] mx-auto">
+                  <div className="flex flex-row justify-center items-center gap-3 w-[60%] mx-auto">
                     {[0, 1, 2, 3].map((index) => (
                       <input
                         key={index}
@@ -539,7 +539,7 @@ export default function LoginPage() {
                         maxLength={1}
                         type="text"
                         placeholder="0"
-                        className={`appearance-none block w-1/4 bg-gray-200 text-gray-700 border ${
+                        className={`appearance-none block w-1/4 bg-gray-200 text-gray-700 text-center border ${
                           formikVerifyOtp.errors[
                             `otp${1}` as keyof typeof formikVerifyOtp.errors
                           ]

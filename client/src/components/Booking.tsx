@@ -343,7 +343,7 @@ const filteredDoctors = doctors.filter((doctor : any) => {
           </ul>
         </nav> */}
       </div>
-      <div className="w-full md:w-2/3 flex content-start justify-around">
+      <div className="w-full flex content-start justify-around">
       
         <SearchBar searchTerm={searchTerm}
                     setSearchTerm={setSearchTerm}/>

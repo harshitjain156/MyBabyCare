@@ -163,6 +163,7 @@ import axios from 'axios';
 import { BASE_URL } from 'helper/endpoints';
 import { toast } from 'react-toastify';
 import { useAuth } from "../AuthContext/AuthContext";
+import {appointmentBookingValidation} from "../helper/validate"
 
 const BookingAppointmentForm = () => {
 
@@ -177,6 +178,8 @@ const BookingAppointmentForm = () => {
   const [selectedTimeSlot, setSelectedTimeSlot] = useState(null);
   const [showForm, setShowForm] = useState(false);
   const [ availableSlot, setAvailableSlots] = useState([]);
+
+  const [slotError, setSlotError] = useState(null)
 
   const [minDate, setMinDate] = useState(null);
 
@@ -237,33 +240,6 @@ const BookingAppointmentForm = () => {
     setLoading(true);
 
     try {
-     const errors = {};
-       toast.info("Your appointment is being booked...");
-      // Validate childName
-    if (!values.childName.trim()) {
-      errors.childName = toast.error('Child\'s name is required');
-      return ;
-    } else if (!/^[a-zA-Z ]{1,20}$/.test(values.childName)) {
-      errors.childName = toast.error('Child\'s name must be alphabets and spaces only, up to 20 characters');
-      return ;
-    }
-  
-    // Validate age
-    if (!values.age) {
-      errors.age = toast.error('Age is required');
-      return ;
-    } else if (isNaN(values.age) || parseInt(values.age) < 0) {
-      errors.age = toast.error('Invalid age');
-      return ;
-    }
-  
-    // Validate reason
-    if (!values.reason) {
-      errors.reason = toast.error('Reason for appointment is required');
-      return ;
-    }
-
-  
     
       const response = await axios.post(`${BASE_URL}api/v1/book-slot`, {
         ...values,
@@ -294,7 +270,9 @@ const BookingAppointmentForm = () => {
       reason: '',
       additionalDetails: ''
     },
-  
+    validate: appointmentBookingValidation,
+    validateOnBlur: true,
+    validateOnChange: false,
     onSubmit: handleSubmit
   });
 
@@ -342,17 +320,19 @@ const BookingAppointmentForm = () => {
                   </button>
                 ))
               ) : (
-                <p>No available slots for selected date</p>
+                <p  className='text-center'>No available slots for selected date</p>
               ))}
           </div>
         </div>
         <div className="w-full md:w-1/2 px-4">
           <div>
             <form onSubmit={formik.handleSubmit}>
+             
               <div className="mb-4">
                 <label htmlFor="childName" className="block text-sm  text-gray-700  font-semibold">
                   Child's Name:<span className="text-red-500">*</span>
                 </label>
+                <span >
                 <input
 
                {...formik.getFieldProps("childName")}
@@ -362,11 +342,20 @@ const BookingAppointmentForm = () => {
                   className="form-input mt-1 block w-full"
                
                 />
+                {formik.errors.childName && (
+                  <span className="text-red-500 block text-center  mt-1 mx-4 text-[12px]">
+                    {formik.errors.childName}
+                  </span>
+                )}
+                </span>
               </div>
+              
+              
               <div className="mb-4">
                 <label htmlFor="age" className="block text-sm  text-gray-700 font-semibold">
                   Age:<span className="text-red-500">*</span>
                 </label>
+                <span>
                 <input
 
           {...formik.getFieldProps("age")}
@@ -379,11 +368,20 @@ const BookingAppointmentForm = () => {
                  
                  
                 />
+                {formik.errors.age && (
+                  <span className="text-red-500 block text-center  mt-1 mx-4 text-[12px]">
+                    {formik.errors.age}
+                  </span>
+                )}
+                </span>
               </div>
+              
+              
               <div className="mb-4">
                 <label htmlFor="reason" className="block text-sm font-semibold text-gray-700">
                   Reason for Appointment:<span className="text-red-500">*</span>
                 </label>
+                <span>
                 <textarea
 
           {...formik.getFieldProps("reason")}
@@ -393,11 +391,20 @@ const BookingAppointmentForm = () => {
                   
                 
                 />
+                {formik.errors.reason && (
+                  <span className="text-red-500 block text-center  mt-1 mx-4 text-[12px]">
+                    {formik.errors.reason}
+                  </span>
+                )}
+                </span>
               </div>
+              
+              
               <div className="mb-4">
                 <label htmlFor="additionalDetails" className="block text-sm font-semibold text-gray-700">
                   Additional Details:
                 </label>
+                <span>
                 <textarea
 
               {...formik.getFieldProps("additionalDetails")}
@@ -406,15 +413,35 @@ const BookingAppointmentForm = () => {
                   className="form-textarea mt-1 block rounded w-full border"
                 
                 />
+                 {formik.errors.additionalDetails && (
+                  <span className="text-red-500 block text-center mt-1 mx-4 text-[12px]">
+                    {formik.errors.additionalDetails}
+                  </span>
+                )}
+                </span>
               </div>
+             
+
               <div className='flex justify-center items-center'>
-                <button
+              <button
+                  type="submit"
+                  className={`${
+                    formik.isValidating || formik.isSubmitting || !formik.isValid || !selectedTimeSlot?.timeslot
+                      ? "cursor-not-allowed opacity-50"
+                      : "hover:bg-secondary-dark"
+                  }`}
+                  disabled={formik.isSubmitting || !formik.isValid || !selectedTimeSlot?.timeslot}
+                >
+                  {formik.isSubmitting ? "Booking......" : 'Book Appointment'}
+                  </button>
+               
+                {/* <button
                   type="submit"
                   className=" text-white px-4 py-2 rounded hover:bg-secondary-dark"
                   disabled={formik.isSubmitting}
                 >
                   {formik.isSubmitting ? 'Booking...' : 'Book Appointment'}
-                </button>
+                </button> */}
               </div>
             </form>
           </div>

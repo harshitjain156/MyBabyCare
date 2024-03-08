@@ -160,7 +160,7 @@ const SideDrawer: React.FC<SideDrawerProps> = ({ sidebarOpen, setSidebarOpen }) 
                   Calendar
                 </NavLink>
               </li>
-              <li>
+              {userData?.role.toLowerCase().toLocaleLowerCase() !== "doctor" && (<li>
                 <NavLink
                   to="#"
                   className={`group relative flex items-center gap-2.5 rounded-sm py-4 px-6 font-semibold text-bodydark1 duration-300 ease-in-out hover:bg-secondary dark:hover:bg-meta-4 ${
@@ -173,7 +173,7 @@ const SideDrawer: React.FC<SideDrawerProps> = ({ sidebarOpen, setSidebarOpen }) 
 
                   Medical Records
                 </NavLink>
-              </li>
+              </li>)}
               <li>
                 <NavLink
                   to="#"

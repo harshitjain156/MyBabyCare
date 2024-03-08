@@ -157,6 +157,8 @@ const  navigate = useNavigate();
     const [selectedDate ,setSelectedDate] = useState('');
 
     const handleDateSelect = (date:any) => {
+     
+
       setSelectedDate(date);
     };
 
@@ -178,7 +180,8 @@ const  navigate = useNavigate();
     specialization: appointment.doctorId.specialization,
     department: appointment.doctorId.department,
     status: appointment.doctorId.status,
-    appointmentDate: (appointment.date as string).split("T")[0],
+    appointmentDate: ((appointment.date as string).split("T")[0]).split("-").reverse().join("-"),
+    date: appointment.date,
     timeslot: appointment.timeslot,
     imageUrl: appointment.doctorId.imageUrl
   }));
@@ -211,7 +214,8 @@ const  navigate = useNavigate();
            const doctorAppointments = await response.data.data.map((appointment:any) => ({
             childName: appointment.childName,
             age: appointment.age,
-            appointmentDate: (appointment.date as string).split("T")[0],
+            appointmentDate: ((appointment.date as string).split("T")[0]).split("-").reverse().join("-"),
+            date: appointment.date,
             timeslot: appointment.timeslot,
             reason: appointment.reason,
             additionalDetails: appointment.additionalDetails
@@ -235,7 +239,7 @@ const  navigate = useNavigate();
     setCalendarVisibility(!isCalendarVisible);
   };
   
-  const [filter, setFilter] = useState('all');
+  const [filter, setFilter] = useState('upcoming');
   const [searchTerm, setSearchTerm] = useState('');
   const filterAppointments = (filter: string) => {
     setFilter(filter);
@@ -244,30 +248,19 @@ const  navigate = useNavigate();
 };
 
 
-const isPastAppointment = (appointmentDate: string) => {
-    const today = new Date();
-    // console.log(today)
-    const appointmentDateObj = new Date(appointmentDate);
-    return appointmentDateObj.getTime() < today.getTime();
-};
+// const isPastAppointment = (appointmentDate: any) => {
+//     const today = new Date();
+//     // console.log(today)
+//     const appointmentDateObj = new Date(appointmentDate);
+//     return appointmentDateObj.getTime() < today.getTime();
+// };
 
-const isUpcomingAppointment = (appointmentDate: string) => {
-    const today = new Date();
-    const appointmentDateObj = new Date(appointmentDate);
-    return appointmentDateObj.getTime() >= today.getTime();
-};
+// console.log(today)
 
-const filteredDoctors = appointment.filter((doctor :any) => {
-    if (filter === 'past') {
-        return isPastAppointment(doctor?.appointmentDate);
-    } else if (filter === 'upcoming') {
-        return isUpcomingAppointment(doctor?.appointmentDate);
-    } else {
-        return true;
-    }
-}).filter((doctor:any) =>
-    doctor.name.toLowerCase().includes(searchTerm.toLowerCase())
-    || doctor.phone.includes(searchTerm)||doctor?.specialization.toLowerCase().includes(searchTerm.toLowerCase())||doctor.department.toLowerCase().includes(searchTerm.toLowerCase()));
+
+const filteredDoctors = appointment.filter((doctor:any) =>
+   ( doctor.name.toLowerCase().includes(searchTerm.toLowerCase())
+    || doctor.phone.includes(searchTerm)||doctor?.specialization.toLowerCase().includes(searchTerm.toLowerCase())||doctor.department.toLowerCase().includes(searchTerm.toLowerCase())) && (selectedDate ? ((doctor.date as string).split("T")[0]).split("-").reverse().join("-") === ((selectedDate as string).split("T")[0]).split("-").reverse().join("-") : true));
 
 
 
@@ -285,7 +278,7 @@ const filteredDoctors = appointment.filter((doctor :any) => {
 
 
 
-  const [searchTerm2, setSearchTerm2] = useState('');
+
   const [currentPage2, setCurrentPage2] = useState(1);
   const [doctorAppointments2, setDoctorAppointments2] = useState([]);
 
@@ -298,8 +291,9 @@ const filteredDoctors = appointment.filter((doctor :any) => {
         const doctorAppointments = response.data.data.map((appointment :any) => ({
           childName: appointment.childName,
           age: appointment.age,
-          appointmentDate: (appointment.date as string).split("T")[0],
+          appointmentDate: ((appointment.date as string).split("T")[0]).split("-").reverse().join("-"),
           timeslot: appointment.timeslot,
+          date: appointment.date,
           reason: appointment.reason,
           additionalDetails: appointment.additionalDetails
         }));
@@ -316,19 +310,11 @@ const filteredDoctors = appointment.filter((doctor :any) => {
 
 
 
-  const filteredDoctors2 = doctorAppointments2.filter((doctor :any) => {
-    if (filter === 'past') {
-      return isPastAppointment(doctor.appointmentDate);
-    } else if (filter === 'upcoming') {
-      return isUpcomingAppointment(doctor.appointmentDate);
-    } else {
-      return true;
-    }
-  }).filter((doctor: any) =>
-    doctor.childName.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredDoctors2 = doctorAppointments2.filter((doctor: any) =>
+    (doctor.childName.toLowerCase().includes(searchTerm.toLowerCase())
     || doctor.age.toString().includes(searchTerm)
     || doctor.reason.toLowerCase().includes(searchTerm.toLowerCase())
-    || doctor.additionalDetails.toLowerCase().includes(searchTerm.toLowerCase()));
+    || doctor.additionalDetails.toLowerCase().includes(searchTerm.toLowerCase())) && (selectedDate ? ((doctor.date as string).split("T")[0]).split("-").reverse().join("-")=== ((selectedDate as string).split("T")[0]).split("-").reverse().join("-") : true) );
 
   const doctorsPerPage2 = 5;
   const indexOfLastDoctor2 = currentPage2 * doctorsPerPage2;
@@ -376,7 +362,7 @@ const filteredDoctors = appointment.filter((doctor :any) => {
     </div>
     <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
       <div className="block w-full overflow-hidden md:w-max">
-        <nav>
+        {/* <nav>
           <ul role="tablist" className="relative flex flex-row p-1 rounded-lg bg-blue-gray-50 bg-opacity-60">
             <li role="tab"
               className="relative flex items-center justify-center w-full h-full px-2 py-1 font-sans text-base antialiased font-normal leading-relaxed text-center bg-transparent cursor-pointer select-none text-blue-gray-900"
@@ -403,9 +389,9 @@ const filteredDoctors = appointment.filter((doctor :any) => {
               { filter==='past' && <div className="absolute inset-0 z-10 h-full bg-white rounded-md shadow shadow-secondary"></div>}
             </li>
           </ul>
-        </nav>
+        </nav> */}
       </div>
-      <div className="w-full md:w-2/3 flex content-start justify-around">
+      <div className="w-full  flex content-start justify-around">
       
         <SearchBar searchTerm={searchTerm}
                     setSearchTerm={setSearchTerm}/>
