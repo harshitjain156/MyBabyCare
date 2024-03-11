@@ -123,6 +123,23 @@ const SideDrawer: React.FC<SideDrawerProps> = ({ sidebarOpen, setSidebarOpen }) 
                   </NavLink>
                 </li>
               )}
+              {userData?.role.toLowerCase().toLocaleLowerCase() === "doctor" && (
+                <li>
+                  <NavLink
+                    to="/doctor/availability"
+                    className={`group relative flex items-center gap-2.5 rounded-sm py-4 px-6 font-semibold text-bodydark1 duration-300 ease-in-out hover:bg-secondary dark:hover:bg-meta-4 ${
+                      pathname.includes('availability') && 'bg-secondary'
+                    }`}
+                  >
+                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                  </svg>
+
+
+                    Availability
+                  </NavLink>
+                </li>
+              )}
                <li>
                 <NavLink
                   to={`/${userData?.role.toLowerCase()}/appointment`}
