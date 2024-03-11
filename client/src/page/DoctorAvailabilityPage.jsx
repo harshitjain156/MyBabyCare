@@ -405,6 +405,10 @@ function DoctorAvailability() {
     },
     validate: values => {
       const errors = {};
+      const startHour = parseInt(values.doctorStartHour) + (values.doctorStartPeriod === "PM" ? 12 : 0);
+      const startMinute = parseInt(values.doctorStartMinute);
+      const endHour = parseInt(values.doctorEndHour) + (values.doctorEndPeriod === "PM" ? 12 : 0);
+      const endMinute = parseInt(values.doctorEndMinute);
       if (!values.selectedDate) {
         errors.date = "Date is required";
       }
@@ -421,7 +425,7 @@ function DoctorAvailability() {
       } else if (isNaN(values.slotDuration) || values.slotDuration < 15 || values.slotDuration > 60) {
         errors.duration = "Duration must be between 15 minutes and 60 minutes";
       }
-      if (values.doctorStartHour > values.doctorEndHour || (values.doctorStartHour === values.doctorEndHour && values.doctorStartMinute >= values.doctorEndMinute)) {
+      if (startHour > endHour || (startHour === endHour && startMinute >= startMinute)) {
         errors.start = "End time must be greater than start time.";
       }
       return errors;
@@ -512,6 +516,7 @@ fetchdata();
     const startMinute = parseInt(doctorStartMinute);
     const endHour = parseInt(doctorEndHour) + (doctorEndPeriod === "PM" ? 12 : 0);
     const endMinute = parseInt(doctorEndMinute);
+    console.log(startHour, startMinute, endHour, endMinute);
   
     if (startHour > endHour || (startHour === endHour && startMinute >= endMinute)) {
       setErrors({
