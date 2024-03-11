@@ -117,7 +117,9 @@ exports.availableSlots = async (req, res) => {
 exports.userAppointments = async (req, res) => {
   try {
     const { userId } = req.params;
-    const currentDate = moment().toDate();
+    
+    const d = new Date();
+    const currentDate = moment(d.toISOString().split("T")[0]).toDate();
     // console.log(currentDate)
     // Fetch appointments associated with the selected user from the database
     const appointments = await Appointment.find({ userId, date: { $gte: currentDate } }).populate('doctorId').sort({ date: 1 });
@@ -140,8 +142,9 @@ exports.userAppointments = async (req, res) => {
 exports.doctorAppointments = async (req, res) => {
     try {
       const { doctorId } = req.params;
-       const currentDate = moment().toDate();
-    // console.log(currentDate)
+      const d = new Date();
+       const currentDate = moment(d.toISOString().split("T")[0]).toDate();
+    // console.log(currentDate, d.toISOString().split("T")[0])
       // Fetch appointments associated with the selected user from the database
       const appointments = await Appointment.find({ doctorId, date: { $gte: currentDate   }}).populate('userId').sort({ date: 1 });
   
