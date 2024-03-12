@@ -14,11 +14,11 @@ const slotSchema = new Schema({
   },
   slots: [{
     timeslot: { type: String, required: true },
-    // status: {
-    //   type: String,
-    //   enum: ['booked', 'available', 'rescheduled'], // Adding 'rescheduled' to the possible enum values
-    //   default: 'available', // Default status value set to 'available'
-    // },
+    status: {
+      type: String,
+      enum: ['Booked', 'Available', 'Rescheduled', 'Cancelled'], // Adding 'rescheduled' to the possible enum values
+      default: 'Available', // Default status value set to 'available'
+    },
   }],
 }, { timestamps: true });
 

@@ -201,6 +201,7 @@ const BookingAppointmentForm = () => {
   };
 
   const handleTimeSlotSelect = (timeSlot) => {
+    console.log(timeSlot);
     setSelectedTimeSlot(timeSlot);
     setShowForm(true);
   };
@@ -246,7 +247,9 @@ const BookingAppointmentForm = () => {
         doctorId,
         userId: userData.userId,
         date: selectedDate,
-        timeslot: selectedTimeSlot.timeslot
+        timeslot: selectedTimeSlot.timeslot,
+        timeslotId: selectedTimeSlot._id
+
       });
       toast.success('Appointment submitted successfully')
       console.log('Appointment submitted successfully:', response.data);
