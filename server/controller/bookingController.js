@@ -59,7 +59,7 @@ exports.allAddedSlots =  async (req, res) => {
 
 exports.bookAppointment =  async (req, res) => {
     try {
-      const { doctorId, userId, date, timeslot, childName, age, reason, additionalDetails } = req.body;
+      const { doctorId, userId, date, timeslot, childName, age, reason, additionalDetails, timeslotId } = req.body;
   
       // Insert the appointment into the appointments table
       const appointment = await Appointment.create({
@@ -70,8 +70,20 @@ exports.bookAppointment =  async (req, res) => {
         childName,
         age,
         reason,
-        additionalDetails
+        additionalDetails,
+        timeslotId
       });
+      // const updatedSlot = await Slot.findOneAndUpdate(
+      //   { 'slots._id': timeslotId }, // Find slot with the given slotId
+      //   { $set: { 'slots.$.status': 'Booked' } }, // Set the new status for the matched slot
+      //   { new: true } // To return the updated slot
+      // );
+  
+      // if (!updatedSlot) {
+      //   // If slot with the given ID is not found
+      //   console.log('Slot not found');
+      //   return null; // Or throw an error if preferred
+      // }
   
       res.status(201).json({ success: true, message: 'Slot booked successfully', appointment });
     } catch (error) {
@@ -108,6 +120,53 @@ exports.availableSlots = async (req, res) => {
       res.status(500).json({ success: false, message: 'Failed to fetch available slots' });
     }
   };
+
+exports.updateAppointment =  async (req, res) => {
+  const { id } = req.params;
+  const { status, timeslotId } = req.body;
+
+  try {
+    const updatedAppointment = await Appointment.findByIdAndUpdate(
+      id,
+      { status },
+      { new: true }
+    );
+    if(status==="Booked"){
+     const updatedSlot = await Slot.findOneAndUpdate(
+        { 'slots._id': timeslotId }, // Find slot with the given slotId
+        { $set: { 'slots.$.status': 'Booked' } }, // Set the new status for the matched slot
+        { new: true } // To return the updated slot
+      );
+  
+      if (!updatedSlot) {
+        // If slot with the given ID is not found
+        console.log('Slot not found');
+        return null; // Or throw an error if preferred
+      }
+    }
+    else if(status==="Cancelled"){
+      const updatedSlot = await Slot.findOneAndUpdate(
+        { 'slots._id': timeslotId }, // Find slot with the given slotId
+        { $set: { 'slots.$.status': 'Available' } }, // Set the new status for the matched slot
+        { new: true } // To return the updated slot
+      );
+  
+      if (!updatedSlot) {
+        // If slot with the given ID is not found
+        console.log('Slot not found');
+        return null; // Or throw an error if preferred
+      }
+    }
+
+    if (updatedAppointment) {
+      res.json(updatedAppointment);
+    } else {
+      res.status(404).json({ error: 'Appointment not found' });
+    }
+  } catch (error) {
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
 
   // Assuming you have already set up your Express app and imported necessary modules
 
@@ -162,5 +221,25 @@ exports.doctorAppointments = async (req, res) => {
       });
     }
   };
+
+
+  exports.dateWiseSlots = async(req, res)=>{
+  
+ 
+    try{
+      const { doctorId, date } = req.params;
+      console.log(doctorId, date);
+      // Query the slots table to find available slots for the given date and doctor
+      const slots = await Slot.findOne({ doctorId, date }).exec();
+    //  console.log(slots);
+    
+    
+      res.status(200).json({ success: true, slots });
+    } catch (error) {
+      console.error('Error fetching all created slots:', error);
+      res.status(500).json({ success: false, message: 'Failed to fetch slots' });
+    }
+
+  }
 
   

@@ -13,7 +13,9 @@ type DashboardType = 'admin' | 'user'| 'doctor';
 
 const Appointment: React.FC = () => {
   const { userData, updateUser } = useAuth();
-  // console.log(userData)
+  console.log(userData)
+
+  const [flag, setFlag] = useState(false); // flag to check if the page is
  
 
 
@@ -175,11 +177,14 @@ const  navigate = useNavigate();
             const response = await axios.get(`${BASE_URL}api/v1/user-appointments/${userData.userId}`);
             console.log(response.data)
             const doctorAppointments = await response.data.data.map((appointment:any) => ({
+             id: appointment._id,
     name: appointment.doctorId.name,
     phone: appointment.doctorId.phone,
     specialization: appointment.doctorId.specialization,
     department: appointment.doctorId.department,
-    status: appointment.doctorId.status,
+    online: appointment.doctorId.status,
+    status : appointment.status,
+    timeslotId : appointment.timeslotId,
     appointmentDate: ((appointment.date as string).split("T")[0]).split("-").reverse().join("-"),
     date: appointment.date,
     timeslot: appointment.timeslot,
@@ -197,7 +202,7 @@ const  navigate = useNavigate();
         };
     
         fetchAppointments();
-      }, []);
+      }, [flag]);
 
 
 
@@ -209,14 +214,17 @@ const  navigate = useNavigate();
           try {
             const response = await axios.get(`${BASE_URL}api/v1/doctor-appointments/${userData.userId}`); // Replace with your API endpoint
             // Filter appointments for the logged-in doctor
-         
+          console.log(response.data)
     
            const doctorAppointments = await response.data.data.map((appointment:any) => ({
+            id: appointment._id,
             childName: appointment.childName,
             age: appointment.age,
             appointmentDate: ((appointment.date as string).split("T")[0]).split("-").reverse().join("-"),
             date: appointment.date,
+            timeslotId : appointment.timeslotId,
             timeslot: appointment.timeslot,
+            status : appointment.status,
             reason: appointment.reason,
             additionalDetails: appointment.additionalDetails
     
@@ -229,7 +237,7 @@ const  navigate = useNavigate();
         };
     
         fetchDoctorAppointments();
-      }, []);
+      }, [flag]);
 
       
       // console.log(appointment)
@@ -289,12 +297,15 @@ const filteredDoctors = appointment.filter((doctor:any) =>
         const response = await axios.get(`${BASE_URL}api/v1/doctor-appointments/${userData.userId}`); // Replace with your API endpoint
         
         const doctorAppointments = response.data.data.map((appointment :any) => ({
+          id: appointment._id,
           childName: appointment.childName,
           age: appointment.age,
           appointmentDate: ((appointment.date as string).split("T")[0]).split("-").reverse().join("-"),
           timeslot: appointment.timeslot,
+          timeslotId : appointment.timeslotId,
           date: appointment.date,
           reason: appointment.reason,
+          status : appointment.status,
           additionalDetails: appointment.additionalDetails
         }));
 
@@ -305,7 +316,7 @@ const filteredDoctors = appointment.filter((doctor:any) =>
     };
 
     fetchDoctorAppointments2();
-  }, []);
+  }, [flag]);
 
 
 
@@ -322,6 +333,23 @@ const filteredDoctors = appointment.filter((doctor:any) =>
   const currentDoctors2 = filteredDoctors2.slice(indexOfFirstDoctor2, indexOfLastDoctor2);
 
   const paginate2 = (pageNumber: any) => setCurrentPage2(pageNumber);
+
+
+const statusHandler =async (data:any)=>{
+  try {
+    const response = await axios.put(`${BASE_URL}api/v1/appointments/${data.id}/status`, { status: data.newStatus, timeslotId: data.timeslotId });
+    console.log('Appointment status updated successfully:', response.data);
+    setFlag((prev)=>!prev);
+  } catch (error:any) {
+    if (error.response) {
+      console.error('Error updating appointment status:', error.response.data);
+    } else if (error.request) {
+      console.error('Error making request:', error.request);
+    } else {
+      console.error('Error:', error.message);
+    }
+  }
+}
   
 
 
@@ -505,7 +533,13 @@ const filteredDoctors = appointment.filter((doctor:any) =>
   <tr>
     <td key={index} className="p-4 border-b border-blue-gray-50">
       <div className="flex items-center gap-3">
+        <span className='relative'>
         <img src={doctor.imageUrl} alt={doctor.name} className="relative inline-block h-9 w-9 !rounded-full object-cover object-center" />
+        <span
+                className={`absolute right-0 bottom-0 h-3 w-3 rounded-full border-2 border-white ${doctor.online ==="online" ? `bg-success`: `bg-slate-400`}`}
+               
+              ></span>
+              </span>
         <div className="flex flex-col">
           <p className="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
             {doctor.name}
@@ -528,8 +562,19 @@ const filteredDoctors = appointment.filter((doctor:any) =>
     </td>
     <td className="p-4 border-b border-blue-gray-50">
       <div className="w-max">
-        <div className={`relative grid items-center px-2 py-1 font-sans text-xs font-bold ${doctor.status === 'online' ? 'text-green-900 bg-green-500/20' : 'text-blue-gray-900 bg-blue-gray-500/20'} uppercase rounded-md select-none whitespace-nowrap`}>
-          <span>{doctor.status}</span>
+        <div className={`relative grid items-center py-1 font-sans text-xs font-bold ${doctor.status === 'online' ? 'text-green-900 bg-green-500/20' : 'text-blue-gray-900 bg-blue-gray-500/20'} rounded-md select-none whitespace-nowrap`}>
+         
+        <span
+                    className={`inline-flex rounded-full bg-opacity-10 py-1 px-3 text-sm font-medium ${
+                      doctor.status === 'Booked'
+                        ? 'bg-success text-success'
+                        : doctor.status === 'Cancelled'
+                        ? 'bg-danger text-danger'
+                        : 'bg-warning text-warning'
+                    }`}
+                  >
+                    {doctor.status}
+                  </span> 
         </div>
       </div>
     </td>
@@ -556,6 +601,9 @@ const filteredDoctors = appointment.filter((doctor:any) =>
             Time slot
           </th>
           <th className="p-4 transition-colors cursor-pointer border-y border-blue-gray-100 bg-blue-gray-50/50 hover:bg-blue-gray-50">
+            Status
+          </th>
+          <th className="p-4 transition-colors cursor-pointer border-y border-blue-gray-100 bg-blue-gray-50/50 hover:bg-blue-gray-50">
             Child Name
           </th>
           <th className="p-4 transition-colors cursor-pointer border-y border-blue-gray-100 bg-blue-gray-50/50 hover:bg-blue-gray-50">
@@ -567,11 +615,14 @@ const filteredDoctors = appointment.filter((doctor:any) =>
           <th className="p-4 transition-colors cursor-pointer border-y border-blue-gray-100 bg-blue-gray-50/50 hover:bg-blue-gray-50">
             Additional Details
           </th>
+          <th className="p-4 transition-colors cursor-pointer border-y border-blue-gray-100 bg-blue-gray-50/50 hover:bg-blue-gray-50">
+            Actions
+          </th>
         </tr>
       </thead>
       <tbody>
         {currentDoctors2.map((appointment : any, index) => (
-          <tr key={index}>
+          <tr key={appointment.id}>
             <td className="p-4 border-b border-blue-gray-50">
               <p className="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
                 {appointment.appointmentDate}
@@ -582,6 +633,20 @@ const filteredDoctors = appointment.filter((doctor:any) =>
                 {appointment.timeslot}
               </p>
             </td>
+            <td className="p-4 border-b border-blue-gray-50">
+            <span
+                    className={`inline-flex rounded-full bg-opacity-10 py-1 px-3 text-sm font-medium ${
+                      appointment.status === 'Booked'
+                        ? 'bg-success text-success'
+                        : appointment.status === 'Cancelled'
+                        ? 'bg-danger text-danger'
+                        : 'bg-warning text-warning'
+                    }`}
+                  >
+                    {appointment.status==="Pending"? "For Approval" : appointment.status}
+                  </span> 
+            </td>
+            
             <td className="p-4 border-b border-blue-gray-50">
               <p className="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
                 {appointment.childName}
@@ -601,6 +666,23 @@ const filteredDoctors = appointment.filter((doctor:any) =>
               <p className="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
                 {appointment.additionalDetails}
               </p>
+            </td>
+            <td className="p-4 border-b border-blue-gray-50">
+             { appointment.status=== "Pending" && <p className=" font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900 flex  justify-evenly gap-2">
+              <button onClick={()=> statusHandler({id: appointment.id, timeslotId: appointment.timeslotId, newStatus: "Booked"})} className="bg-primary hover:bg-primary-dark text-white font-semibold py-2 px-4 rounded-full">
+                Approve
+                </button>
+                
+                <button onClick={()=> statusHandler({id: appointment.id, timeslotId: appointment.timeslotId, newStatus: "Cancelled"})} className="bg-transparent hover:bg-danger text-danger font-semibold hover:text-white py-2 px-4 border border-danger hover:border-transparent rounded-full">
+                  Cancel
+                </button>
+              </p> }
+              {/* { appointment.status === "Booked" && <p className=" font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900 flex  justify-evenly gap-2">
+              <button  className="bg-primary hover:bg-primary-dark text-white font-semibold py-2 px-4 rounded-full">
+                Chat
+                </button>
+              </p>}
+               */}
             </td>
           </tr>
         ))}

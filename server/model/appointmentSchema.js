@@ -33,7 +33,16 @@ const appointmentSchema = new mongoose.Schema({
   },
   additionalDetails: {
     type: String
-  }
+  },
+  timeslotId: {
+    type: String,
+    required: true
+  },
+  status: {
+      type: String,
+      enum: ['Pending', 'Booked', 'Cancelled', 'Rescheduled'], // Adding 'rescheduled' to the possible enum values
+      default: 'Pending', // Default status value set to 'available'
+    },
 }, { timestamps: true });
 
 const Appointment = mongoose.model('Appointment', appointmentSchema);

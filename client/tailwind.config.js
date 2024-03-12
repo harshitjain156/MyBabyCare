@@ -27,7 +27,10 @@ module.exports = {
         secondary: '#ff9acc',
         'secondary-dark': '#e285b3', // Darker shade of secondary color
         tertiary: '#f0e6ef',
-        'tertiary-dark': '#d3c7d4'
+        'tertiary-dark': '#d3c7d4',
+        success: '#219653',
+        danger: '#D34053',
+        warning: '#FFA70B',
       },
     },
     variants: {
