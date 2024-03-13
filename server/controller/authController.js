@@ -91,76 +91,7 @@ exports.createNewUser = async (req, res, next) => {
     
         console.log(`Your OTP is ${otp}`);
 
-        const createDummySlots = async () => {
-  try {
-    // Dummy data for Monday
-    const mondaySlots = [
-      { timeslot: '9:00 AM - 10:00 AM' },
-      { timeslot: '10:00 AM - 11:00 AM' },
-      { timeslot: '11:00 AM - 12:00 AM' },
-      { timeslot: '01:00 AM - 02:00 AM' }
-    ];
-    
-    const tuesdaySlots = [
-      { timeslot: '9:00 AM - 10:00 AM' },
-      { timeslot: '10:00 AM - 11:00 AM' }
-    ];
-    
-    const wednesdaySlots = [
-      { timeslot: '9:00 AM - 10:00 AM' },
-      { timeslot: '10:00 AM - 11:00 AM' },
-      { timeslot: '11:00 AM - 12:00 PM' },
-      { timeslot: '01:00 PM - 02:00 PM' }
-    ];
-    
-    const thursdaySlots = [
-      { timeslot: '9:00 AM - 10:00 AM' },
-      { timeslot: '10:00 AM - 11:00 AM' }
-    ];
-    
-    const fridaySlots = [
-      { timeslot: '9:00 AM - 10:00 AM' },
-      { timeslot: '10:00 AM - 11:00 AM' },
-      { timeslot: '11:00 AM - 12:00 PM' },
-      { timeslot: '01:00 PM - 02:00 PM' }
-    ];
-    
-    const saturdaySlots = [
-      { timeslot: '9:00 AM - 10:00 AM' },
-      { timeslot: '10:00 AM - 11:00 AM' }
-    ];
-
-    const sundaySlots = [
-      
-    ];
-    
-    // Create a new slot document
-    const slot = new Slot({
-      doctorId: phoneExist._id,
-      week: new Map([
-        ['Monday', { day: 'Monday', slots: mondaySlots }],
-        ['Tuesday', { day: 'Tuesday', slots: tuesdaySlots }],
-        ['Wednesday', { day: 'Wednesday', slots: wednesdaySlots }],
-        ['Thursday', { day: 'Thursday', slots: thursdaySlots }],
-        ['Friday', { day: 'Friday', slots: fridaySlots }],
-        ['Saturday', { day: 'Saturday', slots: saturdaySlots }],
-        ['Sunday', { day: 'Sunday', slots: sundaySlots }]
-      ])
-    });    
-
-    // Save the slot document
-    await slot.save();
-    console.log('Dummy slots created successfully');
-  } catch (error) {
-    console.error('Error creating dummy slots:', error);
-  }
-};
-
-      if(role.toUpperCase()==='DOCTOR'){
-        console.log("doctor")
-      createDummySlots();
-
-      }
+   
 
       res.status(200).json({
         type: "success",
@@ -170,8 +101,7 @@ exports.createNewUser = async (req, res, next) => {
           OTP: `${otp}: Valid for 1 minute`
         },
       });
-
-      
+     
   
     }
     else{
@@ -205,75 +135,7 @@ exports.createNewUser = async (req, res, next) => {
         );
     
         console.log(`Your OTP is ${otp}`);
-        const createDummySlots = async () => {
-          try {
-            // Dummy data for Monday
-            const mondaySlots = [
-              { timeslot: '9:00 AM - 10:00 AM' },
-              { timeslot: '10:00 AM - 11:00 AM' },
-              { timeslot: '11:00 AM - 12:00 AM' },
-              { timeslot: '01:00 AM - 02:00 AM' }
-            ];
-            
-            const tuesdaySlots = [
-              { timeslot: '9:00 AM - 10:00 AM' },
-              { timeslot: '10:00 AM - 11:00 AM' }
-            ];
-            
-            const wednesdaySlots = [
-              { timeslot: '9:00 AM - 10:00 AM' },
-              { timeslot: '10:00 AM - 11:00 AM' },
-              { timeslot: '11:00 AM - 12:00 PM' },
-              { timeslot: '01:00 PM - 02:00 PM' }
-            ];
-            
-            const thursdaySlots = [
-              { timeslot: '9:00 AM - 10:00 AM' },
-              { timeslot: '10:00 AM - 11:00 AM' }
-            ];
-            
-            const fridaySlots = [
-              { timeslot: '9:00 AM - 10:00 AM' },
-              { timeslot: '10:00 AM - 11:00 AM' },
-              { timeslot: '11:00 AM - 12:00 PM' },
-              { timeslot: '01:00 PM - 02:00 PM' }
-            ];
-            
-            const saturdaySlots = [
-              { timeslot: '9:00 AM - 10:00 AM' },
-              { timeslot: '10:00 AM - 11:00 AM' }
-            ];
         
-            const sundaySlots = [
-              
-            ];
-            
-            // Create a new slot document
-            const slot = new Slot({
-              doctorId: user._id,
-              week: new Map([
-                ['Monday', { day: 'Monday', slots: mondaySlots }],
-                ['Tuesday', { day: 'Tuesday', slots: tuesdaySlots }],
-                ['Wednesday', { day: 'Wednesday', slots: wednesdaySlots }],
-                ['Thursday', { day: 'Thursday', slots: thursdaySlots }],
-                ['Friday', { day: 'Friday', slots: fridaySlots }],
-                ['Saturday', { day: 'Saturday', slots: saturdaySlots }],
-                ['Sunday', { day: 'Sunday', slots: sundaySlots }]
-              ])
-            });    
-        
-            // Save the slot document
-            await slot.save();
-            console.log('Dummy slots created successfully');
-          } catch (error) {
-            console.error('Error creating dummy slots:', error);
-          }
-        };
-        
-              if(role.toUpperCase()==='DOCTOR'){
-                console.log("doctor")
-              createDummySlots();
-              }
     res.status(200).json({
       type: "success",
       message: "For Account creation process OTP sent to mobile number",
@@ -378,6 +240,7 @@ exports.verifyPhoneOtp = async (req, res, next) => {
         token,
         userId: user._id,
         role:  user.role,
+        imageUrl: user.imageUrl,
         username: user.name
       },
     });

@@ -78,6 +78,7 @@ const NavBar: React.FC<NavBarProps> = ({ setHideChatContainer, setSidebarOpen, s
   const {pathname } = location;
 
 const {userData} =  useAuth();
+// console.log(userData)
 
   const handleClick = () => setSidebarOpen(!sidebarOpen);
   const [iscreateMeetingClicked, setIscreateMeetingClicked] = useState(false);
@@ -112,9 +113,9 @@ const {userData} =  useAuth();
           </li>}
           
           {userData && pathname.includes(userData?.role.toLowerCase()) && (!pathname.includes("login")) && (!pathname.includes("signup")) && <li>
-            <div className="w-full flex items-center rounded-full  bg-secondary overflow-hidden">
-              <img src={profile} alt={"Profile picture"} className="h-11 w-11 pt-2  object-cover opacity-75" />
-            </div>
+            <span className="w-full flex items-center rounded-full overflow-hidden">
+              <img src={userData.imageUrl || profile} alt={userData?.username} className="h-11 w-11  object-cover opacity-75" />
+            </span>
           </li>}
           {/* <li className="bg-secondary text-white py-2 px-8 rounded-full cursor-pointer hover:bg-secondary-dark"><Link to="/login">Sign In</Link></li> */}
           {pathname.includes('user') && pathname.includes('login')  && <li className="bg-white text-gray-500 py-2 px-8 rounded-full cursor-pointer hover:bg-gray-200"><Link to="/user/signup">New User?</Link></li>}
