@@ -612,9 +612,9 @@ const statusHandler =async (data:any)=>{
           <th className="p-4 transition-colors cursor-pointer border-y border-blue-gray-100 bg-blue-gray-50/50 hover:bg-blue-gray-50">
             Reason
           </th>
-          <th className="p-4 transition-colors cursor-pointer border-y border-blue-gray-100 bg-blue-gray-50/50 hover:bg-blue-gray-50">
+          {/* <th className="p-4 transition-colors cursor-pointer border-y border-blue-gray-100 bg-blue-gray-50/50 hover:bg-blue-gray-50">
             Additional Details
-          </th>
+          </th> */}
           <th className="p-4 transition-colors cursor-pointer border-y border-blue-gray-100 bg-blue-gray-50/50 hover:bg-blue-gray-50">
             Actions
           </th>
@@ -659,15 +659,17 @@ const statusHandler =async (data:any)=>{
             </td>
             <td className="p-4 border-b border-blue-gray-50">
               <p className="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
-                {appointment.reason}
+              {appointment.reason.length >= 10 ? `${appointment.reason.substring(0, 10)}...` : appointment.reason}
               </p>
             </td>
-            <td className="p-4 border-b border-blue-gray-50">
+            {/* <td className="p-4 border-b border-blue-gray-50">
               <p className="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
-                {appointment.additionalDetails}
+             
+              {appointment.additionalDetails && appointment.additionalDetails.length >= 10 ? `${appointment.additionalDetails.substring(0, 10)}...` : appointment.additionalDetails}
+              
               </p>
-            </td>
-            <td className="p-4 border-b border-blue-gray-50">
+            </td> */}
+            <td className="pr-4 border-b border-blue-gray-50">
              { appointment.status=== "Pending" && <p className=" font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900 flex  justify-evenly gap-2">
               <button onClick={()=> statusHandler({id: appointment.id, timeslotId: appointment.timeslotId, newStatus: "Booked"})} className="bg-primary hover:bg-primary-dark text-white font-semibold py-2 px-4 rounded-full">
                 Approve
