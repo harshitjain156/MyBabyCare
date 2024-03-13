@@ -296,6 +296,7 @@ const RescheduleAppointmentForm = () => {
     
       const response = await axios.patch(`${BASE_URL}api/v1/reschedule/${id}`, {
         ...values,
+        _id: id,
         doctorId: appointment.doctorId,
         userId: userData.userId,
         date: selectedDate,
