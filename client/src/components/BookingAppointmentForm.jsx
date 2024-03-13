@@ -241,11 +241,8 @@ const BookingAppointmentForm = () => {
     setLoading(true);
 
     try {
-    
       const response = await axios.post(`${BASE_URL}api/v1/book-slot`, {
         ...values,
-        doctorId,
-        userId: userData.userId,
         date: selectedDate,
         timeslot: selectedTimeSlot.timeslot,
         timeslotId: selectedTimeSlot._id

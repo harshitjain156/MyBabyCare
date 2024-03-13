@@ -130,7 +130,7 @@ const SideDrawer: React.FC<SideDrawerProps> = ({ sidebarOpen, setSidebarOpen }) 
                   pathname === '/availability' || pathname.includes('availability')
                 }
               >
-                {(handleClick, open) => {
+                {(handleClick:any, open:any) => {
                   return (
                     <React.Fragment>
                       <NavLink
