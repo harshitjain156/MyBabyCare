@@ -243,6 +243,7 @@ exports.doctorAppointments = async (req, res) => {
   }
 
 
+
   // find Appointment  by Id and return it
 
   exports.findAppointmentDetails  = async (req,res)=> {
@@ -267,6 +268,36 @@ exports.doctorAppointments = async (req, res) => {
       return res.status(500).json({ success: false, message: "Error In Fetching The Details" });
     }
 
+  };
+
+  exports.reScheduleAppointment =  async (req, res) => {
+    try {
+      const {  date, timeslot, childName, age, reason, additionalDetails } = req.body;
+      const id=req.params.id;
+      // Update the appointment into the appointments table
+      const prevApoointment=await Appointment.findById({_id:req.body._id});
+      const prevTimeSlotId=prevApoointment.timeslotId;
+
+      console.log(prevApoointment);
+
+      const updatedSlot=await Slot.findOneAndUpdate({
+        'slots._id':prevTimeSlotId
+      },{$set: {'slots.$.status':'Available'}},
+      {new:true}) 
+
+      console.log(updatedSlot);
+      const appointment = await Appointment.updateOne({_id:id},{$set:req.body
+      });
+      res.status(201).json({ success: true, message: 'Slot Update successfully', appointment });
+       
+
+      
+        console.log(req.body.status);
+      
+    } catch (error) {
+      console.error('Error booking slot:', error);
+      res.status(500).json({ success: false, message: 'Failed to book slot' });
+    }
   };
 
   
