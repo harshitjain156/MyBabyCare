@@ -103,6 +103,8 @@ import NotFoundPage from "../src/page/NotFoundPage"
 import DoctorProfilePage from "../src/page/DoctorProfilePage"
 import DoctorAvailabilityPage from "../src/page/DoctorAvailabilityPage";
 import DoctorViewAvailabilityPage from "../src/page/DoctorViewAvailabilityPage";
+import DetailedViewPage from '../src/page/DetailedViewPage';
+import RescheduleAppointmentForm from "../src/components/RescheduleAppointmentForm"
 
 const ProtectedRouteUser : React.FC<{ children: any }> = ({ children }) => {
   const  location = useLocation();
@@ -176,6 +178,7 @@ function App() {
 
 
 
+
   return (
 <>
 
@@ -191,8 +194,9 @@ function App() {
         <Route path="doctor/signup" element={<DoctorSignUpPage />} />
         <Route path="meeting" element={<VideoConferencing meetingId={meetingId} iscreateMeetingClicked={iscreateMeetingClicked} token={token} eraseTokenHandler={eraseTokenHandler} setMeetingIdHandler={setMeetingIdHandler} handleTokenAndId={handleTokenAndId}/>} />
         <Route path="admin" element={<AdminPage />} />
-       
+        <Route path={`/user/reschedule-appointment/:id`} element={<ProtectedRouteUser><Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}><RescheduleAppointmentForm/></Layout></ProtectedRouteUser> } />
         <Route path={`/user/appointment`} element={<ProtectedRouteUser><Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}><Appointment/></Layout></ProtectedRouteUser> } />
+        <Route path="/user/appointment/:id" element={<ProtectedRouteUser><Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}><DetailedViewPage /></Layout></ProtectedRouteUser>} />
         <Route path={`/user/appointment/doctor`} element={<ProtectedRouteUser><Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}><Booking/></Layout> </ProtectedRouteUser>} />
         <Route path={`/user/appointment/doctor/:doctorId`} element={<ProtectedRouteUser><Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}><BookingAppointmentForm/> </Layout></ProtectedRouteUser>} />
         <Route path={`/user/dashboard`} element={<ProtectedRouteUser><Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}><Dashboard sidebarOpen={sidebarOpen} /></Layout></ProtectedRouteUser> } />
@@ -205,6 +209,7 @@ function App() {
         <Route path={`/doctor/availability/view`} element={<ProtectedRouteDoctor><Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}><DoctorViewAvailabilityPage/></Layout></ProtectedRouteDoctor> } />
         <Route path={`/doctor/profile`} element={<DoctorProfilePage/>} />
         <Route path="*" element={<NotFoundPage/>} />
+        <Route path="/doctor/appointment/:id" element={<ProtectedRouteDoctor><Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}><DetailedViewPage /></Layout></ProtectedRouteDoctor>} />
       </Routes>
       <ChatContainer hideChatContainer={hideChatContainer} setHideChatContainer={setHideChatContainer} createMeetingHandler={createMeetingHandler}/>
 </>

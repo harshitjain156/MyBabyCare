@@ -165,14 +165,63 @@ import { toast } from 'react-toastify';
 import { useAuth } from "../AuthContext/AuthContext";
 import {appointmentBookingValidation} from "../helper/validate"
 
-const BookingAppointmentForm = () => {
+const RescheduleAppointmentForm = () => {
+    const { id } = useParams();
+    const [appointment, setAppointment] =React.useState({
+        doctorId: "",
+        date: "",
+        timeslot: "",
+        childName: "",
+        age: "",
+        reason: "",
+        additionalDetails: "",
+        status: "Pending",
+        timeslotId: ""
+      });
+    
+    useEffect( ()=>{
+        const fetchDetails = async() =>{
+        try{
+            const response = await axios.get(`${BASE_URL}api/v1/appointment/${id}`);
+        //   console.log('Appointment details fetched successfully:', response.data.appointment);
+        
+          setAppointment({
+            doctorId: response.data.appointment.doctorId._id,
+            date: response.data.appointment.date,
+            timeslot: response.data.appointment.timeslot,
+            childName: response.data.appointment.childName,
+            age: response.data.appointment.age,
+            reason: response.data.appointment.reason,
+            additionalDetails: response.data.appointment.additionalDetails,
+            status: response.data.appointment.status,
+            timeslotId: response.data.appointment.timeslotId
+          })
+
+          formik.setValues({
+            childName: response.data.appointment.childName,
+            age: response.data.appointment.age,
+            reason: response.data.appointment.reason,
+            additionalDetails: response.data.appointment.additionalDetails,
+           
+          })
+
+          console.log(appointment);
+        }
+        catch{
+            console.log("Error in Fetching Appointment Details");
+
+        }
+    }
+    fetchDetails();
+
+      }, [id])
 
   const { userData, updateUser } = useAuth();
   // console.log(userData)
 
  const navigate =  useNavigate();
 
-  const { doctorId } = useParams();
+ 
   // console.log(doctorId)
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTimeSlot, setSelectedTimeSlot] = useState(null);
@@ -184,16 +233,19 @@ const BookingAppointmentForm = () => {
   const [minDate, setMinDate] = useState(null);
 
   // Function to set the minimum date to today
-  const setMinDateToToday = () => {
-    const today = new Date();
+  const setMinDateToToday = (date) => {
+    const today = new Date(date);
+    console.log(date)
+    today.setDate(today.getDate() + 3);
     const minDateString = today.toISOString().split('T')[0];
     setMinDate(minDateString);
   };
 
   // Call the function when the component mounts
   useEffect(() => {
-    setMinDateToToday();
-  }, []);
+    if(appointment.date)
+    setMinDateToToday(appointment.date);
+  }, [appointment.date]);
 
   const handleDateSelect = (date) => {
     setSelectedDate(date);
@@ -211,13 +263,13 @@ const BookingAppointmentForm = () => {
     useEffect(() => {
       const fetchAvailableSlots = async () => {
         try {
-          if (doctorId && selectedDate) {
+          if (appointment.doctorId && selectedDate) {
             const response = await axios.post(`${BASE_URL}api/v1/available-slots`, {
-             doctorId, date: selectedDate 
+             doctorId: appointment.doctorId, date: selectedDate 
             
             });
 
-            console.log(doctorId, selectedDate)
+            console.log(appointment.doctorId, selectedDate)
             setAvailableSlots(response.data.availableSlots);
             console.log(response)
 
@@ -227,7 +279,7 @@ const BookingAppointmentForm = () => {
         }
       };
       fetchAvailableSlots();
-    }, [doctorId, selectedDate]);
+    }, [appointment.doctorId, selectedDate]);
 
     // console.log(selectedDate, selectedTimeSlot)
 
@@ -242,17 +294,18 @@ const BookingAppointmentForm = () => {
 
     try {
     
-      const response = await axios.post(`${BASE_URL}api/v1/book-slot`, {
+      const response = await axios.patch(`${BASE_URL}api/v1/reschedule/${id}`, {
         ...values,
-        doctorId,
+        doctorId: appointment.doctorId,
         userId: userData.userId,
         date: selectedDate,
         timeslot: selectedTimeSlot.timeslot,
-        timeslotId: selectedTimeSlot._id
+        timeslotId: selectedTimeSlot._id,
+        status: "Pending",
 
       });
-      toast.success('Appointment submitted successfully')
-      console.log('Appointment submitted successfully:', response.data);
+      toast.success('Rescheduled Appointment submitted successfully')
+      console.log('Rescheduled Appointment submitted successfully:', response.data);
       navigate("/user/appointment");
 
     setLoading(false)
@@ -268,10 +321,10 @@ const BookingAppointmentForm = () => {
 
   const formik = useFormik({
     initialValues: {
-      childName: '',
-      age: '',
-      reason: '',
-      additionalDetails: ''
+      childName: "",
+      age: "",
+      reason: "",
+      additionalDetails: ""
     },
     validate: appointmentBookingValidation,
     validateOnBlur: true,
@@ -343,6 +396,8 @@ const BookingAppointmentForm = () => {
                 <input
 
                {...formik.getFieldProps("childName")}
+
+               value={formik.values.childName || appointment.childName}
                   type="text"
                   id="childName"
                   name="childName"
@@ -366,6 +421,7 @@ const BookingAppointmentForm = () => {
                 <input
 
           {...formik.getFieldProps("age")}
+          value={formik.values.age || appointment.age}
                   type="number"
                   id="age"
                   name="age"
@@ -392,6 +448,7 @@ const BookingAppointmentForm = () => {
                 <textarea
 
           {...formik.getFieldProps("reason")}
+          value={formik.values.reason || appointment.reason}
                   id="reason"
                   name="reason"
                   className="form-textarea mt-1 block border rounded w-full"
@@ -415,6 +472,7 @@ const BookingAppointmentForm = () => {
                 <textarea
 
               {...formik.getFieldProps("additionalDetails")}
+              value={formik.values.additionalDetails || appointment.additionalDetails}
                   id="additionalDetails"
                   name="additionalDetails"
                   className="form-textarea mt-1 block rounded w-full border"
@@ -458,5 +516,5 @@ const BookingAppointmentForm = () => {
   );
 };
 
-export default BookingAppointmentForm;
+export default RescheduleAppointmentForm;
 
