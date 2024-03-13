@@ -452,18 +452,18 @@ const filteredDoctors = doctors.filter((doctor : any) => {
               </svg> */}
             </p>
           </th>
-          <th
+          {/* <th
             className="p-4 transition-colors cursor-pointer border-y border-blue-gray-100 bg-blue-gray-50/50 hover:bg-blue-gray-50">
             <p
               className="flex items-center justify-between gap-2 font-sans text-sm antialiased font-normal leading-none text-blue-gray-900 opacity-70">
-              Status
+              Status */}
               {/* <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
                 stroke="currentColor" aria-hidden="true" className="w-4 h-4">
                 <path stroke-linecap="round" stroke-linejoin="round"
                   d="M8.25 15L12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9"></path>
               </svg> */}
-            </p>
-          </th>
+            {/* </p>
+          </th> */}
           <th
             className="p-4 transition-colors cursor-pointer border-y border-blue-gray-100 bg-blue-gray-50/50 hover:bg-blue-gray-50">
             <p
@@ -490,7 +490,13 @@ const filteredDoctors = doctors.filter((doctor : any) => {
   <tr>
     <td className="p-4 border-b border-blue-gray-50">
       <div className="flex items-center gap-3">
+        <span className='relative'>
         <img src={doctor.imageUrl} alt={doctor.name} className="relative inline-block h-9 w-9 !rounded-full object-cover object-center" />
+        <span
+                className={`absolute right-0 bottom-0 h-3 w-3 rounded-full border-2 border-white ${doctor.status ==="online" ? `bg-success`: `bg-slate-400`}`}
+               
+              ></span>
+        </span>
         <div className="flex flex-col">
           <p className="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
             {doctor.name}
@@ -511,13 +517,13 @@ const filteredDoctors = doctors.filter((doctor : any) => {
         </p>
       </div>
     </td>
-    <td className="p-4 border-b border-blue-gray-50">
+    {/* <td className="p-4 border-b border-blue-gray-50">
       <div className="w-max">
         <div className={`relative grid items-center px-2 py-1 font-sans text-xs font-bold ${doctor.status === 'online' ? 'text-green-900 bg-green-500/20' : 'text-blue-gray-900 bg-blue-gray-500/20'} uppercase rounded-md select-none whitespace-nowrap`}>
           <span>{doctor.status}</span>
         </div>
       </div>
-    </td>
+    </td> */}
     <td className="p-4 border-b border-blue-gray-50">
       <p className="flex font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
       {/* <div className="flex items-center justify-center"> */}

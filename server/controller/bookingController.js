@@ -110,7 +110,7 @@ exports.availableSlots = async (req, res) => {
         // Check if the slot is not booked (i.e., not present in appointments)
       
       //  console.log(!appointments.some(appointment => appointment.timeslot === slot.timeslot), slot.timeslot);
-        return !appointments.some(appointment => appointment.timeslot === slot.timeslot);
+        return slot.status === "Available"
       }): [];
   
       console.log(appointments);

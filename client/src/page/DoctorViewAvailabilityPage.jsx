@@ -386,6 +386,7 @@ const [timeSlots, setTimeSlots]= useState([]);
 
   const onDateChangeHandler = (event)=>{
       setSelectedDate(event.target.value)
+      setTimeSlots([]);
   }
 
   useEffect(
