@@ -243,7 +243,33 @@ exports.doctorAppointments = async (req, res) => {
   }
 
 
-  // reschedule apoointment
+
+  // find Appointment  by Id and return it
+
+  exports.findAppointmentDetails  = async (req,res)=> {
+
+    try{
+               const {appointmentId} = req.params;
+      const  appointment=await Appointment.findById(appointmentId).populate("userId").populate("doctorId");
+      console.log(appointment);
+      if(!appointment){
+          return res.status(400).json({
+              success:false,  
+              message:"No Appointment found"
+            })
+          }
+     
+
+      res.status(200).json({ success: true, appointment });
+
+    }
+    catch(error){
+      console.log("Error  in Fetching appointment details : ", error);
+      return res.status(500).json({ success: false, message: "Error In Fetching The Details" });
+    }
+
+  };
+
   exports.reScheduleAppointment =  async (req, res) => {
     try {
       const {  date, timeslot, childName, age, reason, additionalDetails } = req.body;
@@ -273,4 +299,5 @@ exports.doctorAppointments = async (req, res) => {
       res.status(500).json({ success: false, message: 'Failed to book slot' });
     }
   };
+
   

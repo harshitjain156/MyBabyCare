@@ -13,9 +13,11 @@ type DashboardType = 'admin' | 'user'| 'doctor';
 
 const Appointment: React.FC = () => {
   const { userData, updateUser } = useAuth();
+ 
   console.log(userData)
 
-  const [flag, setFlag] = useState(false); // flag to check if the page is
+  const [flag, setFlag] = useState(false);
+  // flag to check if the page is
  
 
 
@@ -530,7 +532,7 @@ const statusHandler =async (data:any)=>{
         </tr>
       </thead>
      { currentDoctors.map((doctor:any, index) => 
-  <tr>
+  <tr onClick={()=> navigate(doctor.id)}>
     <td key={index} className="p-4 border-b border-blue-gray-50">
       <div className="flex items-center gap-3">
         <span className='relative'>
@@ -609,20 +611,20 @@ const statusHandler =async (data:any)=>{
           <th className="p-4 transition-colors cursor-pointer border-y border-blue-gray-100 bg-blue-gray-50/50 hover:bg-blue-gray-50">
             Age
           </th>
-          <th className="p-4 transition-colors cursor-pointer border-y border-blue-gray-100 bg-blue-gray-50/50 hover:bg-blue-gray-50">
+          {/* <th className="p-4 transition-colors cursor-pointer border-y border-blue-gray-100 bg-blue-gray-50/50 hover:bg-blue-gray-50">
             Reason
-          </th>
+          </th> */}
           {/* <th className="p-4 transition-colors cursor-pointer border-y border-blue-gray-100 bg-blue-gray-50/50 hover:bg-blue-gray-50">
             Additional Details
           </th> */}
-          <th className="p-4 transition-colors cursor-pointer border-y border-blue-gray-100 bg-blue-gray-50/50 hover:bg-blue-gray-50">
+          {/* <th className="p-4 transition-colors cursor-pointer border-y border-blue-gray-100 bg-blue-gray-50/50 hover:bg-blue-gray-50">
             Actions
-          </th>
+          </th> */}
         </tr>
       </thead>
       <tbody>
         {currentDoctors2.map((appointment : any, index) => (
-          <tr key={appointment.id}>
+          <tr key={appointment.id} onClick={()=> navigate(appointment.id)} className='cursor-pointer'>
             <td className="p-4 border-b border-blue-gray-50">
               <p className="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
                 {appointment.appointmentDate}
@@ -657,11 +659,11 @@ const statusHandler =async (data:any)=>{
                 {appointment.age}
               </p>
             </td>
-            <td className="p-4 border-b border-blue-gray-50">
+            {/* <td className="p-4 border-b border-blue-gray-50">
               <p className="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
               {appointment.reason.length >= 10 ? `${appointment.reason.substring(0, 10)}...` : appointment.reason}
               </p>
-            </td>
+            </td> */}
             {/* <td className="p-4 border-b border-blue-gray-50">
               <p className="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
              
@@ -669,23 +671,23 @@ const statusHandler =async (data:any)=>{
               
               </p>
             </td> */}
-            <td className="pr-4 border-b border-blue-gray-50">
+            {/* <td className="pr-4 border-b border-blue-gray-50">
              { appointment.status=== "Pending" && <p className=" font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900 flex  justify-evenly gap-2">
-              <button onClick={()=> statusHandler({id: appointment.id, timeslotId: appointment.timeslotId, newStatus: "Booked"})} className="bg-primary hover:bg-primary-dark text-white font-semibold py-2 px-4 rounded-full">
+              <button onClick={()=> statusHandler({id: appointment.id, timeslotId: appointment.timeslotId, newStatus: "Booked"})} className="bg-secondary hover:bg-secondary-dark text-white font-semibold py-2 px-4 rounded-full">
                 Approve
                 </button>
                 
                 <button onClick={()=> statusHandler({id: appointment.id, timeslotId: appointment.timeslotId, newStatus: "Cancelled"})} className="bg-transparent hover:bg-danger text-danger font-semibold hover:text-white py-2 px-4 border border-danger hover:border-transparent rounded-full">
                   Cancel
                 </button>
-              </p> }
+              </p> } */}
               {/* { appointment.status === "Booked" && <p className=" font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900 flex  justify-evenly gap-2">
               <button  className="bg-primary hover:bg-primary-dark text-white font-semibold py-2 px-4 rounded-full">
                 Chat
                 </button>
               </p>}
                */}
-            </td>
+            {/* </td> */}
           </tr>
         ))}
       </tbody>

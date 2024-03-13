@@ -487,7 +487,7 @@ const filteredDoctors = doctors.filter((doctor : any) => {
         </tr>
       </thead>
      { currentDoctors.map((doctor, index) => 
-  <tr>
+  <tr className='cursor-pointer'>
     <td className="p-4 border-b border-blue-gray-50">
       <div className="flex items-center gap-3">
         <span className='relative'>
