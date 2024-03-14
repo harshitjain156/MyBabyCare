@@ -59,7 +59,7 @@ const DetailedViewPage: React.FC = () => {
 //   };
 const [ flag, setFlag] = useState(false);
 
-   console.log(id);
+  //  console.log(id);
  
     const renderStars = (rating: any) => {
         const stars = [];
@@ -150,7 +150,7 @@ const [ flag, setFlag] = useState(false);
         </button> */}
       </div>
       {doctor && appointment && <div className="flex flex-wrap">
-        <div className="md:w-1/2">
+        <div className="md:w-1/2 px-4">
           <h2 className="font-sans text-xl antialiased font-semibold leading-snug tracking-normal text-blue-gray-900  mb-4">{`${userData.role==="DOCTOR"? "User":"Doctor"} Information`}</h2>
           { userData.role === "USER" && <div className="flex items-center mb-4">
           <span className='relative mr-4'>
@@ -203,7 +203,7 @@ const [ flag, setFlag] = useState(false);
           </span> 
 
         </div>
-        <div className="md:w-1/2 flex flex-col gap-2">
+        <div className="md:w-1/2 flex flex-col gap-2 px-4">
           <h2 className="font-sans text-xl antialiased font-semibold leading-snug tracking-normal text-blue-gray-900 mb-4">Appointment Details</h2>
           <span>
           <h3 className=" font-semibold">Date:</h3>
@@ -235,17 +235,20 @@ const [ flag, setFlag] = useState(false);
       </div>}
       
       {doctor && appointment && <div className='flex flex-wrap gap-2 justify-evenly items-center font-semibold mt-4'>
-        {userData.role === "DOCTOR" &&  appointment.status=== "Pending" &&  <button onClick={()=> statusHandler({id: id, timeslotId: appointment.timeslotId, newStatus: "Booked"})}  className="bg-secondary hover:bg-secondary-dark text-white font-semibold py-2 px-20 rounded-full">
+        {userData.role === "DOCTOR" &&  appointment.status=== "Pending" &&  <button onClick={()=> statusHandler({id: id, timeslotId: appointment.timeslotId, newStatus: "Booked"})}  className="bg-secondary hover:bg-secondary-dark text-white font-semibold py-2 px-20 rounded-full w-full md:w-1/3">
         Approve
         </button>}
-        {userData.role === "USER" && (appointment.status=== "Pending" || appointment.status=== "Booked" )&& <button  onClick={()=>{navigate(`/user/reschedule-appointment/${id}`)}}   className="bg-secondary hover:bg-secondary-dark text-white font-semibold py-2 px-20 rounded-full">
+        {userData.role === "USER" && (appointment.status=== "Pending" || appointment.status=== "Booked" ) && <button  onClick={()=>{navigate(`/user/reschedule-appointment/${id}`)}}   className="bg-secondary hover:bg-secondary-dark text-white font-semibold py-2 px-20 rounded-full w-full md:w-1/3">
         Reschedule
         </button>}
                 
-        <button onClick={()=> statusHandler({id: id, timeslotId: appointment.timeslotId, newStatus: "Cancelled"})} className="bg-transparent hover:bg-danger text-danger font-semibold hover:text-white py-2 px-20 border border-danger hover:border-transparent rounded-full">
+        { userData.role === "DOCTOR" &&  appointment.status=== "Pending" && <button onClick={()=> statusHandler({id: id, timeslotId: appointment.timeslotId, newStatus: "Cancelled"})} className="bg-transparent hover:bg-danger text-danger font-semibold hover:text-white py-2 px-20 border border-danger hover:border-transparent rounded-full w-full md:w-1/3">
         Cancel
-        </button>
+        </button>}
 
+        { userData.role === "USER" && (appointment.status=== "Pending" || appointment.status=== "Booked" ) &&  <button onClick={()=> statusHandler({id: id, timeslotId: appointment.timeslotId, newStatus: "Cancelled"})} className="bg-transparent hover:bg-danger text-danger font-semibold hover:text-white py-2 px-20 border border-danger hover:border-transparent rounded-full w-full md:w-1/3">
+        Cancel
+        </button>}
         </div>}
     </div>
   );
