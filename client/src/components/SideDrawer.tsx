@@ -62,7 +62,7 @@ const SideDrawer: React.FC<SideDrawerProps> = ({ sidebarOpen, setSidebarOpen }) 
   return (
     <aside
       ref={sidebar}
-      className={`absolute h-full lg:h-auto left-0 top-0 z-30 mt-16 flex  w-[75%] md:w-[25%] flex-col justify-start  overflow-y-hidden bg-primary duration-300 ease-linear dark:bg-boxdark lg:static lg:translate-x-0 ${
+      className={`absolute h-screen  left-0 top-0 z-30 mt-16 flex  w-[75%] md:w-[25%] flex-col justify-start  overflow-y-hidden bg-primary duration-300 ease-linear dark:bg-boxdark lg:static lg:translate-x-0 ${
         sidebarOpen ? 'translate-x-0' : '-translate-x-full'
       }`}
     >
@@ -220,6 +220,20 @@ const SideDrawer: React.FC<SideDrawerProps> = ({ sidebarOpen, setSidebarOpen }) 
                   Appointments
                 </NavLink>
               </li>
+             {userData.role ==="USER" && <li>
+                <NavLink
+                  to={`/${userData?.role.toLowerCase()}/vaccination`}
+                  className={`group relative flex items-center gap-2.5 rounded-sm py-4 px-6 font-semibold text-bodydark1 duration-300 ease-in-out hover:bg-secondary dark:hover:bg-meta-4 ${
+                    pathname.includes('vaccination') && 'bg-secondary'
+                  }`}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
+                  </svg>
+
+                  My Vaccinations
+                </NavLink>
+              </li>}
               <li>
                 <NavLink
                   to="#"

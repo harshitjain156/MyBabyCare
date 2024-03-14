@@ -105,6 +105,7 @@ import DoctorAvailabilityPage from "../src/page/DoctorAvailabilityPage";
 import DoctorViewAvailabilityPage from "../src/page/DoctorViewAvailabilityPage";
 import DetailedViewPage from '../src/page/DetailedViewPage';
 import RescheduleAppointmentForm from "../src/components/RescheduleAppointmentForm"
+import VaccinationPage from '../src/page/VaccinationPage';
 
 const ProtectedRouteUser : React.FC<{ children: any }> = ({ children }) => {
   const  location = useLocation();
@@ -200,6 +201,8 @@ function App() {
         <Route path={`/user/appointment/doctor`} element={<ProtectedRouteUser><Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}><Booking/></Layout> </ProtectedRouteUser>} />
         <Route path={`/user/appointment/doctor/:doctorId`} element={<ProtectedRouteUser><Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}><BookingAppointmentForm/> </Layout></ProtectedRouteUser>} />
         <Route path={`/user/dashboard`} element={<ProtectedRouteUser><Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}><Dashboard sidebarOpen={sidebarOpen} /></Layout></ProtectedRouteUser> } />
+
+        <Route path={`/user/vaccination`} element={<ProtectedRouteUser><Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}><VaccinationPage/></Layout></ProtectedRouteUser> } />
         {/* <Route path={`/doctor/appointment/doctor/:doctorId`} element={<ProtectedRoute><Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}><BookingAppointmentForm/> </Layout></ProtectedRoute>} /> */}
         <Route path={`/doctor/appointment`} element={<ProtectedRouteDoctor><Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}><Appointment/></Layout></ProtectedRouteDoctor> } />
         {/* <Route path={`/doctor/appointment/doctor`} element={<ProtectedRoute><Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}><Booking/></Layout> </ProtectedRoute>} /> */}
@@ -208,6 +211,7 @@ function App() {
         <Route path={`/doctor/availability/create-new`} element={<ProtectedRouteDoctor><Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}><DoctorAvailabilityPage/></Layout></ProtectedRouteDoctor> } />
         <Route path={`/doctor/availability/view`} element={<ProtectedRouteDoctor><Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}><DoctorViewAvailabilityPage/></Layout></ProtectedRouteDoctor> } />
         <Route path={`/doctor/profile`} element={<DoctorProfilePage/>} />
+       
         <Route path="*" element={<NotFoundPage/>} />
         <Route path="/doctor/appointment/:id" element={<ProtectedRouteDoctor><Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}><DetailedViewPage /></Layout></ProtectedRouteDoctor>} />
       </Routes>
