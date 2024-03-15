@@ -158,10 +158,10 @@ const Layout: React.FC<LayoutProps> = ({ sidebarOpen, setSidebarOpen, children }
   }, [sidebarExpanded]);
 
   return (
-    <div className="flex  w-full ">
-      
+    <div className="flex fixed  w-full ">
+    
       <SideDrawer sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} type="someType"/>
-     
+  
       <div className={`h-full w-full pt-24  flex-col justify-start  overflow-scroll`}>
         {children}
       </div>

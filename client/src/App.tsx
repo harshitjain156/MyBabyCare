@@ -107,6 +107,7 @@ import DetailedViewPage from '../src/page/DetailedViewPage';
 import RescheduleAppointmentForm from "../src/components/RescheduleAppointmentForm"
 import VaccinationPage from '../src/page/VaccinationPage';
 
+
 const ProtectedRouteUser : React.FC<{ children: any }> = ({ children }) => {
   const  location = useLocation();
   const {pathname } = location;
@@ -215,6 +216,7 @@ function App() {
         <Route path="*" element={<NotFoundPage/>} />
         <Route path="/doctor/appointment/:id" element={<ProtectedRouteDoctor><Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}><DetailedViewPage /></Layout></ProtectedRouteDoctor>} />
       </Routes>
+     
       <ChatContainer hideChatContainer={hideChatContainer} setHideChatContainer={setHideChatContainer} createMeetingHandler={createMeetingHandler}/>
 </>
   );
