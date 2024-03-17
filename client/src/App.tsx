@@ -23,9 +23,7 @@
 //  const [sidebarOpen, setSidebarOpen] = useState(false);
 //  const[hideChatContainer, setHideChatContainer]=useState(true);
 
-
 //   return (
-   
 
 //     <Router>
 //           <ToastContainer />
@@ -39,14 +37,10 @@
 //       <Route path="meeting" element={<VideoCall/>}/>
 //       <Route path="admin" element={<AdminPage/>}/>
 //       <Route path={`/${type}/dashboard`} element={<Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}><Dashboard type={type}/></Layout> }/>
-      
+
 //       </Routes>
 //       <ChatContainer hideChatContainer={hideChatContainer} setHideChatContainer={setHideChatContainer}/>
 //     </Router>
-   
-
-
-
 
 // // const [isChatOpen, setIsChatOpen] = useState(false);
 
@@ -76,149 +70,277 @@
 
 // export default App;
 
-
-import React, { useState } from 'react';
-import { Navigate, Route, BrowserRouter as Router, Routes, useLocation, useNavigate } from 'react-router-dom';
-import './App.css';
-import LoginPage from './page/LoginPage';
-import NavBar from './components/NavBar';
-import SignUpPage from './page/SignUpPage';
-import DoctorLoginPage from './page/DoctorLoginPage';
-import DoctorSignUpPage from './page/DoctorSignUpPage';
-import AdminPage from './page/AdminLoginPage';
-import { ToastContainer, toast } from 'react-toastify';
-import Dashboard from './page/Dashboard';
-import ChatDrawer from './components/ChatDrawer';
-import VideoConferencing  from "../src/videoConferencing/VideoConferencing";
-import ChatContainer from './components/ChatContainer';
-import VideoCall from './videoCall/VideoCall';
-import Layout from './UI/Layout';
-import { getToken } from './videoConferencing/api';
-import { createMeeting } from './videoConferencing/api';
-import Appointment from './components/Appointment';
-import Booking from './components/Booking';
+import React, { useState } from "react";
+import {
+  Navigate,
+  Route,
+  BrowserRouter as Router,
+  Routes,
+  useLocation,
+  useNavigate,
+} from "react-router-dom";
+import "./App.css";
+import LoginPage from "./page/LoginPage";
+import NavBar from "./components/NavBar";
+import SignUpPage from "./page/SignUpPage";
+import DoctorLoginPage from "./page/DoctorLoginPage";
+import DoctorSignUpPage from "./page/DoctorSignUpPage";
+import AdminPage from "./page/AdminLoginPage";
+import { ToastContainer, toast } from "react-toastify";
+import Dashboard from "./page/Dashboard";
+import ChatDrawer from "./components/ChatDrawer";
+import VideoConferencing from "../src/videoConferencing/VideoConferencing";
+import ChatContainer from "./components/ChatContainer";
+import VideoCall from "./videoCall/VideoCall";
+import Layout from "./UI/Layout";
+import { getToken } from "./videoConferencing/api";
+import { createMeeting } from "./videoConferencing/api";
+import Appointment from "./components/Appointment";
+import Booking from "./components/Booking";
 import BookingAppointmentForm from "./components/BookingAppointmentForm";
-import { useAuth } from '../src/AuthContext/AuthContext';
-import NotFoundPage from "../src/page/NotFoundPage"
-import DoctorProfilePage from "../src/page/DoctorProfilePage"
+import { useAuth } from "../src/AuthContext/AuthContext";
+import NotFoundPage from "../src/page/NotFoundPage";
+import DoctorProfilePage from "../src/page/DoctorProfilePage";
 import DoctorAvailabilityPage from "../src/page/DoctorAvailabilityPage";
 import DoctorViewAvailabilityPage from "../src/page/DoctorViewAvailabilityPage";
-import DetailedViewPage from '../src/page/DetailedViewPage';
-import RescheduleAppointmentForm from "../src/components/RescheduleAppointmentForm"
-import VaccinationPage from '../src/page/VaccinationPage';
+import DetailedViewPage from "../src/page/DetailedViewPage";
+import RescheduleAppointmentForm from "../src/components/RescheduleAppointmentForm";
+import VaccinationPage from "../src/page/VaccinationPage";
+import NotificationContainer from "../src/components/Notification";
 
-
-const ProtectedRouteUser : React.FC<{ children: any }> = ({ children }) => {
-  const  location = useLocation();
-  const {pathname } = location;
-  const {userData} = useAuth();
-  return userData && userData?.role ==="USER" ? (
+const ProtectedRouteUser: React.FC<{ children: any }> = ({ children }) => {
+  const location = useLocation();
+  const { pathname } = location;
+  const { userData } = useAuth();
+  return userData && userData?.role === "USER" ? (
     children
   ) : (
     <Navigate to="/user/login" replace />
   );
- 
 };
 
-const ProtectedRouteDoctor : React.FC<{ children: any }> = ({ children }) => {
-  const  location = useLocation();
-  const {pathname } = location;
-  const {userData} = useAuth();
-  return userData && userData?.role==="DOCTOR" ? (
+const ProtectedRouteDoctor: React.FC<{ children: any }> = ({ children }) => {
+  const location = useLocation();
+  const { pathname } = location;
+  const { userData } = useAuth();
+  return userData && userData?.role === "DOCTOR" ? (
     children
   ) : (
     <Navigate to="/doctor/login" replace />
   );
- 
 };
 
-
 function App() {
- 
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
   const [hideChatContainer, setHideChatContainer] = useState<boolean>(true);
+  const [hideNotificationContainer, setHideNotificationContainer] =
+    useState<boolean>(true);
   const [meetingId, setMeetingId] = useState<string>("");
-  const [iscreateMeetingClicked, setIscreateMeetingClicked] = useState<boolean>(false);
+  const [iscreateMeetingClicked, setIscreateMeetingClicked] =
+    useState<boolean>(false);
   const [token, setToken] = useState<string>("");
   const [participantName, setParticipantName] = useState("");
-  
+
   const navigate = useNavigate();
 
-
   const createMeetingHandler = async () => {
-      const token = await getToken();
-      console.log(token);
-      const { meetingId, err } = await createMeeting({ token });
-      // const { meetingId, err } = await _handleOnCreateMeeting();
-       console.log(meetingId + " " + err);
-      if (meetingId) {
-        setToken(token);
-        setMeetingId(meetingId);
-        setIscreateMeetingClicked(true);
-         navigate('/meeting')
-      } else {
-        toast.error(
-          `${err}`);
-      }
+    const token = await getToken();
+    console.log(token);
+    const { meetingId, err } = await createMeeting({ token });
+    // const { meetingId, err } = await _handleOnCreateMeeting();
+    console.log(meetingId + " " + err);
+    if (meetingId) {
+      setToken(token);
+      setMeetingId(meetingId);
+      setIscreateMeetingClicked(true);
+      navigate("/meeting");
+    } else {
+      toast.error(`${err}`);
     }
+  };
 
-
-  const eraseTokenHandler = () =>{
-     setToken("");
+  const eraseTokenHandler = () => {
+    setToken("");
     setMeetingId("");
-  }
+  };
 
- const handleTokenAndId=(token:any, id:any)=>{
-  setToken(token);
-  setMeetingId(id);
- }
+  const handleTokenAndId = (token: any, id: any) => {
+    setToken(token);
+    setMeetingId(id);
+  };
 
- const setMeetingIdHandler=(e:any)=>{
+  const setMeetingIdHandler = (e: any) => {
     setMeetingId(e.target.value);
- }
-
-
-
-
+  };
 
   return (
-<>
-
-
-
-       <ToastContainer />
-      <NavBar setHideChatContainer={setHideChatContainer} setSidebarOpen={setSidebarOpen} sidebarOpen={sidebarOpen}/>
+    <>
+      <ToastContainer />
+      <NavBar
+        setHideChatContainer={setHideChatContainer}
+        setHideNotificationContainer={setHideNotificationContainer}
+        setSidebarOpen={setSidebarOpen}
+        sidebarOpen={sidebarOpen}
+      />
       <Routes>
         <Route path="/" element={<Navigate to="user/login" />} />
         <Route index path="user/login" element={<LoginPage />} />
         <Route path="user/signup" element={<SignUpPage />} />
         <Route path="doctor/login" element={<DoctorLoginPage />} />
         <Route path="doctor/signup" element={<DoctorSignUpPage />} />
-        <Route path="meeting" element={<VideoConferencing meetingId={meetingId} iscreateMeetingClicked={iscreateMeetingClicked} token={token} eraseTokenHandler={eraseTokenHandler} setMeetingIdHandler={setMeetingIdHandler} handleTokenAndId={handleTokenAndId}/>} />
+        <Route
+          path="meeting"
+          element={
+            <VideoConferencing
+              meetingId={meetingId}
+              iscreateMeetingClicked={iscreateMeetingClicked}
+              token={token}
+              eraseTokenHandler={eraseTokenHandler}
+              setMeetingIdHandler={setMeetingIdHandler}
+              handleTokenAndId={handleTokenAndId}
+            />
+          }
+        />
         <Route path="admin" element={<AdminPage />} />
-        <Route path={`/user/reschedule-appointment/:id`} element={<ProtectedRouteUser><Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}><RescheduleAppointmentForm/></Layout></ProtectedRouteUser> } />
-        <Route path={`/user/appointment`} element={<ProtectedRouteUser><Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}><Appointment/></Layout></ProtectedRouteUser> } />
-        <Route path="/user/appointment/:id" element={<ProtectedRouteUser><Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}><DetailedViewPage /></Layout></ProtectedRouteUser>} />
-        <Route path={`/user/appointment/doctor`} element={<ProtectedRouteUser><Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}><Booking/></Layout> </ProtectedRouteUser>} />
-        <Route path={`/user/appointment/doctor/:doctorId`} element={<ProtectedRouteUser><Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}><BookingAppointmentForm/> </Layout></ProtectedRouteUser>} />
-        <Route path={`/user/dashboard`} element={<ProtectedRouteUser><Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}><Dashboard sidebarOpen={sidebarOpen} /></Layout></ProtectedRouteUser> } />
+        <Route
+          path={`/user/reschedule-appointment/:id`}
+          element={
+            <ProtectedRouteUser>
+              <Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}>
+                <RescheduleAppointmentForm />
+              </Layout>
+            </ProtectedRouteUser>
+          }
+        />
+        <Route
+          path={`/user/appointment`}
+          element={
+            <ProtectedRouteUser>
+              <Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}>
+                <Appointment />
+              </Layout>
+            </ProtectedRouteUser>
+          }
+        />
+        <Route
+          path="/user/appointment/:id"
+          element={
+            <ProtectedRouteUser>
+              <Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}>
+                <DetailedViewPage />
+              </Layout>
+            </ProtectedRouteUser>
+          }
+        />
+        <Route
+          path={`/user/appointment/doctor`}
+          element={
+            <ProtectedRouteUser>
+              <Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}>
+                <Booking />
+              </Layout>{" "}
+            </ProtectedRouteUser>
+          }
+        />
+        <Route
+          path={`/user/appointment/doctor/:doctorId`}
+          element={
+            <ProtectedRouteUser>
+              <Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}>
+                <BookingAppointmentForm />{" "}
+              </Layout>
+            </ProtectedRouteUser>
+          }
+        />
+        <Route
+          path={`/user/dashboard`}
+          element={
+            <ProtectedRouteUser>
+              <Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}>
+                <Dashboard sidebarOpen={sidebarOpen} />
+              </Layout>
+            </ProtectedRouteUser>
+          }
+        />
 
-        <Route path={`/user/vaccination`} element={<ProtectedRouteUser><Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}><VaccinationPage/></Layout></ProtectedRouteUser> } />
+        <Route
+          path={`/user/vaccination`}
+          element={
+            <ProtectedRouteUser>
+              <Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}>
+                <VaccinationPage />
+              </Layout>
+            </ProtectedRouteUser>
+          }
+        />
         {/* <Route path={`/doctor/appointment/doctor/:doctorId`} element={<ProtectedRoute><Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}><BookingAppointmentForm/> </Layout></ProtectedRoute>} /> */}
-        <Route path={`/doctor/appointment`} element={<ProtectedRouteDoctor><Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}><Appointment/></Layout></ProtectedRouteDoctor> } />
+        <Route
+          path={`/doctor/appointment`}
+          element={
+            <ProtectedRouteDoctor>
+              <Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}>
+                <Appointment />
+              </Layout>
+            </ProtectedRouteDoctor>
+          }
+        />
         {/* <Route path={`/doctor/appointment/doctor`} element={<ProtectedRoute><Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}><Booking/></Layout> </ProtectedRoute>} /> */}
-        <Route path={`/doctor/dashboard`} element={<ProtectedRouteDoctor><Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}><Dashboard sidebarOpen={sidebarOpen} /></Layout></ProtectedRouteDoctor> } />
+        <Route
+          path={`/doctor/dashboard`}
+          element={
+            <ProtectedRouteDoctor>
+              <Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}>
+                <Dashboard sidebarOpen={sidebarOpen} />
+              </Layout>
+            </ProtectedRouteDoctor>
+          }
+        />
         {/* <Route path={`/doctor/Profile-details`} element={<ProtectedRouteDoctor><Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}><DoctorProfilePage/></Layout></ProtectedRouteDoctor> } /> */}
-        <Route path={`/doctor/availability/create-new`} element={<ProtectedRouteDoctor><Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}><DoctorAvailabilityPage/></Layout></ProtectedRouteDoctor> } />
-        <Route path={`/doctor/availability/view`} element={<ProtectedRouteDoctor><Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}><DoctorViewAvailabilityPage/></Layout></ProtectedRouteDoctor> } />
-        <Route path={`/doctor/profile`} element={<DoctorProfilePage/>} />
-       
-        <Route path="*" element={<NotFoundPage/>} />
-        <Route path="/doctor/appointment/:id" element={<ProtectedRouteDoctor><Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}><DetailedViewPage /></Layout></ProtectedRouteDoctor>} />
+        <Route
+          path={`/doctor/availability/create-new`}
+          element={
+            <ProtectedRouteDoctor>
+              <Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}>
+                <DoctorAvailabilityPage />
+              </Layout>
+            </ProtectedRouteDoctor>
+          }
+        />
+        <Route
+          path={`/doctor/availability/view`}
+          element={
+            <ProtectedRouteDoctor>
+              <Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}>
+                <DoctorViewAvailabilityPage />
+              </Layout>
+            </ProtectedRouteDoctor>
+          }
+        />
+        <Route path={`/doctor/profile`} element={<DoctorProfilePage />} />
+
+        <Route path="*" element={<NotFoundPage />} />
+        <Route
+          path="/doctor/appointment/:id"
+          element={
+            <ProtectedRouteDoctor>
+              <Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}>
+                <DetailedViewPage />
+              </Layout>
+            </ProtectedRouteDoctor>
+          }
+        />
       </Routes>
-     
-      <ChatContainer hideChatContainer={hideChatContainer} setHideChatContainer={setHideChatContainer} createMeetingHandler={createMeetingHandler}/>
-</>
+      <NotificationContainer
+        hideNotificationContainer={hideNotificationContainer}
+        setHideNotificationContainer={setHideNotificationContainer}
+      />
+
+      <ChatContainer
+        hideChatContainer={hideChatContainer}
+        setHideChatContainer={setHideChatContainer}
+        createMeetingHandler={createMeetingHandler}
+      />
+    </>
   );
 }
 
