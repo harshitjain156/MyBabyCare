@@ -1,7 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { NavLink, useLocation, useParams } from 'react-router-dom';
+import React, { useEffect, useRef, useState } from "react";
+import { NavLink, useLocation, useParams } from "react-router-dom";
 import { useAuth } from "../AuthContext/AuthContext";
-import SidebarLinkGroup from './SidebarLinkGroup';
+import SidebarLinkGroup from "./SidebarLinkGroup";
 
 interface SideDrawerProps {
   sidebarOpen: boolean;
@@ -9,23 +9,22 @@ interface SideDrawerProps {
   type: string;
 }
 
-
-const SideDrawer: React.FC<SideDrawerProps> = ({ sidebarOpen, setSidebarOpen }) => {
-
+const SideDrawer: React.FC<SideDrawerProps> = ({
+  sidebarOpen,
+  setSidebarOpen,
+}) => {
   const { userData, updateUser } = useAuth();
   // console.log(userData)
 
- const  location = useLocation();
- const {pathname } = location;
-
-
+  const location = useLocation();
+  const { pathname } = location;
 
   const trigger = useRef<HTMLDivElement>(null);
   const sidebar = useRef<HTMLElement>(null);
 
-  const storedSidebarExpanded = localStorage.getItem('sidebar-expanded');
+  const storedSidebarExpanded = localStorage.getItem("sidebar-expanded");
   const [sidebarExpanded, setSidebarExpanded] = useState<boolean>(
-    storedSidebarExpanded === null ? false : storedSidebarExpanded === 'true'
+    storedSidebarExpanded === null ? false : storedSidebarExpanded === "true"
   );
 
   // close on click outside
@@ -33,37 +32,38 @@ const SideDrawer: React.FC<SideDrawerProps> = ({ sidebarOpen, setSidebarOpen }) 
     const clickHandler = (event: MouseEvent) => {
       if (!sidebarOpen || !sidebar.current || !trigger.current) return;
       const target = event.target as HTMLElement;
-      if (trigger.current.contains(target) || sidebar.current.contains(target)) return;
+      if (trigger.current.contains(target) || sidebar.current.contains(target))
+        return;
       setSidebarOpen(false);
     };
-    document.addEventListener('click', clickHandler);
-    return () => document.removeEventListener('click', clickHandler);
+    document.addEventListener("click", clickHandler);
+    return () => document.removeEventListener("click", clickHandler);
   }, [sidebarOpen, setSidebarOpen]);
 
   // close if the esc key is pressed
   useEffect(() => {
     const keyHandler = (event: KeyboardEvent) => {
-      if (!sidebarOpen || event.key !== '27') return;
+      if (!sidebarOpen || event.key !== "27") return;
       setSidebarOpen(false);
     };
-    document.addEventListener('keydown', keyHandler);
-    return () => document.removeEventListener('keydown', keyHandler);
+    document.addEventListener("keydown", keyHandler);
+    return () => document.removeEventListener("keydown", keyHandler);
   }, [sidebarOpen, setSidebarOpen]);
 
   useEffect(() => {
-    localStorage.setItem('sidebar-expanded', sidebarExpanded.toString());
+    localStorage.setItem("sidebar-expanded", sidebarExpanded.toString());
     if (sidebarExpanded) {
-      document.querySelector('body')?.classList.add('sidebar-expanded');
+      document.querySelector("body")?.classList.add("sidebar-expanded");
     } else {
-      document.querySelector('body')?.classList.remove('sidebar-expanded');
+      document.querySelector("body")?.classList.remove("sidebar-expanded");
     }
   }, [sidebarExpanded]);
 
   return (
     <aside
       ref={sidebar}
-      className={`absolute h-screen  left-0 top-0 z-30 mt-16 flex  w-[75%] md:w-[25%] flex-col justify-start  overflow-y-hidden bg-primary duration-300 ease-linear dark:bg-boxdark lg:static lg:translate-x-0 ${
-        sidebarOpen ? 'translate-x-0' : '-translate-x-full'
+      className={`absolute h-full lg:h-auto left-0 top-0 z-30 mt-16 flex  w-[75%] md:w-[25%] flex-col justify-start  overflow-y-hidden bg-primary duration-300 ease-linear dark:bg-boxdark lg:static lg:translate-x-0 ${
+        sidebarOpen ? "translate-x-0" : "-translate-x-full"
       }`}
     >
       {/* <!-- SIDEBAR HEADER --> */}
@@ -79,13 +79,24 @@ const SideDrawer: React.FC<SideDrawerProps> = ({ sidebarOpen, setSidebarOpen }) 
                 <NavLink
                   to={`/${userData?.role.toLowerCase()}/dashboard`}
                   className={`group relative flex items-center gap-2.5 rounded-sm px-6 py-4 font-semibold text-bodydark1 duration-300 ease-in-out hover:bg-secondary-dark dark:hover:bg-meta-4 ${
-                    (pathname === '#' || pathname.includes('dashboard')) && 'bg-secondary'
+                    (pathname === "#" || pathname.includes("dashboard")) &&
+                    "bg-secondary"
                   }`}
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="w-6 h-6"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"
+                    />
                   </svg>
-
                   Home
                 </NavLink>
               </li>
@@ -97,149 +108,213 @@ const SideDrawer: React.FC<SideDrawerProps> = ({ sidebarOpen, setSidebarOpen }) 
                   <NavLink
                     to="#"
                     className={`group relative flex items-center gap-2.5 rounded-sm py-4 px-6 font-semibold text-bodydark1 duration-300 ease-in-out hover:bg-secondary dark:hover:bg-meta-4 ${
-                      pathname.includes('calendar') && 'bg-graydark dark:bg-meta-4'
+                      pathname.includes("calendar") &&
+                      "bg-graydark dark:bg-meta-4"
                     }`}
                   >
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0ZM3.75 12h.007v.008H3.75V12Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm-.375 5.25h.007v.008H3.75v-.008Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={1.5}
+                      stroke="currentColor"
+                      className="w-6 h-6"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0ZM3.75 12h.007v.008H3.75V12Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm-.375 5.25h.007v.008H3.75v-.008Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z"
+                      />
                     </svg>
-
                     List of users
                   </NavLink>
                 </li>
               )}
-              {userData?.role.toLowerCase().toLocaleLowerCase() !== "doctor" && (
+              {userData?.role.toLowerCase().toLocaleLowerCase() !==
+                "doctor" && (
                 <li>
                   <NavLink
                     to="#"
                     className={`group relative flex items-center gap-2.5 rounded-sm py-4 px-6 font-semibold text-bodydark1 duration-300 ease-in-out hover:bg-secondary dark:hover:bg-meta-4 ${
-                      pathname.includes('calendar') && 'bg-graydark dark:bg-meta-4'
+                      pathname.includes("calendar") &&
+                      "bg-graydark dark:bg-meta-4"
                     }`}
                   >
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0ZM3.75 12h.007v.008H3.75V12Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm-.375 5.25h.007v.008H3.75v-.008Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={1.5}
+                      stroke="currentColor"
+                      className="w-6 h-6"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0ZM3.75 12h.007v.008H3.75V12Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm-.375 5.25h.007v.008H3.75v-.008Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z"
+                      />
                     </svg>
-
                     Doctors
                   </NavLink>
                 </li>
               )}
-             
-             {userData?.role.toLowerCase().toLocaleLowerCase() === "doctor" && <SidebarLinkGroup
-                activeCondition={
-                  pathname === '/availability' || pathname.includes('availability')
-                }
-              >
-                {(handleClick:any, open:any) => {
-                  return (
-                    <React.Fragment>
-                      <NavLink
-                        to="#"
-                        className={`group relative flex items-center gap-2.5 rounded-sm py-4 px-6 font-semibold text-bodydark1 duration-300 ease-in-out hover:bg-secondary dark:hover:bg-meta-4 ${
-                          (pathname === '/availability' ||
-                            pathname.includes('availability')) &&
-                            'bg-secondary'
-                        }`}
-                        onClick={(e) => {
-                          e.preventDefault();
-                          sidebarExpanded
-                            ? handleClick()
-                            : setSidebarExpanded(true);
-                        }}
-                      >
-                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-6 h-6">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                  </svg>
-                        Availability
-                        <svg
-                          className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${
-                            open && 'rotate-180'
+
+              {userData?.role.toLowerCase().toLocaleLowerCase() ===
+                "doctor" && (
+                <SidebarLinkGroup
+                  activeCondition={
+                    pathname === "/availability" ||
+                    pathname.includes("availability")
+                  }
+                >
+                  {(handleClick: any, open: any) => {
+                    return (
+                      <React.Fragment>
+                        <NavLink
+                          to="#"
+                          className={`group relative flex items-center gap-2.5 rounded-sm py-4 px-6 font-semibold text-bodydark1 duration-300 ease-in-out hover:bg-secondary dark:hover:bg-meta-4 ${
+                            (pathname === "/availability" ||
+                              pathname.includes("availability")) &&
+                            "bg-secondary"
                           }`}
-                          width="20"
-                          height="20"
-                          viewBox="0 0 20 20"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            sidebarExpanded
+                              ? handleClick()
+                              : setSidebarExpanded(true);
+                          }}
                         >
-                          <path
-                            fillRule="evenodd"
-                            clipRule="evenodd"
-                            d="M4.41107 6.9107C4.73651 6.58527 5.26414 6.58527 5.58958 6.9107L10.0003 11.3214L14.4111 6.91071C14.7365 6.58527 15.2641 6.58527 15.5896 6.91071C15.915 7.23614 15.915 7.76378 15.5896 8.08922L10.5896 13.0892C10.2641 13.4147 9.73651 13.4147 9.41107 13.0892L4.41107 8.08922C4.08563 7.76378 4.08563 7.23614 4.41107 6.9107Z"
-                            fill=""
-                          />
-                        </svg>
-                      </NavLink>
-                      {/* <!-- Dropdown Menu Start --> */}
-                      <div
-                        className={`translate transform overflow-hidden ${
-                          !open && 'hidden'
-                        }`}
-                      >
-                        <ul className="mt-4 mb-5.5 flex flex-col gap-2.5 pl-10">
-                          <li>
-                            <NavLink
-                              to="/doctor/availability/view"
-                              className={({ isActive }) =>
-                                'group relative flex items-center gap-2.5 rounded-md px-4 font-medium  duration-300 ease-in-out  hover:text-white ' +
-                                (isActive ? "text-white":"text-tertiary-dark")
-                              }
-                            >
-                              View Availability
-                            </NavLink>
-                          </li>
-                          <li>
-                            <NavLink
-                              to="/doctor/availability/create-new"
-                              className={({ isActive }) =>
-                                'group relative flex items-center gap-2.5 rounded-md px-4 font-medium duration-300 ease-in-out hover:text-white ' +
-                                (isActive ? "text-white":"text-tertiary-dark")
-                              }
-                            >
-                             Create Availability
-                            </NavLink>
-                          </li>
-                        </ul>
-                      </div>
-                      {/* <!-- Dropdown Menu End --> */}
-                    </React.Fragment>
-                  );
-                }}
-              </SidebarLinkGroup>}
-              
-               <li>
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke-width="1.5"
+                            stroke="currentColor"
+                            className="w-6 h-6"
+                          >
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                            />
+                          </svg>
+                          Availability
+                          <svg
+                            className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${
+                              open && "rotate-180"
+                            }`}
+                            width="20"
+                            height="20"
+                            viewBox="0 0 20 20"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              clipRule="evenodd"
+                              d="M4.41107 6.9107C4.73651 6.58527 5.26414 6.58527 5.58958 6.9107L10.0003 11.3214L14.4111 6.91071C14.7365 6.58527 15.2641 6.58527 15.5896 6.91071C15.915 7.23614 15.915 7.76378 15.5896 8.08922L10.5896 13.0892C10.2641 13.4147 9.73651 13.4147 9.41107 13.0892L4.41107 8.08922C4.08563 7.76378 4.08563 7.23614 4.41107 6.9107Z"
+                              fill=""
+                            />
+                          </svg>
+                        </NavLink>
+                        {/* <!-- Dropdown Menu Start --> */}
+                        <div
+                          className={`translate transform overflow-hidden ${
+                            !open && "hidden"
+                          }`}
+                        >
+                          <ul className="mt-4 mb-5.5 flex flex-col gap-2.5 pl-10">
+                            <li>
+                              <NavLink
+                                to="/doctor/availability/view"
+                                className={({ isActive }) =>
+                                  "group relative flex items-center gap-2.5 rounded-md px-4 font-medium  duration-300 ease-in-out  hover:text-white " +
+                                  (isActive
+                                    ? "text-white"
+                                    : "text-tertiary-dark")
+                                }
+                              >
+                                View Availability
+                              </NavLink>
+                            </li>
+                            <li>
+                              <NavLink
+                                to="/doctor/availability/create-new"
+                                className={({ isActive }) =>
+                                  "group relative flex items-center gap-2.5 rounded-md px-4 font-medium duration-300 ease-in-out hover:text-white " +
+                                  (isActive
+                                    ? "text-white"
+                                    : "text-tertiary-dark")
+                                }
+                              >
+                                Create Availability
+                              </NavLink>
+                            </li>
+                          </ul>
+                        </div>
+                        {/* <!-- Dropdown Menu End --> */}
+                      </React.Fragment>
+                    );
+                  }}
+                </SidebarLinkGroup>
+              )}
+
+              <li>
                 <NavLink
                   to={`/${userData?.role.toLowerCase()}/appointment`}
                   className={`group relative flex items-center gap-2.5 rounded-sm py-4 px-6 font-semibold text-bodydark1 duration-300 ease-in-out hover:bg-secondary dark:hover:bg-meta-4 ${
-                    pathname.includes('appointment') && 'bg-secondary'
+                    pathname.includes("appointment") && "bg-secondary"
                   }`}
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="w-6 h-6"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5"
+                    />
                   </svg>
-
                   Appointments
                 </NavLink>
               </li>
-             {userData.role ==="USER" && <li>
-                <NavLink
-                  to={`/${userData?.role.toLowerCase()}/vaccination`}
-                  className={`group relative flex items-center gap-2.5 rounded-sm py-4 px-6 font-semibold text-bodydark1 duration-300 ease-in-out hover:bg-secondary dark:hover:bg-meta-4 ${
-                    pathname.includes('vaccination') && 'bg-secondary'
-                  }`}
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-6 h-6">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="m15 11.25 1.5 1.5.75-.75V8.758l2.276-.61a3 3 0 1 0-3.675-3.675l-.61 2.277H12l-.75.75 1.5 1.5M15 11.25l-8.47 8.47c-.34.34-.8.53-1.28.53s-.94.19-1.28.53l-.97.97-.75-.75.97-.97c.34-.34.53-.8.53-1.28s.19-.94.53-1.28L12.75 9M15 11.25 12.75 9" />
-                </svg>
-
-
-                  Vaccinations
-                </NavLink>
-              </li>}
+              {userData.role === "USER" && (
+                <li>
+                  <NavLink
+                    to={`/${userData?.role.toLowerCase()}/vaccination`}
+                    className={`group relative flex items-center gap-2.5 rounded-sm py-4 px-6 font-semibold text-bodydark1 duration-300 ease-in-out hover:bg-secondary dark:hover:bg-meta-4 ${
+                      pathname.includes("vaccination") && "bg-secondary"
+                    }`}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke-width="1.5"
+                      stroke="currentColor"
+                      className="w-6 h-6"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="m15 11.25 1.5 1.5.75-.75V8.758l2.276-.61a3 3 0 1 0-3.675-3.675l-.61 2.277H12l-.75.75 1.5 1.5M15 11.25l-8.47 8.47c-.34.34-.8.53-1.28.53s-.94.19-1.28.53l-.97.97-.75-.75.97-.97c.34-.34.53-.8.53-1.28s.19-.94.53-1.28L12.75 9M15 11.25 12.75 9"
+                      />
+                    </svg>
+                    Vaccinations
+                  </NavLink>
+                </li>
+              )}
               <li>
                 <NavLink
                   to="#"
                   className={`group relative flex items-center gap-2.5 rounded-sm py-4 px-6 font-semibold text-bodydark1 duration-300 ease-in-out hover:bg-secondary dark:hover:bg-meta-4 ${
-                    pathname.includes('calendar') && 'bg-graydark dark:bg-meta-4'
+                    pathname.includes("calendar") &&
+                    "bg-graydark dark:bg-meta-4"
                   }`}
                 >
                   <svg
@@ -258,25 +333,39 @@ const SideDrawer: React.FC<SideDrawerProps> = ({ sidebarOpen, setSidebarOpen }) 
                   Calendar
                 </NavLink>
               </li>
-              {userData?.role.toLowerCase().toLocaleLowerCase() !== "doctor" && (<li>
-                <NavLink
-                  to="#"
-                  className={`group relative flex items-center gap-2.5 rounded-sm py-4 px-6 font-semibold text-bodydark1 duration-300 ease-in-out hover:bg-secondary dark:hover:bg-meta-4 ${
-                    pathname.includes('medical-records') && 'bg-graydark dark:bg-meta-4'
-                  }`}
-                >
-                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H9.75" />
+              {userData?.role.toLowerCase().toLocaleLowerCase() !==
+                "doctor" && (
+                <li>
+                  <NavLink
+                    to="#"
+                    className={`group relative flex items-center gap-2.5 rounded-sm py-4 px-6 font-semibold text-bodydark1 duration-300 ease-in-out hover:bg-secondary dark:hover:bg-meta-4 ${
+                      pathname.includes("medical-records") &&
+                      "bg-graydark dark:bg-meta-4"
+                    }`}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={1.5}
+                      stroke="currentColor"
+                      className="w-6 h-6"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H9.75"
+                      />
                     </svg>
-
-                  Medical Records
-                </NavLink>
-              </li>)}
+                    Medical Records
+                  </NavLink>
+                </li>
+              )}
               <li>
                 <NavLink
                   to="#"
                   className={`group relative flex items-center gap-2.5 rounded-sm py-4 px-6 font-semibold text-bodydark1 duration-300 ease-in-out hover:bg-secondary dark:hover:bg-meta-4 ${
-                    pathname.includes('profile') && 'bg-graydark dark:bg-meta-4'
+                    pathname.includes("profile") && "bg-graydark dark:bg-meta-4"
                   }`}
                 >
                   <svg
@@ -303,42 +392,65 @@ const SideDrawer: React.FC<SideDrawerProps> = ({ sidebarOpen, setSidebarOpen }) 
                 <NavLink
                   to="#"
                   className={`group relative flex items-center gap-2.5 rounded-sm py-4 px-6 font-semibold text-bodydark1 duration-300 ease-in-out hover:bg-secondary dark:hover:bg-meta-4 ${
-                    pathname.includes('settings') && 'bg-graydark dark:bg-meta-4'
+                    pathname.includes("settings") &&
+                    "bg-graydark dark:bg-meta-4"
                   }`}
                 >
                   {/* <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M17.25 11.25h-.022a.75.75 0 0 1-.727-.783l.022-.094.885-5.31a1.5 1.5 0 0 0-1.33-1.737l-.134-.007a1.5 1.5 0 0 0-1.36 1.007l-1.045 3.143a.75.75 0 0 1-.718.513H8.43a.75.75 0 0 1-.717-.514l-1.054-3.155a1.5 1.5 0 0 0-1.36-1.006l-.133.006a1.5 1.5 0 0 0-1.33 1.737l.89 5.344a.75.75 0 0 1-.727.883H3.75a1.5 1.5 0 0 0 0 3h-.374a.75.75 0 0 1-.75-.75v-.5a.75.75 0 0 1 .75-.75H4.5v-.749a1.5 1.5 0 0 0-.206-.769l-.206-.309a1.5 1.5 0 0 0-.775-.508l-.184-.028a.75.75 0 0 1-.677-.747l.002-.098a.75.75 0 0 1 .746-.752l.185.002a.75.75 0 0 1 .673.535l.261.784a1.5 1.5 0 0 0 .69.767l.239.114v5.033a1.5 1.5 0 0 0 .436 1.059l.195.195a1.5 1.5 0 0 0 2.121 0l.195-.195a1.5 1.5 0 0 0 .436-1.059v-5.033l.239-.114a1.5 1.5 0 0 0 .69-.767l.26-.784a.75.75 0 0 1 1.31-.282l.262.393a1.5 1.5 0 0 0-.207.77v.748h.376a.75.75 0 0 1 .75.75v.5a.75.75 0 0 1-.75.75H15v.751h.008a1.5 1.5 0 0 0 .198.78l.207.309a1.5 1.5 0 0 0 .774.508l.185.028a.75.75 0 0 1 .675.748l-.001.099a.75.75 0 0 1-.728.752l-.183-.001a.75.75 0 0 1-.677-.535l-.262-.784a1.5 1.5 0 0 0-.69-.767l-.239-.114V11.25zM9 14.25a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
                   </svg> */}
-
-<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-6 h-6">
-  <path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.325.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 0 1 1.37.49l1.296 2.247a1.125 1.125 0 0 1-.26 1.431l-1.003.827c-.293.241-.438.613-.43.992a7.723 7.723 0 0 1 0 .255c-.008.378.137.75.43.991l1.004.827c.424.35.534.955.26 1.43l-1.298 2.247a1.125 1.125 0 0 1-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.47 6.47 0 0 1-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 0 1-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 0 1-1.369-.49l-1.297-2.247a1.125 1.125 0 0 1 .26-1.431l1.004-.827c.292-.24.437-.613.43-.991a6.932 6.932 0 0 1 0-.255c.007-.38-.138-.751-.43-.992l-1.004-.827a1.125 1.125 0 0 1-.26-1.43l1.297-2.247a1.125 1.125 0 0 1 1.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.086.22-.128.332-.183.582-.495.644-.869l.214-1.28Z" />
-  <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-</svg>
-
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="1.5"
+                    stroke="currentColor"
+                    className="w-6 h-6"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.325.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 0 1 1.37.49l1.296 2.247a1.125 1.125 0 0 1-.26 1.431l-1.003.827c-.293.241-.438.613-.43.992a7.723 7.723 0 0 1 0 .255c-.008.378.137.75.43.991l1.004.827c.424.35.534.955.26 1.43l-1.298 2.247a1.125 1.125 0 0 1-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.47 6.47 0 0 1-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 0 1-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 0 1-1.369-.49l-1.297-2.247a1.125 1.125 0 0 1 .26-1.431l1.004-.827c.292-.24.437-.613.43-.991a6.932 6.932 0 0 1 0-.255c.007-.38-.138-.751-.43-.992l-1.004-.827a1.125 1.125 0 0 1-.26-1.43l1.297-2.247a1.125 1.125 0 0 1 1.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.086.22-.128.332-.183.582-.495.644-.869l.214-1.28Z"
+                    />
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+                    />
+                  </svg>
                   Settings
                 </NavLink>
               </li>
               <li>
                 <NavLink
                   to={`/${userData?.role.toLowerCase()}/login`}
-                  onClick={()=>{ updateUser(null)}}
+                  onClick={() => {
+                    updateUser(null);
+                  }}
                   className={`group relative flex items-center gap-2.5 rounded-sm py-4 px-6 font-semibold text-bodydark1 duration-300 ease-in-out hover:bg-secondary dark:hover:bg-meta-4 ${
-                    pathname.includes('logout') && 'bg-graydark dark:bg-meta-4'
+                    pathname.includes("logout") && "bg-graydark dark:bg-meta-4"
                   }`}
                 >
                   {/* <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M17.25 11.25h-.022a.75.75 0 0 1-.727-.783l.022-.094.885-5.31a1.5 1.5 0 0 0-1.33-1.737l-.134-.007a1.5 1.5 0 0 0-1.36 1.007l-1.045 3.143a.75.75 0 0 1-.718.513H8.43a.75.75 0 0 1-.717-.514l-1.054-3.155a1.5 1.5 0 0 0-1.36-1.006l-.133.006a1.5 1.5 0 0 0-1.33 1.737l.89 5.344a.75.75 0 0 1-.727.883H3.75a1.5 1.5 0 0 0 0 3h-.374a.75.75 0 0 1-.75-.75v-.5a.75.75 0 0 1 .75-.75H4.5v-.749a1.5 1.5 0 0 0-.206-.769l-.206-.309a1.5 1.5 0 0 0-.775-.508l-.184-.028a.75.75 0 0 1-.677-.747l.002-.098a.75.75 0 0 1 .746-.752l.185.002a.75.75 0 0 1 .673.535l.261.784a1.5 1.5 0 0 0 .69.767l.239.114v5.033a1.5 1.5 0 0 0 .436 1.059l.195.195a1.5 1.5 0 0 0 2.121 0l.195-.195a1.5 1.5 0 0 0 .436-1.059v-5.033l.239-.114a1.5 1.5 0 0 0 .69-.767l.26-.784a.75.75 0 0 1 1.31-.282l.262.393a1.5 1.5 0 0 0-.207.77v.748h.376a.75.75 0 0 1 .75.75v.5a.75.75 0 0 1-.75.75H15v.751h.008a1.5 1.5 0 0 0 .198.78l.207.309a1.5 1.5 0 0 0 .774.508l.185.028a.75.75 0 0 1 .675.748l-.001.099a.75.75 0 0 1-.728.752l-.183-.001a.75.75 0 0 1-.677-.535l-.262-.784a1.5 1.5 0 0 0-.69-.767l-.239-.114V11.25zM9 14.25a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
                   </svg> */}
-
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-6 h-6">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3H15" />
-                </svg>
-
-
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="1.5"
+                    stroke="currentColor"
+                    className="w-6 h-6"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3H15"
+                    />
+                  </svg>
                   Logout
                 </NavLink>
               </li>
-             
             </ul>
           </div>
         </nav>
