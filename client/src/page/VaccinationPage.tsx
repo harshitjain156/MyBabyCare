@@ -80,6 +80,27 @@ function VaccinationPage() {
             </span>
           </div>
         ))}
+        <div
+          className={`cursor-pointer p-4 border rounded-lg bg-opacity-10 bg-success  w-auto flex items-center justify-center shrink-0 bg-blue-100"
+            `}
+        >
+          <span className="h-full mx-24 items-center justify-center flex">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              className="w-12 h-12 text-success"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M12 4.5v15m7.5-7.5h-15"
+              />
+            </svg>
+          </span>
+        </div>
       </div>
       {/* 
       <div className="text-sm sticky top-2 font-medium text-center text-gray-500 border-b border-gray-200 bg-gray-50 dark:text-gray-400 dark:border-gray-700">

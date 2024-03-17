@@ -1,73 +1,100 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
-interface Message {
-  text: string;
+interface NotificationData {
+  id: number;
+  title: string;
+  message: string;
   timestamp: string;
 }
 
-interface Conversation {
-  id: number;
-  title: string;
-  messages: Message[];
+interface NotificationContainerProps {
+  hideNotificationContainer: boolean;
+  setHideNotificationContainer: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 interface NotificationProps {
-  conversations: Conversation[];
-  onConversationSelect: (id: number) => void;
-  onCloseDrawer: () => void;
+  notification: {
+    id: number;
+    title: string;
+    message: string;
+    timestamp: string;
+  };
+  onClose: () => void;
 }
 
-const Notification: React.FC<NotificationProps> = ({ conversations, onConversationSelect, onCloseDrawer }) => {
-
-  const truncateText = (text: string, maxLength: number): string => {
-    if (text.length <= maxLength) {
-      return text;
-    } else {
-      return text.substring(0, maxLength - 3) + '...';
-    }
-  };
-  
+const Notification: React.FC<NotificationProps> = ({
+  notification,
+  onClose,
+}) => {
   return (
-    <div className="flex flex-col h-screen bg-slate-200">
-      <div className="flex items-center justify-between bg-primary p-5">
-        <h2 className="text-3xl font-semibold">Chats</h2>
-        <button className=" hover:text-gray-700 focus:outline-none" onClick={onCloseDrawer}>
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-8 h-8">
-            <path fillRule="evenodd" d="M5.47 5.47a.75.75 0 0 1 1.06 0L12 10.94l5.47-5.47a.75.75 0 1 1 1.06 1.06L13.06 12l5.47 5.47a.75.75 0 1 1-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 0 1-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 0 1 0-1.06Z" clipRule="evenodd" />
-          </svg>
-        </button>
+    <div className="bg-gray-200 p-3 mb-2 rounded-md flex justify-between items-center">
+      <div>
+        <h3 className="font-semibold">{notification.title}</h3>
+        <p className="text-sm">{notification.message}</p>
+        <p className="text-xs text-gray-500">{notification.timestamp}</p>
       </div>
-      <ul className="divide-y divide-gray-300 flex-1 overflow-y-auto">
-        {conversations.map((conversation : Conversation) => (
-          <li key={conversation.id} className="py-2 hover:bg-secondary-dark px-4">
-            <button
-              className="w-full text-left flex items-center px-2 py-1 rounded-md"
-              onClick={() => onConversationSelect(conversation.id)}
-            >
-               <div className={`w-10 h-10 rounded-full font-bold text-2xl flex items-center justify-center mr-2 bg-slate-200`}>
-                {conversation.title.substring(0, 1)}
-              </div>
-              <div>
-                <div className="font-semibold">{conversation.title}</div>
-                <div className="text-sm text-gray-600">
-                  {conversation.messages.length > 0 && (
-                    <>
-                      <span className="truncate">{`${truncateText(conversation.messages[conversation.messages.length - 1].text, 30)}`}</span>
-                    </>
-                  )}
-                </div>
-                <div className="text-xs text-gray-500">
-                  {conversation.messages.length > 0 && conversation.messages[conversation.messages.length - 1].timestamp}
-                </div>
-              </div>
-            </button>
-          </li>
-        ))}
-      </ul>
+      <button className="text-gray-500 hover:text-gray-700" onClick={onClose}>
+        &#10006;
+      </button>
     </div>
   );
 };
 
-export default Notification;
+const NotificationContainer: React.FC<NotificationContainerProps> = ({
+  hideNotificationContainer,
+  setHideNotificationContainer,
+}) => {
+  const [notifications, setNotifications] = useState<NotificationData[]>([
+    {
+      id: 1,
+      title: "New Message",
+      message: "You have a new message from John.",
+      timestamp: "10:00 AM",
+    },
+    {
+      id: 2,
+      title: "Reminder",
+      message: "Don't forget your appointment tomorrow!",
+      timestamp: "12:00 PM",
+    },
+  ]);
 
+  useEffect(() => {
+    if (notifications.length === 0) {
+      setHideNotificationContainer(true);
+    }
+  }, [notifications.length]);
 
+  // Function to handle closing a notification
+  const handleCloseNotification = (notificationId: number) => {
+    setNotifications((prevNotifications) =>
+      prevNotifications.filter(
+        (notification) => notification.id !== notificationId
+      )
+    );
+  };
+
+  return (
+    <div
+      className={`position fixed top-0 right-0 w-full md:w-2/6 z-40 h-auto transition-transform ${
+        hideNotificationContainer
+          ? "transform translate-x-full"
+          : "transform translate-x-0"
+      }`}
+    >
+      <div className="transition-all">
+        <div className="p-4">
+          {notifications.map((notification) => (
+            <Notification
+              key={notification.id}
+              notification={notification}
+              onClose={() => handleCloseNotification(notification.id)}
+            />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default NotificationContainer;
