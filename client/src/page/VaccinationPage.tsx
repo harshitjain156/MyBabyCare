@@ -81,10 +81,10 @@ function VaccinationPage() {
           </div>
         ))}
         <div
-          className={`cursor-pointer p-4 border rounded-lg bg-opacity-10 bg-success  w-auto flex items-center justify-center shrink-0 bg-blue-100"
+          className={`cursor-pointer p-4 border rounded-lg    w-auto flex items-center justify-center shrink-0 bg-blue-100"
             `}
         >
-          <span className="h-full mx-24 items-center justify-center flex">
+          <span className="rounded-full p-5 mx-24 items-center justify-center bg-opacity-10 bg-success flex">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
