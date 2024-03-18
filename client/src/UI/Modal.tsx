@@ -47,7 +47,7 @@ const Modal: React.FC<ModalProps> = ({ onClose }) => {
       <form onSubmit={handleSubmit} className="mt-4 space-y-4">
         <div>
           <label htmlFor="vaccinationDate" className="block mb-2 text-sm font-medium text-gray-900">Vaccination Date</label>
-          <input type="date" id="vaccinationDate" min={minDate} value={vaccinationDate} onChange={handleDateChange} className="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-secondary focus:border-secondary block w-full p-2.5" />
+          <input type="date" id="vaccinationDate" max={minDate} value={vaccinationDate} onChange={handleDateChange} className="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-secondary focus:border-secondary block w-full p-2.5" />
         </div>
         <button type="submit" className="block w-full hover:bg-seconadry-dark mx-auto text-white text-sm font-medium rounded-lg p-2.5">Submit</button>
       </form>

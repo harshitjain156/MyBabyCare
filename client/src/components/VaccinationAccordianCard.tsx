@@ -1,10 +1,17 @@
 import Modal from "../UI/Modal";
 import React, { useState } from "react";
+ 
 
-function VaccinationAccordianCard() {
+interface Card {
+  vaccine: any;
+};
+
+
+const VaccinationAccordianCard: React.FC<Card> = ({vaccine})=> {
   const [open, setOpen] = useState(false);
-  const [toggle, setToggle] = useState(false);
-  const [isChecked, setIsChecked] = useState(false);
+  const [toggle, setToggle] = useState(vaccine.notify);
+  const [isChecked, setIsChecked] = useState(vaccine.vaccinationDate==null?false: true);
+  console.log(vaccine)
   const detailsOpenHandler = () => {
     setOpen((prev) => !prev);
   };
@@ -13,6 +20,17 @@ function VaccinationAccordianCard() {
   const toggleModal = () => {
     setIsOpen(!isOpen);
   };
+  function extractDate(dateString:any) {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
+  }
+  
+  
+  
 
   return (
     <>
@@ -51,31 +69,45 @@ function VaccinationAccordianCard() {
             </div>
           </label>
         </span>
-        <h3 className="flex  items-center mb-1 text-lg font-semibold text-gray-900 ">
-          2 Months Vaccination{" "}
+       <div className="flex flex-wrap items-center mb-2">
+        <h3 className="flex items-center mb-1 text-lg font-semibold text-gray-900 ">
+        {vaccine.name}  
         </h3>
+        <span
+                    className={`inline-flex rounded-full bg-opacity-10 mx-2 py-1 px-3 text-sm font-medium ${
+                      vaccine.status === 'ontime'
+                        ? 'bg-success text-success'
+                        : vaccine.status === 'delayed'
+                        ? 'bg-danger text-danger'
+                        : 'bg-warning text-warning'
+                    }`}
+                  >
+                    {vaccine.status}
+                  </span> 
+                  </div>
         <span>
           <time className="block mb-2 text-sm font-normal leading-none text-gray-400">
-            Scheduled for April 15th, 2024
+           { `Scheduled for ${extractDate(vaccine.date)}` }
           </time>
-          <label className="items-center me-5 cursor-pointer flex">
+          {vaccine.vaccinationDate  && <time className="block mb-2 text-sm font-normal leading-none text-gray-400">
+           { `Vaccine taken date: ${extractDate(vaccine.vaccinationDate)}` }
+          </time>}
+         {!vaccine.vaccinationDate && <label className="items-center me-5 cursor-pointer flex">
             <input
               type="checkbox"
               value=""
               className="sr-only peer"
-              onClick={() => setToggle((prev) => !prev)}
+              onClick={() => setToggle((prev:any) => !prev)}
               checked={toggle}
             />
             <div className="relative w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-gray-200 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-secondary"></div>
             <span className="ms-3 text-sm font-medium text-secondary">
               Notify me
             </span>
-          </label>
+          </label>}
         </span>
         <p className="mb-4  text-base font-normal text-gray-500 dark:text-gray-400">
-          Routine vaccination including Diphtheria, Tetanus, Pertussis (DTaP),
-          Haemophilus influenzae type b (Hib), Pneumococcal conjugate vaccine
-          (PCV13), Polio vaccine (IPV), and Rotavirus vaccine.
+          {vaccine.description}
         </p>
       </li>
 
