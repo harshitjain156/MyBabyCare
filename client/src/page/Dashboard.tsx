@@ -122,6 +122,7 @@ import logo from "../assets/logo.png"
 import ProfilePicture from '../components/ProfilePicture';
 import VaccinationCard from '../components/Vaccination';
 import UpcomingAppointmentsCard from '../components/UpcomingAppointmentsCard';
+import SearchBar from '../components/SearchBar';
 
 interface SidebarLinkGroupProps {
   children: (handleClick: () => void, open: boolean) => React.ReactNode;
@@ -147,6 +148,7 @@ interface DashboardProps {
 }
 
 const Dashboard: React.FC<DashboardProps> = ({ sidebarOpen }) => {
+  const [searchTerm, setSearchTerm] = useState('');
   const location = useLocation();
   const { pathname } = location;
 
@@ -194,7 +196,7 @@ const Dashboard: React.FC<DashboardProps> = ({ sidebarOpen }) => {
   return (
     <>
   
-      <h1 className="block font-semibold pl-8">Recommended Doctors</h1>
+      <h1 className="block font-bold pl-8">Recommended Doctors</h1>
       <div className="w-full  overflow-x-auto flex whitespace-no-wrap scrollbar-hide py-4" style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch', scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
         <div className="flex-shrink-0 w-auto  bg-white border mx-2  p-4">
           <ProfilePicture alt="Doctor Image" name="Dr. John Doe" rating={4} />
@@ -225,8 +227,19 @@ const Dashboard: React.FC<DashboardProps> = ({ sidebarOpen }) => {
      </div>
         {/* Add more ProfilePicture components */}
       </div>
-   
-      <div className='flex justify-evenly flex-grow-1 h-2/3 items-center'>
+  
+      <div className='h-auto'>
+
+        <h1 className="block font-bold pl-8 mt-8">Upcoming vaccinations</h1>
+      <div className="w-full mt-4  flex justify-around px-4">
+      
+      <SearchBar searchTerm={searchTerm}
+                  setSearchTerm={setSearchTerm}/>
+
+      <input type='date'/>
+     
+    </div>
+ 
         <VaccinationCard />
         {/* <UpcomingAppointmentsCard/> */}
       </div>
