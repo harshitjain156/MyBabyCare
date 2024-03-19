@@ -61,7 +61,7 @@ function VaccinationPage() {
     {
       id: 2,
       name: 'Vaccination 2',
-      date: new Date(2024, 3, 11), // April 20th, 2024
+      date: new Date(2024, 2, 11), // April 20th, 2024
       status: 'delayed',
       notify: true,
       description:
@@ -81,7 +81,7 @@ function VaccinationPage() {
     {
       id: 4,
       name: 'Vaccination 5',
-      date: new Date(2024, 3, 15), // May 18th, 2024
+      date: new Date(2024, 2, 15), // May 18th, 2024
       status: 'delayed',
       notify: false,
       description: 'Routine vaccination including Pneumococcal conjugate vaccine (PCV13).',
@@ -271,7 +271,7 @@ function VaccinationPage() {
         ))}
       </ul>
       </div> */}
-      <div className="overflow-auto w-full flex justify-around max-h-[calc(100vh-330px)]">
+      <div className="overflow-auto w-full flex justify-around max-h-[calc(100vh-335px)]">
         <ol className="relative border-s w-1/2 h-full mx-12 mt-8  border-gray-200">
           {vaccinationsData && vaccinationsData.map((vaccine)=> 
            <VaccinationAccordianCard vaccine={vaccine}/>
