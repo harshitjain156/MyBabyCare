@@ -1,6 +1,9 @@
 const express = require( 'express' );
 const router = express.Router();
 const {addNewChild, getAllChild, deleteChild} = require("../controller/childController");
+const Child = require("../model/childModel");
+
+const Vaccine=require('../model/vaccineModel')
 // Require controller modules.
 router.post("/add-new-child", addNewChild);
 router.get("/all-child", getAllChild);
