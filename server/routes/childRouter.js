@@ -55,8 +55,9 @@ router.post("/create-new-child",async (req,res)=>{
         console.log(newChild);
 
        
-
-    res.json(newChild);
+ res.status(201).json({ message:`Successfully created a new Child`, data: newChild });
+        
+    // res.json(newChild);
     }catch(err){
         console.log(err);
     }
