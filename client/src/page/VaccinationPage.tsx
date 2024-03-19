@@ -1,10 +1,13 @@
 import ScrollableFeed from "react-scrollable-feed";
 import VaccinationAccordianCard from "../components/VaccinationAccordianCard";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import RadialChart from "../components/RadialChart";
 import ChildDetailsFormModal from "../UI/ChildDetailsFormModal";
+import { BASE_URL } from "../helper/endpoints";
+import axios from "axios";
+import { useAuth } from "../AuthContext/AuthContext";
 interface Child {
-  id: number;
+  _id: number;
   name: string;
   birthdate: string;
   gender: string;
@@ -21,31 +24,28 @@ enum Tab {
 function VaccinationPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTab, setActiveTab] = useState(Tab.Pending);
+ const {userData} = useAuth();
 
   const handleTabClick = (tab: Tab) => {
     setActiveTab(tab);
     console.log("Switched to tab:", tab);
   };
-  const [children, setChildren] = useState<Child[]>([
-    {
-      id: 1,
-      name: "Child 1",
-      birthdate: `2024-01-29`,
-      gender: "Male",
-      vaccinationsDone: 4,
-      vaccinationsTotal: 6,
-    },
-    {
-      id: 2,
-      name: "Child 2",
-      gender: "Male",
-      birthdate: `2023-08-15`,
-      vaccinationsDone: 2,
-      vaccinationsTotal: 5,
-    },
+  const [children, setChildren] = useState<Child[]>([]);
 
-    // Add more children as needed
-  ]);
+  useEffect(()=>{
+
+    ;(async () => {
+        try {
+          const response = await axios.get(`${BASE_URL}api/v1/all-child/?userId=${userData.userId}`);
+          console.log("Successfully fetched the child list: ", response.data);
+          setChildren(response.data.data)
+        }
+        catch(error){
+          console.log("Error in fetching the Child list");
+        }
+    })()
+
+  }, [])
 
   const vaccinationsData = [
     {
@@ -155,8 +155,20 @@ function VaccinationPage() {
     setIsOpen(!isOpen);
   };
 
-  const handleChildFormSubmit = (child: Child) => {
-    setChildren(prevChildren => [...prevChildren, child]);
+  const handleChildFormSubmit = async (child: any) => {
+
+  
+  try {
+ 
+    const response = await axios.post(`${BASE_URL}api/v1/add-new-child`, {...child,
+    userId: userData.userId,
+    });
+    setChildren(prevChildren => [...prevChildren, {...response.data.data}]);
+    console.log('Child data sent successfully:', response.data);
+  } catch (error) {
+    console.error('Error sending child data:', error);
+  }
+    
   };
   
   const calculateAge = (birthdate: string): string => {
@@ -206,9 +218,9 @@ function VaccinationPage() {
       <div className="flex space-x-4 w-full overflow-x-auto pb-2 border-b">
         {children.map((child) => (
           <div
-            key={child.id}
+            key={child._id}
             className={`cursor-pointer p-4 border rounded-lg  w-auto flex shrink-0 ${
-              selectedChild?.id === child.id ? "bg-blue-100" : ""
+              selectedChild?._id === child._id ? "bg-blue-100" : ""
             }`}
             onClick={() => handleChildClick(child)}
           >
@@ -272,6 +284,13 @@ function VaccinationPage() {
       </ul>
       </div> */}
       <div className="overflow-auto w-full flex justify-around max-h-[calc(100vh-335px)]">
+     <button
+          className="absolute right-6 bottom-6 flex select-none items-center gap-3  bg-secondary py-4 px-4 rounded-full text-center align-middle font-sans text-md font-semibold  text-white shadow-md shadow-gray-900/10 transition-all hover:shadow-lg hover:shadow-gray-900/20"
+          type="button">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
+          <path fill-rule="evenodd" d="M12 3.75a.75.75 0 0 1 .75.75v6.75h6.75a.75.75 0 0 1 0 1.5h-6.75v6.75a.75.75 0 0 1-1.5 0v-6.75H4.5a.75.75 0 0 1 0-1.5h6.75V4.5a.75.75 0 0 1 .75-.75Z" clip-rule="evenodd" />
+        </svg>
+        </button>
         <ol className="relative border-s w-1/2 h-full mx-12 mt-8  border-gray-200">
           {vaccinationsData && vaccinationsData.map((vaccine)=> 
            <VaccinationAccordianCard vaccine={vaccine}/>

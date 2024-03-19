@@ -11,7 +11,7 @@ const VaccinationAccordianCard: React.FC<Card> = ({vaccine})=> {
   const [open, setOpen] = useState(false);
   const [toggle, setToggle] = useState(vaccine.notify);
   const [isChecked, setIsChecked] = useState(vaccine.vaccinationDate==null?false: true);
-  console.log(vaccine)
+
   const detailsOpenHandler = () => {
     setOpen((prev) => !prev);
   };

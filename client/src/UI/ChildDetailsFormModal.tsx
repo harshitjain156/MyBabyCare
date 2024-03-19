@@ -4,7 +4,6 @@ import { useFormik } from 'formik';
 import { formatMonth } from 'react-calendar/dist/cjs/shared/dateFormatter';
 
 interface Child {
-    id: number;
     name: string;
     birthdate: string;
     gender: string;
@@ -44,7 +43,7 @@ const ChildDetailsFormModal: React.FC<ModalProps> = ({ onClose , onSubmit }) => 
     validateOnChange: true,
     onSubmit: values => {
         const newChild: Child = {
-            id: Date.now(), // You can generate a unique id using Date.now() or any other method
+           // You can generate a unique id using Date.now() or any other method
             name: values.name,
             gender: values.gender,
             birthdate: values.birthdate,

@@ -30,14 +30,14 @@ const childSchema = new Schema({
       vaccinationsTotal: {
         type: Number,
         default: 10,
-        required: true,
+        // required: true,
       },
-      vaccinations: [
-        {
-            type: Schema.Types.ObjectId,
-            ref: "Vaccination"
-        }
-      ]
+      // vaccinations: [
+      //   {
+      //       type: Schema.Types.ObjectId,
+      //       ref: "Vaccination"
+      //   }
+      // ]
 
 
 }, { timestamps: true });
