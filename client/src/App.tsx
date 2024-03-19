@@ -107,6 +107,7 @@ import DetailedViewPage from "../src/page/DetailedViewPage";
 import RescheduleAppointmentForm from "../src/components/RescheduleAppointmentForm";
 import VaccinationPage from "../src/page/VaccinationPage";
 import NotificationContainer from "../src/components/Notification";
+import DoctorDetailsForm from "../src/page/DoctordetailsForm";
 
 const ProtectedRouteUser: React.FC<{ children: any }> = ({ children }) => {
   const location = useLocation();
@@ -271,6 +272,12 @@ function App() {
                 <VaccinationPage />
               </Layout>
             </ProtectedRouteUser>
+          }
+        />
+         <Route
+          path={`/doctor/details`}
+          element={
+            <DoctorDetailsForm/>
           }
         />
         {/* <Route path={`/doctor/appointment/doctor/:doctorId`} element={<ProtectedRoute><Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}><BookingAppointmentForm/> </Layout></ProtectedRoute>} /> */}

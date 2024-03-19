@@ -2,10 +2,12 @@ import ScrollableFeed from "react-scrollable-feed";
 import VaccinationAccordianCard from "../components/VaccinationAccordianCard";
 import React, { useState } from "react";
 import RadialChart from "../components/RadialChart";
+import ChildDetailsFormModal from "../UI/ChildDetailsFormModal";
 interface Child {
   id: number;
   name: string;
-  age: number;
+  birthdate: string;
+  gender: string;
   vaccinationsDone: number;
   vaccinationsTotal: number;
 }
@@ -28,14 +30,16 @@ function VaccinationPage() {
     {
       id: 1,
       name: "Child 1",
-      age: 5,
+      birthdate: `2024-01-29`,
+      gender: "Male",
       vaccinationsDone: 4,
       vaccinationsTotal: 6,
     },
     {
       id: 2,
       name: "Child 2",
-      age: 3,
+      gender: "Male",
+      birthdate: `2023-08-15`,
       vaccinationsDone: 2,
       vaccinationsTotal: 5,
     },
@@ -43,13 +47,160 @@ function VaccinationPage() {
     // Add more children as needed
   ]);
 
+  const vaccinationsData = [
+    {
+      id: 1,
+      name: 'Vaccination 1',
+      date: new Date(2024, 3, 15), // April 15th, 2024
+      status: 'ontime',
+      notify: false,
+      description:
+        'Routine vaccination including Diphtheria, Tetanus, Pertussis (DTaP), Haemophilus influenzae type b (Hib), Pneumococcal conjugate vaccine (PCV13), Polio vaccine (IPV), and Rotavirus vaccine.',
+      vaccinationDate: new Date(2024, 3, 15), // Example vaccination date
+    },
+    {
+      id: 2,
+      name: 'Vaccination 2',
+      date: new Date(2024, 2, 11), // April 20th, 2024
+      status: 'delayed',
+      notify: true,
+      description:
+        'Routine vaccination including Measles, Mumps, Rubella (MMR), Varicella (Chickenpox), Hepatitis A, and Hepatitis B.',
+      vaccinationDate: new Date(), // Empty date until vaccinated
+    },
+    
+    {
+      id: 3,
+      name: 'Vaccination 4',
+      date: new Date(2024, 3, 10), // May 10th, 2024
+      status: 'ontime',
+      notify: false,
+      description: 'Routine vaccination including Hepatitis A and Hepatitis B.',
+      vaccinationDate: new Date(2024, 3, 9), // Example vaccination date
+    },
+    {
+      id: 4,
+      name: 'Vaccination 5',
+      date: new Date(2024, 2, 15), // May 18th, 2024
+      status: 'delayed',
+      notify: false,
+      description: 'Routine vaccination including Pneumococcal conjugate vaccine (PCV13).',
+      vaccinationDate: new Date(), // Empty date until vaccinated
+    },
+    {
+      id: 5,
+      name: 'Vaccination 3',
+      date: new Date(2024, 4, 1), // May 1st, 2024
+      status: 'upcoming',
+      notify: true,
+      description: 'Routine vaccination including Influenza (Flu) vaccine.',
+      vaccinationDate: null, // No vaccination date until taken
+    },
+    {
+      id: 6,
+      name: 'Vaccination 6',
+      date: new Date(2024, 5, 5), // June 5th, 2024
+      status: 'upcoming',
+      notify: true,
+      description: 'Routine vaccination including Varicella (Chickenpox) vaccine.',
+      vaccinationDate: null, // No vaccination date until taken
+    },
+    {
+      id: 7,
+      name: 'Vaccination 7',
+      date: new Date(2024, 5, 15), // June 15th, 2024
+      status: 'upcoming',
+      notify: true,
+      description: 'Routine vaccination including Meningococcal conjugate vaccine (MCV4).',
+      vaccinationDate: null, // Example vaccination date
+    },
+    {
+      id: 8,
+      name: 'Vaccination 8',
+      date: new Date(2024, 5, 25), // June 25th, 2024
+      status: 'upcoming',
+      notify: true,
+      description: 'Routine vaccination including Human papillomavirus (HPV) vaccine.',
+      vaccinationDate: null, // Empty date until vaccinated
+    },
+    {
+      id: 9,
+      name: 'Vaccination 9',
+      date: new Date(2024, 6, 8), // July 8th, 2024
+      status: 'upcoming',
+      notify: true,
+      description: 'Routine vaccination including Tetanus, Diphtheria, Pertussis (Tdap) vaccine.',
+      vaccinationDate: null, // No vaccination date until taken
+    },
+    {
+      id: 10,
+      name: 'Vaccination 10',
+      date: new Date(2024, 6, 20), // July 20th, 2024
+      status: 'upcoming',
+      notify: true,
+      description: 'Routine vaccination including Inactivated poliovirus vaccine (IPV).',
+      vaccinationDate: null, // Example vaccination date
+    },
+  ];
+  
+
   const [selectedChild, setSelectedChild] = useState<Child | null>(null);
 
   const handleChildClick = (child: Child) => {
     setSelectedChild(child);
   };
 
+  const [isOpen, setIsOpen] = useState(false);
+  const toggleModal = () => {
+    setIsOpen(!isOpen);
+  };
+
+  const handleChildFormSubmit = (child: Child) => {
+    setChildren(prevChildren => [...prevChildren, child]);
+  };
+  
+  const calculateAge = (birthdate: string): string => {
+    console.log(birthdate)
+    const today = new Date();
+    const birthDate = new Date(birthdate);
+    console.log(birthDate);
+      let years;
+      if ( today.getMonth() > birthDate.getMonth() ||
+          ( today.getMonth() == birthDate.getMonth() &&
+            today.getDate() >= birthDate.getDate()
+          )
+        ) {
+        years = today.getFullYear() - birthDate.getFullYear();
+      }
+      else {
+        years = today.getFullYear() - birthDate.getFullYear() - 1;
+      }
+
+      let months=0;
+      if (today.getDate() >= birthDate.getDate()) {
+        months = today.getMonth() - birthDate.getMonth();
+      }
+      else if (today.getDate() < birthDate.getDate()) {
+        months = today.getMonth() - birthDate.getMonth() - 1;
+      }
+      // make month positive
+      months = months < 0 ? months + 12 : months;
+
+      let days;
+      let monthDays = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+      if (today.getDate() >= birthDate.getDate()) {
+        days = today.getDate() - birthDate.getDate();
+      } else {
+        days = today.getDate() - birthDate.getDate() + monthDays[birthDate.getMonth()];
+      }
+          return `${years!==0 ? `${years} years, `:``}${months!==0 ? `${months} months, `: ``}${days!==0? `${days} days`: ``}`;
+        };
+
+
+
   return (
+    <>
+    {isOpen && <ChildDetailsFormModal onClose={toggleModal} onSubmit={handleChildFormSubmit}/>}
     <div className="container p-4 w-full">
       <h1 className="text-3xl font-bold mb-4">Vaccinations</h1>
       <div className="flex space-x-4 w-full overflow-x-auto pb-2 border-b">
@@ -63,7 +214,8 @@ function VaccinationPage() {
           >
             <span>
               <h2 className="text-lg font-bold mb-2">{child.name}</h2>
-              <p className="text-gray-500">Age: {child.age} years</p>
+              <p className="text-gray-500">{`Gender: ${child.gender}`}</p>
+              <p className="text-gray-500">{`Age: ${calculateAge(child.birthdate)}`}</p>
 
               <p className="text-gray-500">
                 Vaccinations done: {child.vaccinationsDone} /{" "}
@@ -80,7 +232,7 @@ function VaccinationPage() {
             </span>
           </div>
         ))}
-        <div
+        <div  onClick={toggleModal}
           className={`cursor-pointer p-4 border rounded-lg    w-auto flex items-center justify-center shrink-0 bg-blue-100"
             `}
         >
@@ -119,13 +271,16 @@ function VaccinationPage() {
         ))}
       </ul>
       </div> */}
-      <div className="overflow-auto w-full flex justify-around max-h-[calc(100vh-330px)]">
+      <div className="overflow-auto w-full flex justify-around max-h-[calc(100vh-335px)]">
         <ol className="relative border-s w-1/2 h-full mx-12 mt-8  border-gray-200">
+          {vaccinationsData && vaccinationsData.map((vaccine)=> 
+           <VaccinationAccordianCard vaccine={vaccine}/>
+          )}
+          {/* <VaccinationAccordianCard />
           <VaccinationAccordianCard />
           <VaccinationAccordianCard />
           <VaccinationAccordianCard />
-          <VaccinationAccordianCard />
-          <VaccinationAccordianCard />
+          <VaccinationAccordianCard /> */}
           {/* <li className="mb-10 ms-12">            
         <span className="absolute left-[-23px] flex items-center justify-center w-12 h-12 bg-blue-100 rounded-full -start-4 ring-8 ring-white dark:ring-gray-900 dark:bg-blue-900">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-6 h-6">
@@ -182,6 +337,7 @@ function VaccinationPage() {
         </ScrollableFeed>
       </div> */}
     </div>
+    </>
   );
 }
 
