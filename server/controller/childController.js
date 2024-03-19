@@ -50,7 +50,7 @@ exports.getAllChild = async(req, res)=>{
 
 
         const children = await Child.find({ userId});
-        
+
         res.status(200).json({
             success: true,
             count: children.length,
@@ -63,4 +63,21 @@ exports.getAllChild = async(req, res)=>{
     
 }
                
-               
+exports.deleteChild = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const child = await Child.findById(id);
+
+        if (!child) {
+            return res.status(404).json({ message: "Child not found" });
+        }
+
+        await child.deleteOne();
+
+        res.status(200).json({ message: "Child deleted successfully" });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ message: "Server Error" });
+    }
+};               
