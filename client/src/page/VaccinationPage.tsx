@@ -4,8 +4,10 @@ import React, { useEffect, useState } from "react";
 import RadialChart from "../components/RadialChart";
 import ChildDetailsFormModal from "../UI/ChildDetailsFormModal";
 import { BASE_URL } from "../helper/endpoints";
+import ChildCard from "../components/ChildCard";
 import axios from "axios";
 import { useAuth } from "../AuthContext/AuthContext";
+import AddVaccinationModal from "../UI/AddVaccinationModal";
 interface Child {
   _id: number;
   name: string;
@@ -31,6 +33,25 @@ function VaccinationPage() {
     console.log("Switched to tab:", tab);
   };
   const [children, setChildren] = useState<Child[]>([]);
+  const [deleteFlag, setDeleteFlag] = useState(false);
+  const deleteChild = async (childId:any) => {
+    try {
+        // Assuming your API endpoint URL
+       
+
+        const response = await axios.delete(`${BASE_URL}api/v1/delete/${childId}`);
+
+        if (response.status === 200) {
+            console.log('Child deleted successfully');
+            setDeleteFlag(!deleteFlag);
+        } else {
+            console.error('Failed to delete child');
+        }
+    } catch (error) {
+        console.error('Error deleting child:', error);
+    }
+};
+  
 
   useEffect(()=>{
 
@@ -45,7 +66,7 @@ function VaccinationPage() {
         }
     })()
 
-  }, [])
+  }, [deleteFlag])
 
   const vaccinationsData = [
     {
@@ -145,22 +166,28 @@ function VaccinationPage() {
   
 
   const [selectedChild, setSelectedChild] = useState<Child | null>(null);
+  
 
   const handleChildClick = (child: Child) => {
     setSelectedChild(child);
   };
 
   const [isOpen, setIsOpen] = useState(false);
+  const [isOpenAddVaccineModal, setIsOpenAddVaccineModal] = useState(false);
   const toggleModal = () => {
     setIsOpen(!isOpen);
   };
+
+  const toggleAddVaccinationModal = ()=>{
+    setIsOpenAddVaccineModal(!isOpenAddVaccineModal);
+  }
 
   const handleChildFormSubmit = async (child: any) => {
 
   
   try {
  
-    const response = await axios.post(`${BASE_URL}api/v1/add-new-child`, {...child,
+    const response = await axios.post(`${BASE_URL}api/v1/create-new-child`, {...child,
     userId: userData.userId,
     });
     setChildren(prevChildren => [...prevChildren, {...response.data.data}]);
@@ -170,79 +197,23 @@ function VaccinationPage() {
   }
     
   };
+
   
-  const calculateAge = (birthdate: string): string => {
-    console.log(birthdate)
-    const today = new Date();
-    const birthDate = new Date(birthdate);
-    console.log(birthDate);
-      let years;
-      if ( today.getMonth() > birthDate.getMonth() ||
-          ( today.getMonth() == birthDate.getMonth() &&
-            today.getDate() >= birthDate.getDate()
-          )
-        ) {
-        years = today.getFullYear() - birthDate.getFullYear();
-      }
-      else {
-        years = today.getFullYear() - birthDate.getFullYear() - 1;
-      }
+ 
+  
 
-      let months=0;
-      if (today.getDate() >= birthDate.getDate()) {
-        months = today.getMonth() - birthDate.getMonth();
-      }
-      else if (today.getDate() < birthDate.getDate()) {
-        months = today.getMonth() - birthDate.getMonth() - 1;
-      }
-      // make month positive
-      months = months < 0 ? months + 12 : months;
-
-      let days;
-      let monthDays = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-      if (today.getDate() >= birthDate.getDate()) {
-        days = today.getDate() - birthDate.getDate();
-      } else {
-        days = today.getDate() - birthDate.getDate() + monthDays[birthDate.getMonth()];
-      }
-          return `${years!==0 ? `${years} years, `:``}${months!==0 ? `${months} months, `: ``}${days!==0? `${days} days`: ``}`;
-        };
-
+       
 
 
   return (
     <>
     {isOpen && <ChildDetailsFormModal onClose={toggleModal} onSubmit={handleChildFormSubmit}/>}
-    <div className="container p-4 w-full">
-      <h1 className="text-3xl font-bold mb-4">Vaccinations</h1>
-      <div className="flex space-x-4 w-full overflow-x-auto pb-2 border-b">
+    {isOpenAddVaccineModal && <AddVaccinationModal onClose={toggleAddVaccinationModal} onSubmit={()=>{}}/>}
+    <div className="w-full">
+      <h1 className="text-3xl font-bold mb-4 pl-4">Vaccinations</h1>
+      <div className="flex space-x-4 w-full pl-4 overflow-x-auto pb-2 border-b" style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch', scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
         {children.map((child) => (
-          <div
-            key={child._id}
-            className={`cursor-pointer p-4 border rounded-lg  w-auto flex shrink-0 ${
-              selectedChild?._id === child._id ? "bg-blue-100" : ""
-            }`}
-            onClick={() => handleChildClick(child)}
-          >
-            <span>
-              <h2 className="text-lg font-bold mb-2">{child.name}</h2>
-              <p className="text-gray-500">{`Gender: ${child.gender}`}</p>
-              <p className="text-gray-500">{`Age: ${calculateAge(child.birthdate)}`}</p>
-
-              <p className="text-gray-500">
-                Vaccinations done: {child.vaccinationsDone} /{" "}
-                {child.vaccinationsTotal}
-              </p>
-            </span>
-            <span className="inline-block mx-auto">
-              <RadialChart
-                completionPercentage={
-                  (child.vaccinationsDone / child.vaccinationsTotal) * 100
-                }
-                className=""
-              />
-            </span>
-          </div>
+          <ChildCard key={child._id} child={child} selectedChild={selectedChild}  onClick={() => handleChildClick(child)} handleDelete={()=>deleteChild(child._id)}/>
         ))}
         <div  onClick={toggleModal}
           className={`cursor-pointer p-4 border rounded-lg    w-auto flex items-center justify-center shrink-0 bg-blue-100"
@@ -264,6 +235,7 @@ function VaccinationPage() {
               />
             </svg>
           </span>
+        
         </div>
       </div>
       {/* 
@@ -283,15 +255,16 @@ function VaccinationPage() {
         ))}
       </ul>
       </div> */}
-      <div className="overflow-auto w-full flex justify-around max-h-[calc(100vh-335px)]">
-     <button
-          className="absolute right-6 bottom-6 flex select-none items-center gap-3  bg-secondary py-4 px-4 rounded-full text-center align-middle font-sans text-md font-semibold  text-white shadow-md shadow-gray-900/10 transition-all hover:shadow-lg hover:shadow-gray-900/20"
+      <div className="overflow-auto w-full flex justify-around max-h-[calc(100vh-335px)] " style={{ overflowY: 'auto', WebkitOverflowScrolling: 'touch', scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+      <button
+      onClick={()=>{setIsOpenAddVaccineModal(!isOpenAddVaccineModal)}}
+      className="absolute right-4 bottom-99 flex h-16 w-16 mt-4 select-none items-center gap-3  bg-secondary  rounded-full text-center align-middle font-sans text-md font-semibold  text-white shadow-md shadow-gray-900/10 transition-all hover:shadow-lg hover:shadow-gray-900/20"
           type="button">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 m-auto">
           <path fill-rule="evenodd" d="M12 3.75a.75.75 0 0 1 .75.75v6.75h6.75a.75.75 0 0 1 0 1.5h-6.75v6.75a.75.75 0 0 1-1.5 0v-6.75H4.5a.75.75 0 0 1 0-1.5h6.75V4.5a.75.75 0 0 1 .75-.75Z" clip-rule="evenodd" />
         </svg>
         </button>
-        <ol className="relative border-s w-1/2 h-full mx-12 mt-8  border-gray-200">
+        <ol className="relative border-s w-1/2 h-full mx-12 mt-8  border-gray-200 ">
           {vaccinationsData && vaccinationsData.map((vaccine)=> 
            <VaccinationAccordianCard vaccine={vaccine}/>
           )}
@@ -334,6 +307,7 @@ function VaccinationPage() {
         <p className="text-base font-normal text-gray-500 dark:text-gray-400">Routine vaccination including DTaP, Hib, PCV13, IPV, Rotavirus vaccine, and Inactivated Polio Vaccine (IPV).</p>
     </li>  */}
         </ol>
+       
       </div>
 
       {/* <div className='mt-4 overflow-y-auto max-h-[calc(100vh-240px)]'>
