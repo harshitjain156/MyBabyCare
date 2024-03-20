@@ -81,3 +81,26 @@ exports.deleteChild = async (req, res) => {
         res.status(500).json({ message: "Server Error" });
     }
 };               
+
+
+
+exports.notificationController = async (req, res)=>{
+    try {
+        let vaccineId=req.body.vaccineId;
+        let _id=req.body.childId;
+
+        const updatedSlot = await Child.findOneAndUpdate(
+            { 'slots._id': timeslotId }, // Find slot with the given slotId
+            { $set: { 'slots.$.status': 'Booked' } }, // Set the new status for the matched slot
+            { new: true } // To return the updated slot
+          );
+
+        
+        res.status(200).json({ message: "Notication is successfully" });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ message: "Server Error" });
+    }
+
+
+}
