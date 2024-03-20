@@ -11,7 +11,7 @@ const childSchema = new Schema({
       },
       birthdate: {
         type: Date,
-        required: true,
+        required: true, 
       },
       userId: {
         type: Schema.Types.ObjectId,  // Reference to a User document
@@ -57,4 +57,4 @@ const childSchema = new Schema({
 
 }, { timestamps: true });
 
-module.exports = mongoose.model("Child", childSchema);
+module.exports = mongoose.model("Childs", childSchema);
