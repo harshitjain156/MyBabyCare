@@ -1,4 +1,5 @@
 const Child = require("../model/childModel");
+const vaccineModel = require("../model/vaccineModel");
 
 
 exports.addNewChild =  async (req, res) => {
@@ -108,3 +109,58 @@ exports.notificationController = async (req, res)=>{
         res.status(500).json({ message: "Server Error" });
     }
 }
+
+
+
+
+// Route to create a new vaccine
+exports.addVaccineForParticularChild = async (req, res) => {
+    try {
+        // Create the vaccine
+       const {name, desc, date} = req.body
+       if(!name){
+        return res.status(400).json({ success: false, message: "Vaccine name is required"});
+       }
+       if(!desc){
+        return res.status(400).json({ success: false, message: "Description is required"});
+       }
+       if(!date){
+        return res.status(400).json({ success: false, message: "Date is required"});
+       }
+       const childId = req.body.childId;
+       if(!childId){
+        return res.status(400).json({ success: false, message: "Child Id is required"});
+       }
+
+        const newVaccine = await vaccineModel.create({
+            name,
+            desc,
+            tag: "particular"
+        });
+
+        // Find the child to update
+         // Assuming you're sending childId along with the vaccine data
+        const child = await Child.findById(childId);
+
+        // If the child exists, add the new vaccine to its vaccinations array
+        if (child) {
+          await  child.vaccinations.push({
+                vaccineId: newVaccine._id,
+                status: 'upcoming', // Default status
+                notify: true, // Default notify value
+                predictedDate:date 
+            });
+
+            child.vaccinationsTotal++;
+            await child.save();
+        } else {
+            return res.status(404).json({ message: 'Child not found' });
+        }
+
+        return res.status(201).json({ message: 'Vaccine created and added to child' });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: 'Server error' });
+    }
+};
+
