@@ -48,7 +48,9 @@ const childSchema = new Schema({
           type:Date
         },
         vaccinatedDate:{
-          type:Date
+          type:Date,
+          default: null
+        
         }
       
       }

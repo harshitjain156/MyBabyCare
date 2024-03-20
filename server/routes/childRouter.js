@@ -1,6 +1,6 @@
 const express = require( 'express' );
 const router = express.Router();
-const {addNewChild, getAllChild, deleteChild, notificationController} = require("../controller/childController");
+const {addNewChild, getAllChild, deleteChild, notificationController, addVaccineForParticularChild} = require("../controller/childController");
 const Child = require("../model/childModel");
 
 const Vaccine=require('../model/vaccineModel')
@@ -9,6 +9,7 @@ router.post("/add-new-child", addNewChild);
 router.get("/all-child", getAllChild);
 router.delete("/delete/:id", deleteChild)
 router.patch("/update-notification-status", notificationController)
+router.post("/add-new-vaccine", addVaccineForParticularChild)
 
 
 // router.post("/create-new-child",async (req,res)=>{
@@ -206,7 +207,7 @@ router.post("/create-new-child",async (req,res)=>{
         } 
 
     let myVaccinesArray=[];
-     let myVaccines= await Vaccine.find().exec();
+     let myVaccines= await Vaccine.find({tag: "general"}).exec();
      console.log(myVaccines.length);
 
      for(i=0;i<myVaccines.length;i++){
