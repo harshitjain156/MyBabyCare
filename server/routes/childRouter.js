@@ -41,8 +41,8 @@ router.post("/create-new-child",async (req,res)=>{
         birthdate,
         gender,
         userId,
-        vaccinationsDone,
-        vaccinationsTotal,
+        vaccinationsDone:0,
+        vaccinationsTotal:myVaccines.length,
         vaccinations: myVaccinesArray
 
         });
@@ -88,6 +88,60 @@ function compareDates(predictedDate) {
         return "today"; // Predicted date is today
     }
 }
+
+
+
+router.post("/update-child-vaccine",async(req,res)=>{
+    try{
+
+        let vaccineId=req.body.vaccineId;
+        let _id=req.body.childId;
+        let vaccinatedDate=req.body.vaccinatedDate;
+
+        let findChildVaccinations=await Child.findOne(_id);
+
+        let myVaccineArray=findChildVaccinations.vaccinations;
+        let vaccinationsDone=findChildVaccinations.vaccinationsDone;
+        let myVaccineId;
+        for(i=0;i<myVaccineArray.length;i++){
+
+            if(myVaccineArray[i].vaccineId==vaccineId && myVaccineArray[i].status!="Done"){
+                myVaccineId=myVaccineArray[i]._id
+                myVaccineArray[i].status="Done"
+                myVaccineArray[i].vaccinatedDate=vaccinatedDate;
+                myVaccineArray[i].notify=false;
+                vaccinationsDone+=1;
+            }
+        }
+        
+        let updateVaccinationArray=await Child.findOneAndUpdate({childId:_id},({vaccinations:myVaccineArray,vaccinationsDone:vaccinationsDone}),{new :true}).select();
+        console.log(myVaccineArray)
+        res.status(200).send(updateVaccinationArray);
+
+
+    }catch(err){
+        res.status(404).send(err);
+    }
+})
+
+
+router.get("/get-mychild-details/:id",async(req,res)=>{
+    try{
+
+        
+        let _id=req.params.id;
+        
+
+        let findChildVaccinations=await Child.findOne({_id}).populate("vaccinations.vaccineId");
+        console.log(findChildVaccinations)
+        res.status(200).send(findChildVaccinations);
+
+
+    }catch(err){
+        res.status(404).send(err);
+    }
+})
+
 
 router.post("/add-new-vaccines",(req,res)=>{
     const vaccine=new Vaccine({
