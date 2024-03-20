@@ -87,20 +87,24 @@ exports.deleteChild = async (req, res) => {
 exports.notificationController = async (req, res)=>{
     try {
         let vaccineId=req.body.vaccineId;
-        let _id=req.body.childId;
+        let notify =req.body.notify;
+        if(!notify){
+            res.status(400).json({success: false, message: "Notification status is required"});
+        }
+        if(!vaccineId){
+            return res.status(400).json({success: false, message: "VaccineID is required"});
+        }
 
-        const updatedSlot = await Child.findOneAndUpdate(
-            { 'slots._id': timeslotId }, // Find slot with the given slotId
-            { $set: { 'slots.$.status': 'Booked' } }, // Set the new status for the matched slot
+        const updated = await Child.findOneAndUpdate(
+            { 'vaccinations._id': vaccineId }, // Find slot with the given slotId
+            { $set: { 'vaccinations.$.notify': notify } }, // Set the new status for the matched slot
             { new: true } // To return the updated slot
           );
 
         
-        res.status(200).json({ message: "Notication is successfully" });
+        res.status(200).json({ success: true, message: "Notication is successfully", data: updated });
     } catch (err) {
         console.log(err);
         res.status(500).json({ message: "Server Error" });
     }
-
-
 }
