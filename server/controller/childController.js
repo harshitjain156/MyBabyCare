@@ -89,7 +89,7 @@ exports.notificationController = async (req, res)=>{
     try {
         let vaccineId=req.body.vaccineId;
         let notify =req.body.notify;
-        if(!notify){
+        if(notify===null){
             res.status(400).json({success: false, message: "Notification status is required"});
         }
         if(!vaccineId){
