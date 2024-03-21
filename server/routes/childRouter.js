@@ -9,7 +9,7 @@ router.post("/add-new-child", addNewChild);
 router.get("/all-child", getAllChild);
 router.delete("/delete/:id", deleteChild)
 router.patch("/update-notification-status", notificationController)
-router.post("/add-new-vaccine", addVaccineForParticularChild)
+router.post("/add-my-vaccine", addVaccineForParticularChild)
 
 
 // router.post("/create-new-child",async (req,res)=>{
