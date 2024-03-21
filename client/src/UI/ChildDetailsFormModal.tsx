@@ -53,7 +53,7 @@ const ChildDetailsFormModal: React.FC<ModalProps> = ({ onClose , onSubmit }) => 
           onSubmit(newChild);
       // Logic to handle form submission
       console.log('Form Values:', values);
-      onClose();
+    
     },
   
   });

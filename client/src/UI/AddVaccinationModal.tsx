@@ -4,8 +4,8 @@ import { useFormik } from 'formik';
 
 interface Vaccination {
     name: string;
-    description: string;
-    scheduledDate: string;
+    desc: string;
+    date: string;
 }
 
 interface ModalProps {
@@ -41,11 +41,12 @@ const AddVaccinationModal: React.FC<ModalProps> = ({ onClose, onSubmit }) => {
         onSubmit: values => {
             const newVaccination: Vaccination = {
                 name: values.name,
-                description: values.description,
-                scheduledDate: values.scheduledDate,
+                desc: values.description,
+                date: values.scheduledDate,
             };
+            
             onSubmit(newVaccination);
-            onClose();
+          
         },
     });
 
