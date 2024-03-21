@@ -51,6 +51,10 @@ const childSchema = new Schema({
           type:Date,
           default: null
         
+        },
+        recordImage:{
+          type:String,
+          default:null
         }
       
       }
