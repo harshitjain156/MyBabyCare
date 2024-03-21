@@ -222,7 +222,8 @@ router.post("/create-new-child",async (req,res)=>{
             status: dateStatus,
             notify: true,
             predictedDate: nextDate, // Replace somePredictedDate with the actual Date
-            vaccinatedDate: null
+            vaccinatedDate: null,
+            recordImage:null
         });
         
         
@@ -296,7 +297,7 @@ function compareDates(predictedDate) {
 
 router.post("/update-child-vaccine",async(req,res)=>{
     try{
-
+        let verifyImage=req.body.imageUrl
         let vaccineId=req.body.vaccineId;
         let _id=req.body.childId;
         let vaccinatedDate=req.body.vaccinatedDate;
@@ -316,6 +317,7 @@ router.post("/update-child-vaccine",async(req,res)=>{
         let myVaccineArray=findChildVaccinations.vaccinations;
         let vaccinationsDone=findChildVaccinations.vaccinationsDone;
         let myVaccineId;
+        console.log(verifyImage);
         for(i=0;i<myVaccineArray.length;i++){
 
             if(myVaccineArray[i].vaccineId==vaccineId && myVaccineArray[i].status!="Done"){
@@ -323,6 +325,7 @@ router.post("/update-child-vaccine",async(req,res)=>{
                 myVaccineArray[i].status="Done"
                 myVaccineArray[i].vaccinatedDate=vaccinatedDate;
                 myVaccineArray[i].notify=false;
+                myVaccineArray[i].recordImage=verifyImage;
                 vaccinationsDone+=1;
             }
         }
