@@ -1,6 +1,8 @@
 import Modal from "../UI/Modal";
 import React, { useState } from "react";
 import vaccineLogo from "../assets/vaccine-logo.png";
+import axios from "axios";
+import { BASE_URL } from "../helper/endpoints";
  
 
 interface Card {
@@ -11,7 +13,9 @@ interface Card {
 const VaccinationAccordianCard: React.FC<Card> = ({vaccine})=> {
   const [open, setOpen] = useState(false);
   const [toggle, setToggle] = useState(vaccine.notify);
-  const [isChecked, setIsChecked] = useState(vaccine.vaccinationDate==null?false: true);
+  const [isChecked, setIsChecked] = useState(vaccine.vaccinationDate===null?false: true);
+
+  console.log(vaccine);
 
   const detailsOpenHandler = () => {
     setOpen((prev) => !prev);
@@ -29,13 +33,44 @@ const VaccinationAccordianCard: React.FC<Card> = ({vaccine})=> {
       day: 'numeric',
     });
   }
+
+  const dateSubmitHandler = async (vaccinationDate: any) =>{
+    try {
+      const response = await axios.post(`${BASE_URL}api/v1/update-child-vaccine`, {
+        vaccinatedDate: vaccinationDate,
+        vaccineId: vaccine.vaccineId,
+        childId: vaccine.childId
+      });
+      console.log('POST request successful:', response.data);
+      setIsChecked(true);
+      toggleModal();
+      // Handle success, show message, update UI, etc.
+    } catch (error) {
+      console.error('Error making POST request:', error);
+      // Handle error, show error message, etc.
+    }
+    console.log('Vaccination Date:', vaccinationDate, vaccine.vaccineId, vaccine.childId);
+  }
+
+  const notifyHandler = async (data : any) => {
+    try {
+      const response = await axios.patch(`${BASE_URL}api/v1/update-notification-status`, data); // Adjust the URL according to your API endpoint
+      console.log('PATCH request successful:', response.data);
+      setToggle((prev:any)=>!prev);
+    
+      // Handle success, show message, update UI, etc.
+    } catch (error) {
+      console.error('Error making PATCH request:', error);
+      // Handle error, show error message, etc.
+    }
+  };
   
   
   
 
   return (
     <>
-      {isOpen && <Modal onClose={toggleModal} />}
+      {isOpen && <Modal onClose={toggleModal} onSubmit={dateSubmitHandler}/>}
 
       <li className="mb-10 ms-12">
         <span className="absolute left-[-23px] flex items-center justify-center w-12 h-12 bg-blue-100 rounded-full -start-4 ring-8 ring-white">
@@ -48,6 +83,7 @@ const VaccinationAccordianCard: React.FC<Card> = ({vaccine})=> {
           />
           <label
             onClick={() => {
+              if(isChecked) return;
               setIsOpen(true);
               setIsChecked(!isChecked);
             }}
@@ -78,7 +114,7 @@ const VaccinationAccordianCard: React.FC<Card> = ({vaccine})=> {
         </h3>
         <span
                     className={`inline-flex rounded-full bg-opacity-10 mx-2 py-1 px-3 text-sm font-medium ${
-                      vaccine.status === 'ontime'
+                      vaccine.status === 'completed'
                         ? 'bg-success text-success'
                         : vaccine.status === 'delayed'
                         ? 'bg-danger text-danger'
@@ -100,7 +136,7 @@ const VaccinationAccordianCard: React.FC<Card> = ({vaccine})=> {
               type="checkbox"
               value=""
               className="sr-only peer"
-              onClick={() => setToggle((prev:any) => !prev)}
+              onClick={()=>{ notifyHandler({vaccineId: vaccine.id, notify: !toggle}) }}
               checked={toggle}
             />
             <div className="relative w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-gray-200 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-secondary"></div>

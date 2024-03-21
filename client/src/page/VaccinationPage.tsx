@@ -26,6 +26,8 @@ enum Tab {
 function VaccinationPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTab, setActiveTab] = useState(Tab.Pending);
+ const [vaccinationsData, setVaccinationsData] = useState<any[]|null>(null);
+ const [selectedChild, setSelectedChild] = useState<Child | null>(null);
  const {userData} = useAuth();
 
   const handleTabClick = (tab: Tab) => {
@@ -34,6 +36,7 @@ function VaccinationPage() {
   };
   const [children, setChildren] = useState<Child[]>([]);
   const [deleteFlag, setDeleteFlag] = useState(false);
+  const [newVaccineFlag, setNewVaccineFlag] = useState(false);
   const deleteChild = async (childId:any) => {
     try {
         // Assuming your API endpoint URL
@@ -68,104 +71,133 @@ function VaccinationPage() {
 
   }, [deleteFlag])
 
-  const vaccinationsData = [
-    {
-      id: 1,
-      name: 'Vaccination 1',
-      date: new Date(2024, 3, 15), // April 15th, 2024
-      status: 'ontime',
-      notify: false,
-      description:
-        'Routine vaccination including Diphtheria, Tetanus, Pertussis (DTaP), Haemophilus influenzae type b (Hib), Pneumococcal conjugate vaccine (PCV13), Polio vaccine (IPV), and Rotavirus vaccine.',
-      vaccinationDate: new Date(2024, 3, 15), // Example vaccination date
-    },
-    {
-      id: 2,
-      name: 'Vaccination 2',
-      date: new Date(2024, 2, 11), // April 20th, 2024
-      status: 'delayed',
-      notify: true,
-      description:
-        'Routine vaccination including Measles, Mumps, Rubella (MMR), Varicella (Chickenpox), Hepatitis A, and Hepatitis B.',
-      vaccinationDate: new Date(), // Empty date until vaccinated
-    },
+  useEffect(() => {
+    const fetchVaccines = async () => {
+      try {
+        if(!selectedChild?._id) return ;
+        const response = await axios.get(`${BASE_URL}api/v1/get-mychild-details/${selectedChild._id}`);
+        // console.log(response.data) // Adjust the URL according to your API endpoint
+        const formattedVaccines = response.data.data.vaccinations.map((vaccine : any) => ({
+          id: vaccine._id,
+          childId: response.data.data._id,
+          vaccineId: vaccine.vaccineId._id,
+          name: vaccine.vaccineId.name,
+          date: new Date(vaccine.predictedDate), // Assuming predictedDate is the date of vaccination
+          status: vaccine.status.toLowerCase() === 'done' ? 'completed' : vaccine.status.toLowerCase() === 'delayed'? 'delayed' : 'upcoming',
+          notify: vaccine.notify,
+          description: vaccine.vaccineId.desc,
+          vaccinationDate: vaccine.vaccinatedDate ? new Date(vaccine.vaccinatedDate) : null,
+        }));
+        formattedVaccines.sort((a: any, b:any) => a.date - b.date);
+        console.log(formattedVaccines)
+        setVaccinationsData(formattedVaccines);
+      } catch (error) {
+        console.error('Error fetching vaccines:', error);
+        // Handle error, show error message, etc.
+      }
+    };
+
+    fetchVaccines();
+  }, [selectedChild?._id, newVaccineFlag]); // Empty dependency array ensures the effect runs only once after the initial render
+
+  // const vaccinationsData = [
+  //   {
+  //     id: 1,
+  //     name: 'Vaccination 1',
+  //     date: new Date(2024, 3, 15), // April 15th, 2024
+  //     status: 'ontime',
+  //     notify: false,
+  //     description:
+  //       'Routine vaccination including Diphtheria, Tetanus, Pertussis (DTaP), Haemophilus influenzae type b (Hib), Pneumococcal conjugate vaccine (PCV13), Polio vaccine (IPV), and Rotavirus vaccine.',
+  //     vaccinationDate: new Date(2024, 3, 15), // Example vaccination date
+  //   },
+  //   {
+  //     id: 2,
+  //     name: 'Vaccination 2',
+  //     date: new Date(2024, 2, 11), // April 20th, 2024
+  //     status: 'delayed',
+  //     notify: true,
+  //     description:
+  //       'Routine vaccination including Measles, Mumps, Rubella (MMR), Varicella (Chickenpox), Hepatitis A, and Hepatitis B.',
+  //     vaccinationDate: new Date(), // Empty date until vaccinated
+  //   },
     
-    {
-      id: 3,
-      name: 'Vaccination 4',
-      date: new Date(2024, 3, 10), // May 10th, 2024
-      status: 'ontime',
-      notify: false,
-      description: 'Routine vaccination including Hepatitis A and Hepatitis B.',
-      vaccinationDate: new Date(2024, 3, 9), // Example vaccination date
-    },
-    {
-      id: 4,
-      name: 'Vaccination 5',
-      date: new Date(2024, 2, 15), // May 18th, 2024
-      status: 'delayed',
-      notify: false,
-      description: 'Routine vaccination including Pneumococcal conjugate vaccine (PCV13).',
-      vaccinationDate: new Date(), // Empty date until vaccinated
-    },
-    {
-      id: 5,
-      name: 'Vaccination 3',
-      date: new Date(2024, 4, 1), // May 1st, 2024
-      status: 'upcoming',
-      notify: true,
-      description: 'Routine vaccination including Influenza (Flu) vaccine.',
-      vaccinationDate: null, // No vaccination date until taken
-    },
-    {
-      id: 6,
-      name: 'Vaccination 6',
-      date: new Date(2024, 5, 5), // June 5th, 2024
-      status: 'upcoming',
-      notify: true,
-      description: 'Routine vaccination including Varicella (Chickenpox) vaccine.',
-      vaccinationDate: null, // No vaccination date until taken
-    },
-    {
-      id: 7,
-      name: 'Vaccination 7',
-      date: new Date(2024, 5, 15), // June 15th, 2024
-      status: 'upcoming',
-      notify: true,
-      description: 'Routine vaccination including Meningococcal conjugate vaccine (MCV4).',
-      vaccinationDate: null, // Example vaccination date
-    },
-    {
-      id: 8,
-      name: 'Vaccination 8',
-      date: new Date(2024, 5, 25), // June 25th, 2024
-      status: 'upcoming',
-      notify: true,
-      description: 'Routine vaccination including Human papillomavirus (HPV) vaccine.',
-      vaccinationDate: null, // Empty date until vaccinated
-    },
-    {
-      id: 9,
-      name: 'Vaccination 9',
-      date: new Date(2024, 6, 8), // July 8th, 2024
-      status: 'upcoming',
-      notify: true,
-      description: 'Routine vaccination including Tetanus, Diphtheria, Pertussis (Tdap) vaccine.',
-      vaccinationDate: null, // No vaccination date until taken
-    },
-    {
-      id: 10,
-      name: 'Vaccination 10',
-      date: new Date(2024, 6, 20), // July 20th, 2024
-      status: 'upcoming',
-      notify: true,
-      description: 'Routine vaccination including Inactivated poliovirus vaccine (IPV).',
-      vaccinationDate: null, // Example vaccination date
-    },
-  ];
+  //   {
+  //     id: 3,
+  //     name: 'Vaccination 4',
+  //     date: new Date(2024, 3, 10), // May 10th, 2024
+  //     status: 'ontime',
+  //     notify: false,
+  //     description: 'Routine vaccination including Hepatitis A and Hepatitis B.',
+  //     vaccinationDate: new Date(2024, 3, 9), // Example vaccination date
+  //   },
+  //   {
+  //     id: 4,
+  //     name: 'Vaccination 5',
+  //     date: new Date(2024, 2, 15), // May 18th, 2024
+  //     status: 'delayed',
+  //     notify: false,
+  //     description: 'Routine vaccination including Pneumococcal conjugate vaccine (PCV13).',
+  //     vaccinationDate: new Date(), // Empty date until vaccinated
+  //   },
+  //   {
+  //     id: 5,
+  //     name: 'Vaccination 3',
+  //     date: new Date(2024, 4, 1), // May 1st, 2024
+  //     status: 'upcoming',
+  //     notify: true,
+  //     description: 'Routine vaccination including Influenza (Flu) vaccine.',
+  //     vaccinationDate: null, // No vaccination date until taken
+  //   },
+  //   {
+  //     id: 6,
+  //     name: 'Vaccination 6',
+  //     date: new Date(2024, 5, 5), // June 5th, 2024
+  //     status: 'upcoming',
+  //     notify: true,
+  //     description: 'Routine vaccination including Varicella (Chickenpox) vaccine.',
+  //     vaccinationDate: null, // No vaccination date until taken
+  //   },
+  //   {
+  //     id: 7,
+  //     name: 'Vaccination 7',
+  //     date: new Date(2024, 5, 15), // June 15th, 2024
+  //     status: 'upcoming',
+  //     notify: true,
+  //     description: 'Routine vaccination including Meningococcal conjugate vaccine (MCV4).',
+  //     vaccinationDate: null, // Example vaccination date
+  //   },
+  //   {
+  //     id: 8,
+  //     name: 'Vaccination 8',
+  //     date: new Date(2024, 5, 25), // June 25th, 2024
+  //     status: 'upcoming',
+  //     notify: true,
+  //     description: 'Routine vaccination including Human papillomavirus (HPV) vaccine.',
+  //     vaccinationDate: null, // Empty date until vaccinated
+  //   },
+  //   {
+  //     id: 9,
+  //     name: 'Vaccination 9',
+  //     date: new Date(2024, 6, 8), // July 8th, 2024
+  //     status: 'upcoming',
+  //     notify: true,
+  //     description: 'Routine vaccination including Tetanus, Diphtheria, Pertussis (Tdap) vaccine.',
+  //     vaccinationDate: null, // No vaccination date until taken
+  //   },
+  //   {
+  //     id: 10,
+  //     name: 'Vaccination 10',
+  //     date: new Date(2024, 6, 20), // July 20th, 2024
+  //     status: 'upcoming',
+  //     notify: true,
+  //     description: 'Routine vaccination including Inactivated poliovirus vaccine (IPV).',
+  //     vaccinationDate: null, // Example vaccination date
+  //   },
+  // ];
   
 
-  const [selectedChild, setSelectedChild] = useState<Child | null>(null);
+  
   
 
   const handleChildClick = (child: Child) => {
@@ -192,10 +224,25 @@ function VaccinationPage() {
     });
     setChildren(prevChildren => [...prevChildren, {...response.data.data}]);
     console.log('Child data sent successfully:', response.data);
+    toggleModal();
   } catch (error) {
     console.error('Error sending child data:', error);
   }
     
+  };
+
+  const addVaccineHandler = async (data:any) => {
+    try {
+      if(!selectedChild) return;
+      const response = await axios.post(`${BASE_URL}api/v1/add-my-vaccine`,{ ...data, childId: selectedChild?._id}); // Adjust the URL according to your API endpoint
+      console.log('POST request successful:', response.data);
+      setNewVaccineFlag((prev)=> !prev);
+      toggleAddVaccinationModal();
+      // Handle success, show message, update UI, etc.
+    } catch (error) {
+      console.error('Error making POST request:', error);
+      // Handle error, show error message, etc.
+    }
   };
 
   
@@ -208,7 +255,7 @@ function VaccinationPage() {
   return (
     <>
     {isOpen && <ChildDetailsFormModal onClose={toggleModal} onSubmit={handleChildFormSubmit}/>}
-    {isOpenAddVaccineModal && <AddVaccinationModal onClose={toggleAddVaccinationModal} onSubmit={()=>{}}/>}
+    {isOpenAddVaccineModal && <AddVaccinationModal onClose={toggleAddVaccinationModal} onSubmit={addVaccineHandler}/>}
     <div className="w-full">
       <h1 className="text-3xl font-bold mb-4 pl-4">Vaccinations</h1>
       <div className="flex space-x-4 w-full pl-4 overflow-x-auto pb-2 border-b" style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch', scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
@@ -266,7 +313,7 @@ function VaccinationPage() {
         </button>
         <ol className="relative border-s w-1/2 h-full mx-12 mt-8  border-gray-200 ">
           {vaccinationsData && vaccinationsData.map((vaccine)=> 
-           <VaccinationAccordianCard vaccine={vaccine}/>
+           <VaccinationAccordianCard key={vaccine.id} vaccine={vaccine}/>
           )}
           {/* <VaccinationAccordianCard />
           <VaccinationAccordianCard />

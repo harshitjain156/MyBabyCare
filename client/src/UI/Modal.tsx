@@ -1,19 +1,26 @@
 import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 
+
 interface ModalProps {
   onClose: () => void;
+  onSubmit:(value: any)=> void;
 }
 
-const Modal: React.FC<ModalProps> = ({ onClose }) => {
+const Modal: React.FC<ModalProps> = ({onClose, onSubmit }) => {
   const [vaccinationDate, setVaccinationDate] = useState('');
 
-  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => setVaccinationDate(e.target.value);
+  const handleDateChange = async (e: React.ChangeEvent<HTMLInputElement>) => setVaccinationDate(e.target.value);
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    try{
+  
     e.preventDefault();
     // Logic to handle form submission
-    console.log('Vaccination Date:', vaccinationDate);
-    onClose();
+   onSubmit(vaccinationDate);
+
+    } catch(err) {
+      console.log(err);
+    }
   };
 
   
