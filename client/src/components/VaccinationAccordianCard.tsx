@@ -7,10 +7,11 @@ import { BASE_URL } from "../helper/endpoints";
 
 interface Card {
   vaccine: any;
+  handleChange: any;
 };
 
 
-const VaccinationAccordianCard: React.FC<Card> = ({vaccine})=> {
+const VaccinationAccordianCard: React.FC<Card> = ({vaccine, handleChange})=> {
   const [open, setOpen] = useState(false);
   const [toggle, setToggle] = useState(vaccine.notify);
   const [isChecked, setIsChecked] = useState(vaccine.vaccinationDate===null?false: true);
@@ -43,7 +44,9 @@ const VaccinationAccordianCard: React.FC<Card> = ({vaccine})=> {
       });
       console.log('POST request successful:', response.data);
       setIsChecked(true);
+      handleChange();
       toggleModal();
+
       // Handle success, show message, update UI, etc.
     } catch (error) {
       console.error('Error making POST request:', error);
