@@ -28,6 +28,7 @@ function VaccinationPage() {
   const [activeTab, setActiveTab] = useState(Tab.Pending);
  const [vaccinationsData, setVaccinationsData] = useState<any[]|null>(null);
  const [selectedChild, setSelectedChild] = useState<Child | null>(null);
+ const [changeInVaccine, setChnageInVaccine] = useState(false);
  const {userData} = useAuth();
 
   const handleTabClick = (tab: Tab) => {
@@ -63,13 +64,15 @@ function VaccinationPage() {
           const response = await axios.get(`${BASE_URL}api/v1/all-child/?userId=${userData.userId}`);
           console.log("Successfully fetched the child list: ", response.data);
           setChildren(response.data.data)
+          if(!selectedChild)
+          setSelectedChild(response.data.data[0]);
         }
         catch(error){
           console.log("Error in fetching the Child list");
         }
     })()
 
-  }, [deleteFlag])
+  }, [deleteFlag, changeInVaccine])
 
   useEffect(() => {
     const fetchVaccines = async () => {
@@ -238,6 +241,8 @@ function VaccinationPage() {
       console.log('POST request successful:', response.data);
       setNewVaccineFlag((prev)=> !prev);
       toggleAddVaccinationModal();
+      setChnageInVaccine((prev)=> !prev)
+      
       // Handle success, show message, update UI, etc.
     } catch (error) {
       console.error('Error making POST request:', error);
@@ -313,7 +318,7 @@ function VaccinationPage() {
         </button>
         <ol className="relative border-s w-1/2 h-full mx-12 mt-8  border-gray-200 ">
           {vaccinationsData && vaccinationsData.map((vaccine)=> 
-           <VaccinationAccordianCard key={vaccine.id} vaccine={vaccine}/>
+           <VaccinationAccordianCard key={vaccine.id} vaccine={vaccine} handleChange={()=> setChnageInVaccine((prev)=> !prev)} />
           )}
           {/* <VaccinationAccordianCard />
           <VaccinationAccordianCard />
