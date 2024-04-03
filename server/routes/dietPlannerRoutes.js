@@ -109,28 +109,42 @@ router.post('/add-my-meal/:userId', async (req, res) => {
 router.get('/get-my-meal/:userId', async (req, res) => {
     try {
         // Create the vaccine
-       const {date} = req.body;
+       const date = req.query.date;
        const userId=req.params.userId;
     
        if(!date){
-        return res.status(400).json({ success: false, message: "Description is required"});
+        return res.status(400).json({ success: false, message: "Date is required"});
        }
-        console.log(new Date(date))
-       let findMyMeal= await myMealsModel.find({userId,date}) .populate('breakfast.mealId')
+        
+        const queryDate=new Date(date);
+        queryDate.setDate(queryDate.getDate()+1);
+        console.log(queryDate.getDate()+1)
+        const startOfDay = new Date(queryDate);
+        startOfDay.setHours(0, 0, 0, 0);
+        console.log(startOfDay);
+        const endOfDay = new Date(queryDate);
+        endOfDay.setHours(23, 59, 59, 999);
+       let findMyMeal= await myMealsModel.findOne({userId:userId,
+        date:date
+    
+    
+    }).populate('breakfast.mealId')
        .populate('lunch.mealId')
        .populate('snacks.mealId')
-       .populate('dinner.mealId');
-       if(findMyMeal.length>0){
-        return res.status(201).json({ status:"meal-added",message: 'Meal added',data:findMyMeal[0]});
+       .populate('dinner.mealId').exec();
+       
+       if(findMyMeal){
+        return res.status(201).json({ status:"meal-added",message: 'Meal added',data:findMyMeal});
 
         
 
        }else{
-            
-            return res.status(201).json({ status:"no-meal-added",message:  {
+        // queryDate.setDate(queryDate.getDate()+1);
+            return res.status(201).json({ status:"no-meal-added 123",message:  {
                 
                 "userId": userId,
-                "date": new Date(date),
+                "date123":new Date(date)+1,
+                "date": queryDate,
                 "dinner": [],
                 "breakfast": [],
                 "lunch": [],
