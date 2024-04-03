@@ -136,8 +136,8 @@ router.get('/get-my-meal/:userId', async (req, res) => {
             return res.status(200).json({ status:"no-meal-added 123",message:"my meals",data:  {
                 
                 "userId": userId,
-                "date123":new Date(date),
-                "date": queryDate,
+                // "date123":new Date(date),
+                "date": new Date(date),
                 "dinner": [],
                 "breakfast": [],
                 "lunch": [],
