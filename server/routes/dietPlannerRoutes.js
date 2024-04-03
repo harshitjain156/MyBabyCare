@@ -140,7 +140,7 @@ router.get('/get-my-meal/:userId', async (req, res) => {
 
        }else{
         // queryDate.setDate(queryDate.getDate()+1);
-            return res.status(200).json({ status:"no-meal-added 123",message:  {
+            return res.status(200).json({ status:"no-meal-added 123",message:"my meals",data:  {
                 
                 "userId": userId,
                 "date123":new Date(date)+1,
