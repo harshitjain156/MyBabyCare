@@ -116,14 +116,7 @@ router.get('/get-my-meal/:userId', async (req, res) => {
         return res.status(400).json({ success: false, message: "Date is required"});
        }
         
-        const queryDate=new Date(date);
-        queryDate.setDate(queryDate.getDate()+1);
-        console.log(queryDate.getDate()+1)
-        const startOfDay = new Date(queryDate);
-        startOfDay.setHours(0, 0, 0, 0);
-        console.log(startOfDay);
-        const endOfDay = new Date(queryDate);
-        endOfDay.setHours(23, 59, 59, 999);
+        
        let findMyMeal= await myMealsModel.findOne({userId:userId,
         date:date
     
@@ -143,7 +136,7 @@ router.get('/get-my-meal/:userId', async (req, res) => {
             return res.status(200).json({ status:"no-meal-added 123",message:"my meals",data:  {
                 
                 "userId": userId,
-                "date123":new Date(date)+1,
+                "date123":new Date(date),
                 "date": queryDate,
                 "dinner": [],
                 "breakfast": [],
