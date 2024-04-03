@@ -8,6 +8,7 @@ const Appointment  = require("../server/model/appointmentSchema");
 const Slot = require("../server/model/slotModel")
 
 const connectDB = require("./db/connect");
+const dietPlannerRoutes=require("../server/routes/dietPlannerRoutes");
 const authRoutes = require("../server/routes/authRouter");
 const doctorRoutes = require("../server/routes/doctorRouter");
 const bookingRoutes = require("../server/routes/bookingRouter");
@@ -87,6 +88,7 @@ app.use("/api/v1", doctorRoutes)
 
 app.use("/api/v1", bookingRoutes)
 app.use("/api/v1", childRoutes)
+app.use("/api/v1/dietplanner", dietPlannerRoutes);
 
 app.use("*", (req, res, next) => {
   const error = {
