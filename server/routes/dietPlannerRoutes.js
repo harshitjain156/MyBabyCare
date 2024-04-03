@@ -35,7 +35,7 @@ router.get('/get-all-meal', async (req, res) => {
     try {
        
        const allMeals= await mealModel.find();
-        return res.status(201).json({ message: 'Meal added',data:allMeals });
+        return res.status(200).json({ message: 'Meal added',data:allMeals });
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: 'Server error' });
