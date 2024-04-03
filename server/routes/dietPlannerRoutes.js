@@ -134,13 +134,13 @@ router.get('/get-my-meal/:userId', async (req, res) => {
        .populate('dinner.mealId').exec();
        
        if(findMyMeal){
-        return res.status(201).json({ status:"meal-added",message: 'Meal added',data:findMyMeal});
+        return res.status(200).json({ status:"meal-added",message: 'Meal added',data:findMyMeal});
 
         
 
        }else{
         // queryDate.setDate(queryDate.getDate()+1);
-            return res.status(201).json({ status:"no-meal-added 123",message:  {
+            return res.status(200).json({ status:"no-meal-added 123",message:  {
                 
                 "userId": userId,
                 "date123":new Date(date)+1,
