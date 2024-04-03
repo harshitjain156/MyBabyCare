@@ -241,8 +241,8 @@ router.get('/week-meal-plan/:userId', async (req, res) => {
                 }
             }
             else{
-                const setDay = new Date(currentDate);
-                    setDay.setDate(currentDate.getDate()+i)
+                // const setDay = new Date(currentDate);
+                //     setDay.setDate(currentDate.getDate()+i)
                 finalResult.push(
                     {
                 
