@@ -181,7 +181,7 @@ router.patch('/update-my-meals/:userId', async (req, res) => {
         // Update the MyMeals document
         const updateMeal = await myMealsModel.findOneAndUpdate({ userId, date }, updateOperation, { new: true });
 
-        return res.status(201).json({ status: "meal-updated", data: updateMeal });
+        return res.status(201).json({ status: "meal-updated",message:"meal-updated", data: updateMeal });
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: 'Server error' });
