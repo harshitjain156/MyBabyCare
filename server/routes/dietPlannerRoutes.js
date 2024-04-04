@@ -3,6 +3,7 @@ const mealModel = require('../model/mealModel');
 // const { find } = require('../model/childModel');
 const myMealsModel = require('../model/myMealsModel');
 const router = express.Router();
+const moment = require('moment'); 
 
 router.get('/dietplans',(req,res)=>{
     res.json("Success")
@@ -55,9 +56,13 @@ router.post('/add-my-meal/:userId', async (req, res) => {
         return res.status(400).json({ success: false, message: "Meal id is required"});
        }
        if(!date){
-        return res.status(400).json({ success: false, message: "Description is required"});
+        return res.status(400).json({ success: false, message: "Date is required"});
        }
-        console.log(new Date(date))
+
+       const d = new Date("01/05/12");
+        d.setHours(0,0,0,0);
+        
+        console.log(d.toISOString(),"123");
        let findMyMeal= await myMealsModel.find({userId,date});
        console.log(findMyMeal,findMyMeal.length);
        if(findMyMeal.length>0){
@@ -176,7 +181,7 @@ router.patch('/update-my-meals/:userId', async (req, res) => {
         // Update the MyMeals document
         const updateMeal = await myMealsModel.findOneAndUpdate({ userId, date }, updateOperation, { new: true });
 
-        return res.status(201).json({ status: "meal-updated", message: updateMeal });
+        return res.status(201).json({ status: "meal-updated", data: updateMeal });
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: 'Server error' });
