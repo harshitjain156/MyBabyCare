@@ -6,6 +6,13 @@ const router = express.Router();
 const moment = require('moment'); 
 
 router.get('/dietplans',(req,res)=>{
+    const date=req.query.date;
+    console.log(date);
+    const newDate=new Date(date);
+    console.log(newDate)
+    const currentDate = moment(newDate.toISOString().split("T")[0]).toDate();
+    console.log(currentDate);
+    console.log(new Date(newDate.toISOString().split("T")[0]))
     res.json("Success")
 })
 
@@ -226,7 +233,7 @@ router.get('/week-meal-plan/:userId', async (req, res) => {
         // Calculate the date 7 days ago
         const sevenDays = new Date(currentDate);
         sevenDays.setDate(sevenDays.getDate() + 7);
-        console.log(sevenDays,currentDate)
+        // console.log(sevenDays,currentDate)
         const result = await myMealsModel.find({
             userId: userId,
             date: { $gte: currentDate, $lte: sevenDays }
@@ -237,17 +244,13 @@ router.get('/week-meal-plan/:userId', async (req, res) => {
         const finalResult=[];
 
         for(i=0;i<7;i++){
-            const setDay = new Date(currentDate);
+            const setDay = new Date(currentDate.toISOString().split("T")[0]);
                     setDay.setDate(currentDate.getDate()+i)
-            // console.log(result[i].date.getDate.toString)
-            if(i<result.length){
-                if(result[i].date.getDate==setDay.getDate){
-                    finalResult.push(result[i]);
-                }
-            }
-            else{
-                // const setDay = new Date(currentDate);
-                //     setDay.setDate(currentDate.getDate()+i)
+            
+            const value = result.find(element => element.date.toISOString().split("T")[0] == setDay.toISOString().split("T")[0]);
+            console.log(setDay);
+            console.log(value); // Returns 30
+            if(!value){
                 finalResult.push(
                     {
                 
@@ -260,8 +263,49 @@ router.get('/week-meal-plan/:userId', async (req, res) => {
                        
                     }
                 )
+                
+
+            }
+            else{
+                finalResult.push(value);
             }
         }
+
+        // for
+        // for(i=0;i<7;i++){
+        //     const setDay = new Date(currentDate);
+        //             setDay.setDate(currentDate.getDate()+i)
+
+        //     // console.log(currentDate,result)
+            
+        //     if(i<result.length){
+        //         // console.log(i);
+        //         if(result[i].date.getDate==setDay.getDate){
+        //             finalResult.push(result[i]);
+        //             console.log(finalResult[i]);
+        //         }
+        //     }
+        //     else{
+
+        //         if(finalResult[i])
+                
+        //         // const setDay = new Date(currentDate);
+        //         //     setDay.setDate(currentDate.getDate()+i)
+        //         finalResult.push(
+        //             {
+                
+        //                 "userId": userId,
+        //                 "date": setDay,
+        //                 "dinner": [],
+        //                 "breakfast": [],
+        //                 "lunch": [],
+        //                 "snacks": [],
+                       
+        //             }
+        //         )
+        //         console.log(finalResult[i]);
+        //     }
+        // }
         // // Aggregate query to find data for the last 7 days
         // const result = await myMealsModel.aggregate([
         //     {
