@@ -229,14 +229,14 @@ router.get('/week-meal-plan/:userId', async (req, res) => {
 
         // Get the current date
         const currentDate = new Date();
-
+        const d = new Date(currentDate.toISOString().split("T")[0]);
         // Calculate the date 7 days ago
-        const sevenDays = new Date(currentDate);
+        const sevenDays = new Date(d);
         sevenDays.setDate(sevenDays.getDate() + 7);
         // console.log(sevenDays,currentDate)
         const result = await myMealsModel.find({
             userId: userId,
-            date: { $gte: currentDate, $lte: sevenDays }
+            date: { $gte: d, $lte: sevenDays }
         }).populate('breakfast.mealId')
         .populate('lunch.mealId')
         .populate('snacks.mealId')
