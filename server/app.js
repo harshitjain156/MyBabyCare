@@ -13,6 +13,7 @@ const authRoutes = require("../server/routes/authRouter");
 const doctorRoutes = require("../server/routes/doctorRouter");
 const bookingRoutes = require("../server/routes/bookingRouter");
 const childRoutes = require("../server/routes/childRouter");
+const locateConsultantsRoutes=require("../server/routes/locateConsultantsRoutes")
 const { API_ENDPOINT_NOT_FOUND_ERR, SERVER_ERR } = require("./error")
 
 const cors = require("cors");
@@ -89,6 +90,8 @@ app.use("/api/v1", doctorRoutes)
 app.use("/api/v1", bookingRoutes)
 app.use("/api/v1", childRoutes)
 app.use("/api/v1/dietplanner", dietPlannerRoutes);
+app.use("/api/v1/locate-consultants", locateConsultantsRoutes);
+
 
 app.use("*", (req, res, next) => {
   const error = {
