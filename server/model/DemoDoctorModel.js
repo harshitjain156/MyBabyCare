@@ -1,22 +1,19 @@
 const mongoose = require("mongoose");
 
-const hospitalSchema = mongoose.Schema({
+const DemoDoctorSchema = mongoose.Schema({
   name: {
     type: String,
   },
   email: {
     type: String,
     
-    default:"xyz@"
+    default:"zyx"
   },
   date: {
     type: Date,
     default: Date.now,
   },
-  website: {
-    type: String,
-    default:"abc.com"
-  },
+ 
   phoneNumber: {
     type: Number,
     default:1234567890
@@ -24,23 +21,15 @@ const hospitalSchema = mongoose.Schema({
   latitude: {
     type: Number,
     required: true,
+    default:"28.608"
   },
   longitude: {
     type: Number,
     required: true,
+    default:"77.380"
   },
-  beds: {
-    type: Number,
-    default:10
-  },
-  totalBeds: {
-    type: Number,
-    default:50
-  },
-  doctors: {
-    type: Number,
-    default:2
-  },
+  
+ 
   totalDoctors: {
     type: Number,
     default:5
@@ -60,6 +49,6 @@ const hospitalSchema = mongoose.Schema({
 });
 
 module.exports = HospitalUser = mongoose.model(
-  "Hospitals",
-  hospitalSchema
+  "DemoDoctors",
+  DemoDoctorSchema 
 );

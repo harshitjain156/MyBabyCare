@@ -52,7 +52,7 @@ router.get('/get-data', async (req, res) => {
         Hospitals.find({})
         .then((hospitals) => {
           if (hospitals.length === 0) {
-            res.status(404).json({ notFound: "No hospital found" });
+            res.status(404).json({ message: "No hospital found" });
           } else {
             let arr = hospitals.map((hospital) => {
               let hosp_dist = {};
@@ -82,9 +82,11 @@ router.get('/get-data', async (req, res) => {
             arr = arr.filter((hospital) => hospital.distance <= range );
     
             if (arr.length === 0) {
-              res.status(404).json({ notFound: "No nearby hospital found" });
+              res.status(404).json({ message: "No nearby hospital found" });
             } else {
-              res.json(arr);
+              res.json({
+                message:"success",
+                data:arr});
             }
           }
         })
@@ -94,7 +96,7 @@ router.get('/get-data', async (req, res) => {
         VaccinationCenters.find({})
         .then((vaccinationCenter) => {
           if (vaccinationCenter.length === 0) {
-            res.status(404).json({ notFound: "No hospital found" });
+            res.status(404).json({ message: "No hospital found" });
           } else {
             let arr = vaccinationCenter.map((center) => {
               let hosp_dist = {};
@@ -124,16 +126,62 @@ router.get('/get-data', async (req, res) => {
             arr = arr.filter((hospital) => hospital.distance <= range );
     
             if (arr.length === 0) {
-              res.status(404).json({ notFound: "No nearby center found" });
+              res.status(404).json({ message: "No nearby center found" });
             } else {
-              res.json(arr);
+              res.json({
+                message:"success",
+                data:arr});
+            }
+          }
+        })
+        .catch((err) => res.json(err));
+       }
+       else if(type=='doctor'){
+        VaccinationCenters.find({})
+        .then((vaccinationCenter) => {
+          if (vaccinationCenter.length === 0) {
+            res.status(404).json({ message: "No hospital found" });
+          } else {
+            let arr = vaccinationCenter.map((center) => {
+              let hosp_dist = {};
+    
+              const dist = distCalc(
+                latitude,
+                longitude,
+                center.latitude,
+                center.longitude
+              );
+              hosp_dist.distance = dist;
+              hosp_dist.name = center.name;
+              
+              hosp_dist.phoneNumber = center.phoneNumber;
+              hosp_dist.latitude = center.latitude;
+              hosp_dist.longitude = center.longitude;
+              
+              hosp_dist.availability = center.availability;
+              hosp_dist.totalDoctors = center.totalDoctors;
+              hosp_dist.totalBeds = center.totalBeds;
+              hosp_dist.enable = center.enable;
+              // hosp_dist.verified = hospital.verified;
+              hosp_dist.note = center.note;
+    
+              return hosp_dist;
+            });
+            arr = arr.filter((hospital) => hospital.distance <= range );
+    
+            if (arr.length === 0) {
+              res.status(404).json({ message: "No nearby center found" });
+            } else {
+              res.json({
+                message:"success",
+                data:arr});
             }
           }
         })
         .catch((err) => res.json(err));
        }
        else{
-        res.status(404).json({ notFound: "No Data found" });
+        res.status(404).json({ message: "No Data found" });
        }
     
     
