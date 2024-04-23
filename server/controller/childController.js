@@ -1,6 +1,8 @@
 const Child = require("../model/childModel");
 const vaccineModel = require("../model/vaccineModel");
 
+const NodeCache = require( "node-cache" );
+const myCache =new NodeCache( { stdTTL: 20, checkperiod: 120 } );
 
 exports.addNewChild =  async (req, res) => {
 
@@ -44,21 +46,31 @@ exports.addNewChild =  async (req, res) => {
 exports.getAllChild = async(req, res)=>{
     try{
         const {userId} =  req.query;
-        
+
         if(!userId){
             return res.status(400).json({ msg: "UserID is required"});
         }
+        const userString=String(`my-childs-${userId}`);
+    
+        if(myCache.has(userId+"child")){
+            console.log("cached data")
+            const childData=myCache.get(userId+"child");
+            // console.log(childData)
+            return res.status(200).json({
+                success: true,
+                count: childData.length,
+                data:childData})
+        }
 
-
-        const children = await Child.find({ userId});
-
+        const children = await Child.find({ userId}).select("-vaccinations");
+        myCache.set(userId+"child",children)
         res.status(200).json({
             success: true,
             count: children.length,
             data:children})
-
+  
     }catch(err){
-        consle.log(err);
+        console.log(err);
         res.status(500).json({message:"Server Error"})
     }
     

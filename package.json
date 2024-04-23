@@ -3,6 +3,7 @@
     "source-map-loader": "^5.0.0"
   },
   "dependencies": {
+    "node-cache": "^5.1.2",
     "react-schedule-meeting": "^4.2.3"
   }
 }

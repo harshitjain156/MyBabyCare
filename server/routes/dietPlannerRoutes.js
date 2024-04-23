@@ -4,6 +4,8 @@ const mealModel = require('../model/mealModel');
 const myMealsModel = require('../model/myMealsModel');
 const router = express.Router();
 const moment = require('moment'); 
+const NodeCache = require( "node-cache" );
+const myCache =new NodeCache( { stdTTL: 100, checkperiod: 120 } );
 
 router.get('/dietplans',(req,res)=>{
     const date=req.query.date;
@@ -39,11 +41,21 @@ router.post('/add-meal', async (req, res) => {
     }
 })
 
+
+
 router.get('/get-all-meal', async (req, res) => {
     try {
-       
+        if(myCache.has("all-meals")){
+            console.log("cached data");
+            return res.status(200).json({ message: 'Meal added',data:myCache.get("all-meals")});
+        }
+       else{
+
+      
        const allMeals= await mealModel.find();
+       myCache.set("all-meals",allMeals);
         return res.status(200).json({ message: 'Meal added',data:allMeals });
+    }
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: 'Server error' });
