@@ -26,7 +26,7 @@ exports.addNewChild =  async (req, res) => {
           // save user
       
           const newChild = await createChild.save();
-
+          myCache.del(userId+"child")
         console.log(newChild)
 
         if (!newChild){
@@ -50,7 +50,7 @@ exports.getAllChild = async(req, res)=>{
         if(!userId){
             return res.status(400).json({ msg: "UserID is required"});
         }
-        const userString=String(`my-childs-${userId}`);
+       
     
         if(myCache.has(userId+"child")){
             console.log("cached data")
@@ -85,7 +85,7 @@ exports.deleteChild = async (req, res) => {
         if (!child) {
             return res.status(404).json({ message: "Child not found" });
         }
-
+        myCache.del(child.userId+"child")
         await child.deleteOne();
 
         res.status(200).json({ message: "Child deleted successfully" });
