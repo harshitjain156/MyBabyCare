@@ -2,14 +2,14 @@ const Child = require("../model/childModel");
 const vaccineModel = require("../model/vaccineModel");
 
 const NodeCache = require( "node-cache" );
-const myCache =new NodeCache( { stdTTL: 20, checkperiod: 120 } );
+const myCache =new NodeCache( { stdTTL: 40, checkperiod: 120 } );
 
 exports.addNewChild =  async (req, res) => {
 
     console.log(req.body)
     try{
         const {name, birthdate, gender, userId, vaccinationsDone, vaccinationsTotal} = req.body;
-
+        myCache.del(userId+"child")
         if (!name || !birthdate || !gender || !userId){
             return res.status(400).json({msg: 'Missing fields'});
         } 
@@ -26,7 +26,7 @@ exports.addNewChild =  async (req, res) => {
           // save user
       
           const newChild = await createChild.save();
-          myCache.del(userId+"child")
+          
         console.log(newChild)
 
         if (!newChild){
