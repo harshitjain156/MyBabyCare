@@ -108,7 +108,7 @@ import RescheduleAppointmentForm from "../src/components/RescheduleAppointmentFo
 import VaccinationPage from "../src/page/VaccinationPage";
 import NotificationContainer from "../src/components/Notification";
 import DoctorDetailsForm from "../src/page/DoctordetailsForm";
-
+import AddOnMap from "../src/page/AddOnMap"
 const ProtectedRouteUser: React.FC<{ children: any }> = ({ children }) => {
   const location = useLocation();
   const { pathname } = location;
@@ -184,7 +184,7 @@ function App() {
         sidebarOpen={sidebarOpen}
       />
       <Routes>
-        <Route path="/" element={<Navigate to="user/login" />} />
+        <Route path="/" element={<Navigate to="doctor/login" />} />
         <Route index path="user/login" element={<LoginPage />} />
         <Route path="user/signup" element={<SignUpPage />} />
         <Route path="doctor/login" element={<DoctorLoginPage />} />
@@ -319,6 +319,16 @@ function App() {
             <ProtectedRouteDoctor>
               <Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}>
                 <DoctorViewAvailabilityPage />
+              </Layout>
+            </ProtectedRouteDoctor>
+          }
+        />
+        <Route
+          path={`/doctor/addonmap`}
+          element={
+            <ProtectedRouteDoctor>
+              <Layout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}>
+                <AddOnMap />
               </Layout>
             </ProtectedRouteDoctor>
           }
