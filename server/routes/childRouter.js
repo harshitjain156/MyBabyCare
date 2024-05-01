@@ -1,6 +1,6 @@
 const express = require( 'express' );
 const router = express.Router();
-const {addNewChild, getAllChild, deleteChild, notificationController, addVaccineForParticularChild} = require("../controller/childController");
+const {addNewChild, getAllChild, deleteChild, notificationController, addVaccineForParticularChild, createNewChild} = require("../controller/childController");
 const Child = require("../model/childModel");
 
 const Vaccine=require('../model/vaccineModel')
@@ -199,70 +199,7 @@ router.post("/add-my-vaccine", addVaccineForParticularChild)
 
 
 
-router.post("/create-new-child",async (req,res)=>{
-    try{
-        const {name, birthdate, gender, userId} = req.body;
-        if (!name || !birthdate || !gender || !userId){
-            return res.status(400).json({success: false, message: 'Missing fields'});
-        } 
-
-    let myVaccinesArray=[];
-     let myVaccines= await Vaccine.find({tag: "general"}).exec();
-     console.log(myVaccines.length);
-
-     for(i=0;i<myVaccines.length;i++){
-        console.log(myVaccines[i]._id);
-        
-        let nextDate=predictNextDate(parseInt(myVaccines[i].age.split(" ")[0]),birthdate);
-        let currentDate=new Date();
-        let dateStatus=compareDates(nextDate);
-        console.log(dateStatus)
-        myVaccinesArray.push({
-            vaccineId: myVaccines[i]._id, // Replace someVaccineId with the actual ObjectId
-            status: dateStatus,
-            notify: true,
-            predictedDate: nextDate, // Replace somePredictedDate with the actual Date
-            vaccinatedDate: null,
-            recordImage:null
-        });
-        
-        
-        
-     }
-     const createChild = new Child({ 
-        name, 
-        birthdate,
-        gender,
-        userId,
-        vaccinationsDone:0,
-        vaccinationsTotal:myVaccines.length,
-        vaccinations: myVaccinesArray
-
-        });
-      
-          // save user
-      
-        const newChild = await createChild.save();
-
-        if (!newChild){
-            return res.status(400).json({success: false, message: 'Failed to create a new Child'});
-        }
-
-        console.log(myVaccinesArray)
-
-        console.log(newChild);
-
-       
- res.status(201).json({ 
-    success: true,
-    message:`Successfully created a new Child`, data: newChild });
-        
-    // res.json(newChild);
-    }catch(err){
-        console.log('Error in adding new child', err);
-        return res.status(400).json({success: false, message: 'Failed to create a new Child'});
-    }
-})
+router.post("/create-new-child",createNewChild)
 
 
 function predictNextDate(durationInMonths,birthdate) {
