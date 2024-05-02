@@ -24,7 +24,7 @@ function AddOnMap(){
           [cord[0]]:lng1,
           [cord[1]]:lat1,
           ['address']:place.place_name,
-          ['pincode']:place.short_code
+          
           
       }))
 
