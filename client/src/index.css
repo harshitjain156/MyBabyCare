@@ -13,11 +13,14 @@
   
 
   /* Buttons */
-  button[type="submit"] {
+  button[type="all"] {
     @apply border bg-secondary w-2/4 py-2 rounded-full text-white text-sm shadow-sm text-center
  
   }
-
+  /* button[type="submit"] {
+    @apply border bg-secondary w-2/4 py-2 rounded-full text-white text-sm shadow-sm text-center
+ 
+  } */
   input, textarea {
     @apply w-2/4 text-sm px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-secondary focus:border-secondary;
   }

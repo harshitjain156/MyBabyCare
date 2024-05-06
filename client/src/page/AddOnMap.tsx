@@ -2,7 +2,8 @@ import React, { MouseEventHandler, useCallback, useEffect, useMemo, useState, us
 const MAPBOX_API_KEY = 'pk.eyJ1IjoiaGFyc2hpdGphaW4xNTYiLCJhIjoiY2x1cW1lY3htMWdrbzJrcG5pYjJjbDduZSJ9.LbrY_Z2yAs7jniAJYuMtdA' || process.env.REACT_APP_MAPBOX_API_KEY;
 import { Feature } from "../interface/places";
 import './style.css'
-
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import { Button, Box, Typography, IconButton } from '@mui/material'
 function AddOnMap() {
   const mapDiv = useRef<HTMLDivElement>(null);
   const defaultFomData = {
@@ -57,8 +58,8 @@ function AddOnMap() {
     }
   }, [query]);
   const handleChangeQuery = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    setFormData((prevState)=>({
-      ...prevState,[e.target.name]:e.target.value
+    setFormData((prevState) => ({
+      ...prevState, [e.target.name]: e.target.value
     }))
     handleSubmitQuery(e);
     console.log(query);
@@ -87,13 +88,33 @@ function AddOnMap() {
 
 
   };
-  const onSubmitEvent=(e:any)=>{
+  const onSubmitEvent = (e: any) => {
     e.preventDefault()
     console.log(formData)
   }
 
+  const [inputFields, setInputFields] = useState([{ value: '' }]);
+
+  const handleInputChange = (index: number, event: any) => {
+    const values = [...inputFields];
+    values[index].value = event.target.value;
+    setInputFields(values);
+    console.log(inputFields)
+  };
+
+  const handleAddField = () => {
+    setInputFields([...inputFields, { value: '' }]);
+  };
+
+  const handleRemoveField = (index: number) => {
+    const values = [...inputFields];
+    values.splice(index, 1);
+    setInputFields(values);
+  };
+
+
   return (
-    <form onSubmit={(e)=>onSubmitEvent}>
+    <form onSubmit={(e) => onSubmitEvent}>
       <div className='p-6 pl-10 pr-10'>
         <div className="border-b border-gray-900/10 pb-12">
           <h2 className="text-base font-semibold leading-7 text-gray-900">Personal Information</h2>
@@ -106,7 +127,7 @@ function AddOnMap() {
               </label>
               <div className="mt-2">
                 <input
-                onChange={handleChangeQuery}
+                  onChange={handleChangeQuery}
                   type="text"
                   name="name"
                   id="name"
@@ -132,7 +153,7 @@ function AddOnMap() {
                 />
               </div>
             </div>
-          
+
 
             <div className="sm:col-span-3">
               <label htmlFor="Phone" className="block text-sm font-medium leading-6 text-gray-900">
@@ -165,16 +186,24 @@ function AddOnMap() {
                 />
               </div>
             </div>
+            <Box display='flex' sx={{ width: '700%' }} justifyContent={'space-between'}>
+              <Typography>
+                Address
+              </Typography>
+              <Button variant='contained' sx={{ backgroundColor: ' rgb(255 154 204)' }} color='secondary' onClick={handleAddField}>Add</Button>
+            </Box>
 
-
-
-            <div className="col-span-full">
+            {inputFields.map((field, index) => (<div className="col-span-full " key={index}>
               <label htmlFor="street-address" className="block text-sm font-medium leading-6 text-gray-900">
-                Street address
+                <Box display={'flex'} sx={{ width: '100%' }} justifyContent={'space-between'}>
+
+                  Street address {index + 1} <IconButton onClick={() => handleRemoveField(index)} ><DeleteOutlineIcon sx={{color:"red"}}/></IconButton>
+                </Box>
               </label>
               <div className="mt-2">
                 <input
-                  value={query} onChange={(e) => onChange(e.target.value)} onInput={(e) => handleSubmitQuery(e)}
+                  value={field.value}
+                  onChange={(e) => handleInputChange(index, e)} onInput={(e) => handleSubmitQuery(e)}
                   type="text"
                   name="street-address"
                   id="address"
@@ -183,12 +212,12 @@ function AddOnMap() {
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   required
                 />
-               
+
+                
 
                 {!isSelected ? <ul className="list-group mt-3 " >
                   <div className='flex justify-between w-full'>
 
-                    Search
                     {/* <div className='flex justify-end' onClick={() => setSelected(true)}>
                       <svg className="h-8 w-8 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -225,16 +254,22 @@ function AddOnMap() {
                     ))
                   }
                 </ul> :
-                  <div className="mt-6 flex w-full  justify-end ">
-                    <div className='w-48 flex justify-end'>
-                      <button type='submit' onClick={onSubmitEvent} > Save</button>
-                    </div>
-                  </div>}
+                  null}
 
               </div>
-            </div>
+            </div>))}
 
-
+            {/* <div className="mt-6 flex w-full  justify-end ">
+              <div className='w-48 flex justify-end'>
+                <button type='submit'  > Save</button>
+              </div>
+            </div> */}
+            <Box display={'flex'} sx={{width:'700%'}} justifyContent={'end'}>
+              <Box width={200} display={'flex'}justifyContent={'end'}>
+              <Button  sx={{backgroundColor: 'rgb(255 154 204)',color:'white' }} type='submit' onClick={onSubmitEvent}>Save</Button>
+              </Box>
+            </Box>
+              
 
 
           </div>
@@ -248,3 +283,45 @@ function AddOnMap() {
 }
 
 export default AddOnMap;
+
+
+// import React, { useState } from 'react';
+
+// const DynamicInputForm = () => {
+//   const [inputFields, setInputFields] = useState([{ value: '' }]);
+
+//   const handleInputChange = (index:number, event:any) => {
+//     const values = [...inputFields];
+//     values[index].value = event.target.value;
+//     setInputFields(values);
+//     console.log(inputFields)
+//   };
+
+//   const handleAddField = () => {
+//     setInputFields([...inputFields, { value: '' }]);
+//   };
+
+//   const handleRemoveField = (index:number) => {
+//     const values = [...inputFields];
+//     values.splice(index, 1);
+//     setInputFields(values);
+//   };
+
+//   return (
+//     <div>
+//       {inputFields.map((field, index) => (
+//         <div key={index}>
+//           <input
+//             type="text"
+//             value={field.value}
+//             onChange={(e) => handleInputChange(index, e)}
+//           />
+//           <button onClick={() => handleRemoveField(index)}>Remove</button>
+//         </div>
+//       ))}
+//       <button onClick={handleAddField}>Add Field</button>
+//     </div>
+//   );
+// };
+
+// export default DynamicInputForm;
