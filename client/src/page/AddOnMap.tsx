@@ -5,8 +5,14 @@ import './style.css'
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import { Button, Box, Typography, IconButton, } from '@mui/material'
 import Stack from '@mui/material/Stack';
-
+import axios from "axios";
+import { useAuth } from "../AuthContext/AuthContext";
+import { useFormik } from 'formik';
+import { BASE_URL } from "../helper/endpoints";
+import { Form } from 'react-router-dom';
 function AddOnMap() {
+  const { userData} =  useAuth();
+
   const mapDiv = useRef<HTMLDivElement>(null);
   const defaultFomData = {
     name: "",
@@ -15,6 +21,14 @@ function AddOnMap() {
     lng: 0,
     pincode: ""
   }
+
+  const Formik=useFormik({
+    initialValues:defaultFomData,
+    onSubmit:(values)=>{
+        console.log(values)
+    }
+  })
+  console.log(Formik)
   const [query, setQuery] = useState('');
   const [places, setPlaces] = useState<Feature[]>([]);
   const [isSelected, setSelected] = useState<boolean>(true);
@@ -44,7 +58,16 @@ function AddOnMap() {
 
   }
 
-
+  const addData=async ()=>{
+    console.log(userData)
+    const response = await axios.post(`${BASE_URL}api/v1/doctors/add/${userData.userId}`, {
+      name:formData.name,
+      lng:inputFields[0].cord[0],
+      lat:inputFields[0].cord[1],
+      address:formData.address
+    });
+    console.log(response);
+  }
   const fetchLocationData = useCallback(async (query: string): Promise<void> => {
     try {
       const URL_BASE = `https://api.mapbox.com/geocoding/v5/mapbox.places/`;
@@ -98,7 +121,8 @@ function AddOnMap() {
   };
   const onSubmitEvent = (e: any) => {
     e.preventDefault()
-    console.log(inputFields)
+    addData();
+    // console.log(inputFields)
   }
 
 
