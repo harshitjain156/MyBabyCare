@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
-
+const { Schema } = mongoose;
 const doctorClinicSchema = mongoose.Schema({
+    doctorId:{type:Schema.Types.ObjectId},
   name: {
     type: String,
   },

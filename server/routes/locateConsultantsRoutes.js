@@ -3,7 +3,7 @@ const Hospitals=require('../model/hospitalModel')
 const VaccinationCenters=require('../model/vaccinationCentersModel')
 const router = express.Router();
 
-
+const DoctorClinic=require('../model/doctorClinic')
 const NodeCache = require( "node-cache" );
 const myCache =new NodeCache( { stdTTL: 100, checkperiod: 120 } );
 
@@ -138,12 +138,12 @@ router.get('/get-data', async (req, res) => {
         .catch((err) => res.json(err));
        }
        else if(type=='doctor'){
-        VaccinationCenters.find({})
-        .then((vaccinationCenter) => {
-          if (vaccinationCenter.length === 0) {
-            res.status(404).json({ message: "No hospital found" });
+        DoctorClinic.find({})
+        .then((doctorClinic) => {
+          if (doctorClinic.length === 0) {
+            res.status(404).json({ message: "No doctor found" });
           } else {
-            let arr = vaccinationCenter.map((center) => {
+            let arr = doctorClinic.map((center) => {
               let hosp_dist = {};
     
               const dist = distCalc(
@@ -154,14 +154,13 @@ router.get('/get-data', async (req, res) => {
               );
               hosp_dist.distance = dist;
               hosp_dist.name = center.name;
-              
+              hosp_dist.clinicName=center.clinicName
               hosp_dist.phoneNumber = center.phoneNumber;
               hosp_dist.latitude = center.latitude;
               hosp_dist.longitude = center.longitude;
               
               hosp_dist.availability = center.availability;
-              hosp_dist.totalDoctors = center.totalDoctors;
-              hosp_dist.totalBeds = center.totalBeds;
+             
               hosp_dist.enable = center.enable;
               // hosp_dist.verified = hospital.verified;
               hosp_dist.note = center.note;
