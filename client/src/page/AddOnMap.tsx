@@ -3,7 +3,9 @@ const MAPBOX_API_KEY = 'pk.eyJ1IjoiaGFyc2hpdGphaW4xNTYiLCJhIjoiY2x1cW1lY3htMWdrb
 import { Feature } from "../interface/places";
 import './style.css'
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-import { Button, Box, Typography, IconButton } from '@mui/material'
+import { Button, Box, Typography, IconButton, } from '@mui/material'
+import Stack from '@mui/material/Stack';
+
 function AddOnMap() {
   const mapDiv = useRef<HTMLDivElement>(null);
   const defaultFomData = {
@@ -17,9 +19,15 @@ function AddOnMap() {
   const [places, setPlaces] = useState<Feature[]>([]);
   const [isSelected, setSelected] = useState<boolean>(true);
   const [formData, setFormData] = useState(defaultFomData);
+  const [inputFields, setInputFields] = useState([{ value: '' ,cord:[0,0]}]);
+
   const {
     name, address, lat, lng, pincode } = formData;
-  const onPlaceClicked = (place: Feature) => {
+  const onPlaceClicked = (place: Feature,index:number) => {
+    const values = [...inputFields];
+    values[index].cord = place.center;
+    values[index].value = place.place_name;
+    setInputFields(values);
     const cord = ['lng', 'lat'];
     const [lng1, lat1] = place.center;
     setFormData((prevState) => ({
@@ -90,20 +98,21 @@ function AddOnMap() {
   };
   const onSubmitEvent = (e: any) => {
     e.preventDefault()
-    console.log(formData)
+    console.log(inputFields)
   }
 
-  const [inputFields, setInputFields] = useState([{ value: '' }]);
 
   const handleInputChange = (index: number, event: any) => {
+    setSelected(false)
     const values = [...inputFields];
     values[index].value = event.target.value;
     setInputFields(values);
+    fetchLocationData(event.target.value);
     console.log(inputFields)
   };
 
   const handleAddField = () => {
-    setInputFields([...inputFields, { value: '' }]);
+    setInputFields([...inputFields, { value: '',cord:[] }]);
   };
 
   const handleRemoveField = (index: number) => {
@@ -118,7 +127,7 @@ function AddOnMap() {
       <div className='p-6 pl-10 pr-10'>
         <div className="border-b border-gray-900/10 pb-12">
           <h2 className="text-base font-semibold leading-7 text-gray-900">Personal Information</h2>
-          <p className="mt-1 text-sm leading-6 text-gray-600">Use a permanent address where you can receive mail.</p>
+          {/* <p className="mt-1 text-sm leading-6 text-gray-600">Use a permanent address where you can receive mail.</p> */}
 
           <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
             <div className="sm:col-span-3">
@@ -156,7 +165,7 @@ function AddOnMap() {
 
 
             <div className="sm:col-span-3">
-              <label htmlFor="Phone" className="block text-sm font-medium leading-6 text-gray-900">
+              <label className="block text-sm font-medium leading-6 text-gray-900">
                 Phone
               </label>
               <div className="mt-2">
@@ -164,7 +173,7 @@ function AddOnMap() {
                   type="text"
                   name="phone"
                   id="phone"
-                  autoComplete="family-name"
+                  autoComplete="phone"
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   required
                 />
@@ -186,12 +195,35 @@ function AddOnMap() {
                 />
               </div>
             </div>
-            <Box display='flex' sx={{ width: '700%' }} justifyContent={'space-between'}>
+            <Stack direction={'column'} className='sm:col-span-6'>
+            <Box width={300}>
+            <h2 className="text-base font-semibold leading-7 text-gray-900">Clinic Information</h2>
+            </Box>
+            <div className="sm:col-span-3 ">
+              <label  className="block text-sm font-medium leading-6 text-gray-900">
+                Clinic Name
+              </label>
+              <div className="mt-2">
+                <input
+                  onChange={handleChangeQuery}
+                  type="text"
+                  name="clinic-name"
+                  id="clinic-name"
+                  
+                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  required
+                />
+              </div>
+            </div>
+            
+            <Box display='flex' sx={{ width: '100%', marginTop:"10%" }} justifyContent={'space-between'}>
               <Typography>
                 Address
               </Typography>
               <Button variant='contained' sx={{ backgroundColor: ' rgb(255 154 204)' }} color='secondary' onClick={handleAddField}>Add</Button>
             </Box>
+              
+            </Stack>
 
             {inputFields.map((field, index) => (<div className="col-span-full " key={index}>
               <label htmlFor="street-address" className="block text-sm font-medium leading-6 text-gray-900">
@@ -205,7 +237,7 @@ function AddOnMap() {
                   value={field.value}
                   onChange={(e) => handleInputChange(index, e)} onInput={(e) => handleSubmitQuery(e)}
                   type="text"
-                  name="street-address"
+                  name="address"
                   id="address"
                   onEmptied={() => setSelected(false)}
                   autoComplete="street-address"
@@ -235,7 +267,7 @@ function AddOnMap() {
 
                           <li key={`key-${place.id}`} className={`list-group-item list-group-item-action pointer  active`}
 
-                            onClick={() => onPlaceClicked(place)}
+                            onClick={() => onPlaceClicked(place,index)}
 
                           >
                             <h6>{place.text_es}</h6>
