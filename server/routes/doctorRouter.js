@@ -5,6 +5,22 @@ const router = express.Router();
 
 
 router.get("/doctors", allDoctors);
+
+router.get("/doctors/myclinic/:doctorId",async (req,res)=>{
+    try {
+        const doctorId=req.params.doctorId;
+        // Create the vaccine
+      
+       
+       const newData=await DoctorClinic.find({doctorId});
+       
+        return res.status(201).json({ message: 'success',data:newData });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: 'Server error' });
+    }
+
+})
 router.post('/doctors/add/:doctorId',async (req,res)=>{
     try {
         const doctorId=req.params.doctorId;

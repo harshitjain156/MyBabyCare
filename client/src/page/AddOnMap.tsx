@@ -1,9 +1,9 @@
 import React, { MouseEventHandler, useCallback, useEffect, useMemo, useState, useRef } from 'react';
 const MAPBOX_API_KEY = 'pk.eyJ1IjoiaGFyc2hpdGphaW4xNTYiLCJhIjoiY2x1cW1lY3htMWdrbzJrcG5pYjJjbDduZSJ9.LbrY_Z2yAs7jniAJYuMtdA' || process.env.REACT_APP_MAPBOX_API_KEY;
-import { Feature } from "../interface/places";
+import { Feature,ClinicDetails } from "../interface/places";
 import './style.css'
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-import { Button, Box, Typography, IconButton, } from '@mui/material'
+import { Button,Paper,Grid, Box, Typography, IconButton, Card, } from '@mui/material'
 import Stack from '@mui/material/Stack';
 import axios from "axios";
 import { useAuth } from "../AuthContext/AuthContext";
@@ -103,22 +103,7 @@ function AddOnMap() {
 
   };
 
-  const onChange = async (e: any) => {
 
-    // console.log("first",e.target.value);
-    //  setFormData((prevState)=>({
-    //     ...prevState,
-    //     [e.target.id]:e.target.value
-    // }))
-    setQuery(e);
-    fetchLocationData(e);
-    console.log(e)
-    console.log(query)
-    // handleChangeQuery(e);
-    setSelected(false)
-
-
-  };
   const onSubmitEvent = (e: any) => {
     e.preventDefault()
     addData();
@@ -338,7 +323,65 @@ function AddOnMap() {
   );
 }
 
-export default AddOnMap;
+
+function ListOfClinic(){
+  const { userData} =  useAuth();
+
+  const [query,setQuery]=useState('')
+  const [data,setData]=useState<ClinicDetails[]>([])
+  const fetchLocationData=async()=> {
+    try {
+      const URL_BASE = `http://localhost:8000/api/v1/doctors/myclinic/`;
+      const URL = `${URL_BASE}${userData.userId}`;
+      const response = await fetch(URL);
+    
+      const data = await response.json();
+      console.log(data['data'])
+      setData(data['data'])
+    } catch (error) {
+      let message = 'Unknown Error';
+      if (error instanceof Error) {
+        message =
+          'No results to show. Please try again with a different search query.';
+      }
+
+    }
+  };
+  // fetchLocationData()
+  return(<>
+  <button onClick={fetchLocationData}>Get</button>
+  
+    {data.map((clinicDetails:ClinicDetails)=>(
+      <Paper elevation={3} style={{ padding: 20,margin:20 }}>
+      <Typography variant="h5" gutterBottom>
+        Clinic Details
+      </Typography>
+      <Grid container spacing={2}>
+        <Grid item xs={6}>
+          <Typography variant="subtitle1">Clinic Name:</Typography>
+          <Typography>{clinicDetails.name}</Typography>
+        </Grid>
+        <Grid item xs={6}>
+          <Typography variant="subtitle1">Address:</Typography>
+          <Typography>{clinicDetails.address}</Typography>
+        </Grid>
+        <Grid item xs={6}>
+          <Typography variant="subtitle1">Phone Number:</Typography>
+          <Typography>{clinicDetails.phoneNumber}</Typography>
+        </Grid>
+        <Grid item xs={6}>
+          <Typography variant="subtitle1">Email:</Typography>
+          <Typography>{clinicDetails.email}</Typography>
+        </Grid>
+        
+      </Grid>
+    </Paper>
+      ))}
+    
+
+  </>)
+}
+export default ListOfClinic;
 
 
 // import React, { useState } from 'react';
